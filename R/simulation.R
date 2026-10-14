@@ -34,7 +34,7 @@ with_shield_rng <- function(seed, code) {
 #' @param policy One of P0, P1, P2 or P3.
 #' @param disruption_model Either `static` or `adaptive`.
 #' @param n_rep Positive integer replication count. The package default is
-#'   deliberately small; SHIELD publication runs require 10,000 replications.
+#'   deliberately small; choose study size using a Monte Carlo precision assessment.
 #' @param seed Integer seed; default 20260512.
 #' @param disruptions_enabled Optional logical override of the scenario setting.
 #' @return A `shield_run` data frame with replication identifiers and seeds,

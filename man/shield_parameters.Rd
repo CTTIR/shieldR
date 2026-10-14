@@ -90,7 +90,7 @@ reconstruct through this function when changing a scenario.
 }
 \description{
 Neutral defaults switch off item-condition and disruption hazards. They are
-teaching settings, not the parameters of the SHIELD manuscript.
+synthetic settings rather than calibrated application parameters.
 The topology is fixed: Source, Collection, parallel Transfer nodes, parallel Stage 1 nodes,
 Stage 2 and Stage 3. Every leg has routes A, B and C. Time is in whole minutes.
 A live arrival at Stage 2 ends item-condition hazard. Stage 3 is terminal.

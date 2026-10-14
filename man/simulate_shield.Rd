@@ -22,7 +22,7 @@ configured with \code{\link[=with_decision_controls]{with_decision_controls()}} 
 \item{disruption_model}{Either \code{static} or \code{adaptive}.}
 
 \item{n_rep}{Positive integer replication count. The package default is
-deliberately small; SHIELD publication runs require 10,000 replications.}
+deliberately small; choose study size using a Monte Carlo precision assessment.}
 
 \item{seed}{Integer seed; default 20260512.}
 

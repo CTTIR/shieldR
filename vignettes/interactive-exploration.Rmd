@@ -70,7 +70,7 @@ not shared between users. Downloads persist only when you save them.
    and export**. They preserve the settings actually used by the completed run.
 
 The balanced teaching example inspects transport mechanics. It does not contain
-the manuscript's parameters or represent item calibration. Switch to
+calibrated logistics parameters. Switch to
 **Constrained resources** to examine resource scarcity and a shorter suggested
 horizon without introducing hazards.
 

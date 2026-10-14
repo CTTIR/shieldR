@@ -158,8 +158,7 @@ still uses median and IQR.
 
 - Fixed five-leg topology, three routes per leg and finite one-item vehicles.
 - In the base model, item deterioration and noisy reassessment apply until
-  Stage 2: item-condition hazard stops at
-  physical Stage 2 arrival, before unloading. Stage 3 is the terminal node.
+  Stage 2: item-condition hazard stops at physical arrival, before unloading. Stage 3 is the terminal node.
 - P0 uses initial true priority and a fixed route; P1 uses noisy reassessment;
   P2 learns route risk; P3 couples item priority, route, destination and hold.
 - Same-time departures share pre-batch history. Observed disruption outcomes update
