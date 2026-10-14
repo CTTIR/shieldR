@@ -9,14 +9,14 @@ example_scenario(kind = c("balanced", "constrained"), N = 6L)
 \arguments{
 \item{kind}{Either \code{balanced} or \code{constrained}.}
 
-\item{N}{Positive integer cohort size.}
+\item{N}{Positive integer batch size.}
 }
 \value{
 A \code{\link[=shield_parameters]{shield_parameters()}} object.
 }
 \description{
 Both examples use equal abstract travel durations and zero exposure and
-physiological hazards. They do not contain the controlled study inputs.
+item-condition hazards. They do not contain the controlled study inputs.
 \code{constrained} reduces vehicle availability and shortens the horizon to
 illustrate congestion and administrative censoring.
 }

@@ -17,14 +17,14 @@ library(shieldR)
 
 A reproducible experiment needs a declared endpoint, a comparison design, a
 replication schedule and an explicit multiplicity family. This tutorial shows
-those decisions using neutral teaching inputs. It does not reproduce the SHIELD
-manuscript or provide calibrated scenario assumptions.
+those decisions using synthetic logistics items and dynamic network challenges.
+It does not provide calibrated application-specific assumptions.
 
 ## Define the experiment before looking at outcomes
 
-The unit of analysis is an independently simulated cohort. Patients within a
-cohort share queues, vehicles, observations and disruption risk history, so they are not
-independent statistical replicates. Use cohort-level outcomes for the functions
+The unit of analysis is an independently simulated batch. Items within a
+batch share queues, vehicles, observations and disruption risk history, so they are not
+independent statistical replicates. Use batch-level outcomes for the functions
 below.
 
 ```{r analysis-plan}
@@ -34,7 +34,7 @@ policies <- c("P0", "P1", "P3")
 arm_seeds <- setNames(master_seed + seq_along(policies) - 1L, policies)
 n_rep <- 6L
 bootstrap_resamples <- 10000L
-endpoint <- "surv_stage2"
+endpoint <- "viable_stage2"
 comparison_family <- "teaching-policy-comparisons-at-Stage2"
 data.frame(policy = policies, seed = unname(arm_seeds), n_rep = n_rep)
 ```
@@ -46,11 +46,11 @@ bootstrap uses the full reporting default of 10,000 resamples. A smaller
 bootstrap count may be useful for an interactive preview but must be identified
 as such and replaced for a final analysis.
 
-The primary SHIELD endpoint is overall survival as operationalized here by
-arrival alive at Stage 2 by the administrative horizon. This is a proportion of
-the original cohort, not a Kaplan-Meier survival probability at an arbitrary
-time. A patient still alive elsewhere at the horizon is an endpoint failure.
-Arrival is recorded before unloading and ends physiological hazard; transport
+The primary logistics endpoint is viable delivery, operationalized here by
+arrival viable at Stage 2 by the administrative horizon. This is a proportion of
+the original batch, not a Kaplan-Meier viability probability at an arbitrary
+time. A item still viable elsewhere at the horizon is an endpoint failure.
+Arrival is recorded before unloading and ends item-condition hazard; transport
 can continue to Stage 3. Downstream disruptions can still affect the Stage 3 endpoint.
 
 ## Run independent policy arms
@@ -62,18 +62,18 @@ arms <- setNames(lapply(policies, function(policy) {
 }), policies)
 summary_P0 <- summarize_shield(arms$P0)
 summary_P0[summary_P0$endpoint %in%
-             c("surv_stage2", "t_stage2_med", "util_L4", "n_pending"), ]
+             c("viable_stage2", "t_stage2_med", "util_L4", "n_pending"), ]
 ```
 
 Each row in an arm is one replication; each row above describes an endpoint
 across those replications. The medians and quartiles do not describe the
 parameter distribution or uncertainty about the model's scientific validity.
 
-```{r endpoint-plot, fig.cap="Neutral teaching run: cohort-level Stage 2 arrival-alive proportions by policy.", fig.alt="Empirical distributions of arrival-alive proportions for each policy in the neutral teaching scenario."}
+```{r endpoint-plot, fig.cap="Neutral teaching run: batch-level Stage 2 arrival-viable proportions by policy.", fig.alt="Empirical distributions of arrival-viable proportions for each policy in the neutral teaching scenario."}
 plot(stats::ecdf(arms$P0[[endpoint]]), verticals = TRUE, do.points = FALSE,
      xlim = c(0, 1), ylim = c(0, 1),
-     xlab = "Proportion arriving alive at Stage 2",
-     ylab = "Cumulative proportion of cohort replications", main = "")
+     xlab = "Proportion arriving viable at Stage 2",
+     ylab = "Cumulative proportion of batch replications", main = "")
 lines(stats::ecdf(arms$P1[[endpoint]]), verticals = TRUE, do.points = FALSE,
       lty = 2)
 lines(stats::ecdf(arms$P3[[endpoint]]), verticals = TRUE, do.points = FALSE,
@@ -81,7 +81,7 @@ lines(stats::ecdf(arms$P3[[endpoint]]), verticals = TRUE, do.points = FALSE,
 legend("bottomright", legend = policies, lty = 1:3, bty = "n")
 ```
 
-The neutral scenario has zero exposure and physiological hazards. Differences
+The neutral scenario has zero exposure and item-condition hazards. Differences
 in arrival outcomes can reflect congestion or the administrative horizon.
 The plot is a teaching output and establishes no policy advantage in practice.
 
@@ -107,7 +107,7 @@ comparisons[c("arm_x", "arm_y", "n_x", "n_y", "U", "p_raw_log10",
               "med_diff_ci_degenerate")]
 ```
 
-Effects are oriented as `x` minus `y`. Positive values favor `x` for survival;
+Effects are oriented as `x` minus `y`. Positive values favor `x` for viability;
 for delay or resource use, whether larger values are desirable depends on the
 question. Do not infer direction from the policy labels alone. Cliff's delta
 contrasts the probabilities of a randomly drawn `x` exceeding or falling below
@@ -164,7 +164,7 @@ specify the variables, independent unit and any bootstrap interval separately.
 
 A paired intervention is a different design. It requires identical parameters,
 policy, disruption-response family, replication count and seed schedule, with disruption
-enablement as the only changed setting. Clinical draws are indexed by patient
+enablement as the only changed setting. Item draws are indexed by item
 and minute and use a stream separate from policy and disruption draws.
 
 ```{r paired-intervention}
@@ -181,28 +181,28 @@ compare_intervention(with_disruptions, without_disruptions,
 ```
 
 The contrast is **no disruptions minus disruptions**, estimated as a paired mean
-difference of cohort proportions with a paired percentile bootstrap interval.
+difference of batch proportions with a paired percentile bootstrap interval.
 Pair indices are resampled jointly. The helper checks matching identities and
 aligns rows by replication identifier.
 
 The neutral exposure is zero, so the intervention has no effect here. In a
 user-specified disruption risk experiment, this is a total modelled intervention effect,
 including downstream decisions and administrative-horizon effects. It is not
-identical to `n_att_fatal` or a count of direct disruption deaths. Matched arms must
+identical to `n_disruption_loss` or a count of direct disruption losses. Matched arms must
 not be passed to the independent-arm Mann-Whitney U helper.
 
 ## Preserve missing outcomes and replay the experiment
 
 Arrival-time medians are conditional on arrival. If an arm contains an
 undefined median, `compare_policies()` rejects that nonfinite input. Decide
-prospectively whether a comparison of defined cohort medians is meaningful,
-report the missing counts by arm, and keep the survival/arrival endpoint
+prospectively whether a comparison of defined batch medians is meaningful,
+report the missing counts by arm, and keep the viability/arrival endpoint
 alongside it. Replacing a missing time by zero or the horizon changes the
 estimand.
 
 Simulation and bootstrap calls restore the caller's RNG state and kind, while
 recording their own reproducible configuration. Repeating a run with the same
-parameters, software and seeds reproduces its cohort results:
+parameters, software and seeds reproduces its batch results:
 
 ```{r replay}
 state_before <- .Random.seed
@@ -212,7 +212,7 @@ stopifnot(identical(arms$P0, replayed),
           identical(state_before, .Random.seed))
 ```
 
-### Replay one cohort or distribute a fixed schedule
+### Replay one batch or distribute a fixed schedule
 
 Use `replication_seeds()` to construct the complete cell schedule once, then
 send individual seeds to `simulate_replication()` from your analysis scheduler.
@@ -223,12 +223,12 @@ remain the analysis project's responsibility.
 ```{r individual-replication}
 schedule <- replication_seeds(n_rep = n_rep, seed = arm_seeds[["P0"]])
 stopifnot(identical(schedule, arms$P0$replicate_seed))
-first_cohort <- simulate_replication(
+first_batch <- simulate_replication(
   scenario, policy = "P0", disruption_model = "static",
   replication_seed = schedule[1]
 )
-stopifnot(all(vapply(names(first_cohort), function(column) {
-  identical(first_cohort[[column]], arms$P0[[column]][1])
+stopifnot(all(vapply(names(first_batch), function(column) {
+  identical(first_batch[[column]], arms$P0[[column]][1])
 }, logical(1))))
 ```
 

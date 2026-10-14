@@ -37,7 +37,7 @@ shield_parameters(
 \code{route}, \code{travel_min}, \code{exposure_weight}, \code{vehicle_fraction}. One row per
 leg L1--L5 and route A--C. See \code{\link[=example_scenario]{example_scenario()}} for the schema.}
 
-\item{N}{Positive integer cohort size.}
+\item{N}{Positive integer batch size.}
 
 \item{horizon}{Positive integer administrative horizon in minutes.}
 
@@ -46,7 +46,7 @@ leg L1--L5 and route A--C. See \code{\link[=example_scenario]{example_scenario()
 \item{departure_holds}{Increasing nonnegative whole-minute holds, starting
 at zero; each must be a multiple of \code{slot}.}
 
-\item{h}{Three finite nonnegative instantaneous mortality rates for classes
+\item{h}{Three finite nonnegative instantaneous loss rates for classes
 1, 2 and 3, before multiplication by \code{hazard_band}.}
 
 \item{esc32, esc21}{Nonnegative class escalation rates before scaling.}
@@ -66,9 +66,9 @@ rounded 1:2:2 mix with the residual allocated to class 3.}
 
 \item{p_cap}{Maximum disruption probability, in (0, 1].}
 
-\item{q}{Conditional disruption fatality probability and security-loss weight.}
+\item{q}{Conditional disruption destructiveity probability and security-loss weight.}
 
-\item{att_delay}{Nonnegative integer nonfatal disruption delay in minutes.}
+\item{att_delay}{Nonnegative integer nondestructive disruption delay in minutes.}
 
 \item{lambda}{Nonnegative finite response parameter.}
 
@@ -82,16 +82,16 @@ rounded 1:2:2 mix with the residual allocated to class 3.}
 
 \item{disruptions_enabled}{Logical; whether to simulate disruption outcomes.}
 
-\item{hazard_band}{Positive multiplier of mortality and escalation rates.}
+\item{hazard_band}{Positive multiplier of loss and escalation rates.}
 }
 \value{
 A \code{shield_parameters} list. Treat derived fields as read-only and
 reconstruct through this function when changing a scenario.
 }
 \description{
-Neutral defaults switch off physiological and disruption hazards. They are
+Neutral defaults switch off item-condition and disruption hazards. They are
 teaching settings, not the parameters of the SHIELD manuscript.
 The topology is fixed: Source, Collection, parallel Transfer nodes, parallel Stage 1 nodes,
 Stage 2 and Stage 3. Every leg has routes A, B and C. Time is in whole minutes.
-A live arrival at Stage 2 ends physiological hazard. Stage 3 is terminal.
+A live arrival at Stage 2 ends item-condition hazard. Stage 3 is terminal.
 }

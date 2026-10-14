@@ -1,4 +1,4 @@
-#' Simulate one cohort using an explicit replication seed
+#' Simulate one batch using an explicit replication seed
 #'
 #' This entry point supports external schedulers and durable checkpoints.
 #' The seed is a replication seed, not a cell/master seed. Obtain a complete
@@ -9,7 +9,7 @@
 #' @param policy One of P0, P1, P2, P3.
 #' @param disruption_model Either static or adaptive.
 #' @param replication_seed One nonnegative integer seed.
-#' @return One-row data frame of cohort outcomes, without study identifiers.
+#' @return One-row data frame of batch outcomes, without study identifiers.
 #' @export
 simulate_replication <- function(parameters, policy = c("P0", "P1", "P2", "P3"),
     disruption_model = c("static", "adaptive"), replication_seed = 20260512L) {
@@ -20,7 +20,7 @@ simulate_replication <- function(parameters, policy = c("P0", "P1", "P2", "P3"),
 }
 
 #' Construct the reproducible seed schedule for a complete cell
-#' @param n_rep Positive integer total number of cohort replications.
+#' @param n_rep Positive integer total number of batch replications.
 #' @param seed Master/cell seed, default 20260512.
 #' @return Integer vector of length n_rep. Generate the complete schedule once;
 #'   chunking must not change its declared length or resample the schedule.
@@ -32,7 +32,7 @@ replication_seeds <- function(n_rep, seed = 20260512L) {
 
 #' Bootstrap a named two-arm statistic
 #'
-#' Percentile intervals for independent arms or explicitly paired cohort
+#' Percentile intervals for independent arms or explicitly paired batch
 #' outcomes. The caller must establish pairing before passing paired vectors.
 #' Prefer [compare_intervention()] when working with complete shield_run objects,
 #' because it also verifies settings and replication identities.
@@ -64,7 +64,7 @@ bootstrap_statistic <- function(x, y, statistic = c("cliffs_delta", "median_diff
 }
 
 #' Mann-Whitney U with log-scale tail probabilities
-#' @param x,y Finite independent cohort-level observations.
+#' @param x,y Finite independent batch-level observations.
 #' @return List U, p, p_log10, z, underflow. The log probability is authoritative
 #'   for very small tails. The linear value is floored if necessary. Uses the
 #'   same two-sided, tie- and continuity-corrected approximation as
@@ -80,7 +80,7 @@ mann_whitney_u <- function(x, y) {
 #' Describe Cliff's delta using conventional magnitude thresholds
 #' @param delta Finite numeric Cliff's delta values in `[-1, 1]`.
 #' @return Character magnitude labels. These descriptive thresholds are not
-#'   clinical importance margins and do not establish practical benefit.
+#'   application-specific importance margins and do not establish practical benefit.
 #' @export
 effect_magnitude <- function(delta) {
   check_sample(delta, "delta")

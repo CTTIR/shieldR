@@ -2,7 +2,7 @@
 % Please edit documentation in R/simulation.R
 \name{simulate_shield}
 \alias{simulate_shield}
-\title{Simulate independent cohort replications}
+\title{Simulate independent batch replications}
 \usage{
 simulate_shield(
   parameters,
@@ -30,18 +30,18 @@ deliberately small; SHIELD publication runs require 10,000 replications.}
 }
 \value{
 A \code{shield_run} data frame with replication identifiers and seeds,
-survival-to-arrival proportions at Stages 1--3, conditional arrival-time
+viability-to-arrival proportions at Stages 1--3, conditional arrival-time
 medians, disruptions, dispatches, holds, route counts and resource utilization.
 Scenario parameters, software version and RNG kind are stored as attributes.
-For the legacy mode the primary endpoint is \code{surv_stage2}. The opt-in
-\code{\link[=with_clinical_model]{with_clinical_model()}} extension adds overall \code{surv_30d} from injury,
-\code{surv_24h}, cause-specific death and treatment-access endpoints. Its risk
-continues after arrival; it does not establish clinical validity.
-Live nonarrivals at the transport horizon are
+For the legacy mode the primary endpoint is \code{viable_stage2}. The opt-in
+\code{\link[=with_item_model]{with_item_model()}} extension adds overall \code{viable_30d} from damage,
+\code{viable_24h}, cause-specific loss and servicing-access endpoints. Its risk
+continues after arrival; it does not establish application-specific validity.
+Viable nonarrivals at the transport horizon are
 endpoint failures; missing arrival times remain \code{NA}.
 }
 \description{
-Each row represents one cohort. All patients enter at time zero. The engine
+Each row represents one batch. All items enter at time zero. The engine
 advances in one-minute intervals and preserves the original event ordering.
 P0 uses initial true class and a fixed route; P1 uses noisy reassessment;
 P2 updates route beliefs; P3 couples reassessment, route, destination and
@@ -49,9 +49,9 @@ departure holds. P3 knows the specified disruption_model response model and uses
 entropy-regularized heuristic. It does not solve an equilibrium.
 }
 \details{
-The master seed creates a per-replication seed schedule. Clinical, policy
-and disruption streams are separated using L'Ecuyer-CMRG. Clinical draws are
-indexed by patient and minute. The caller's RNG kind and seed are restored.
+The master seed creates a per-replication seed schedule. Item, policy
+and disruption streams are separated using L'Ecuyer-CMRG. Item draws are
+indexed by item and minute. The caller's RNG kind and seed are restored.
 Equal seeds and equal replication counts support an disruptions-disabled pair.
 Use distinct seeds for independent policy arms.
 }

@@ -79,7 +79,7 @@ test_that("paired interventions check identities and align shuffled rows", {
   a <- simulate_shield(s, "P3", "adaptive", n_rep = 5L, disruptions_enabled = TRUE)
   b <- simulate_shield(s, "P3", "adaptive", n_rep = 5L, disruptions_enabled = FALSE)
   z <- compare_intervention(a, b, B = 50L)
-  expect_equal(z$mean_difference, mean(b$surv_stage2 - a$surv_stage2))
+  expect_equal(z$mean_difference, mean(b$viable_stage2 - a$viable_stage2))
   expect_identical(z, compare_intervention(a, b[5:1, ], B = 50L))
   expect_error(compare_intervention(b, a, B = 2L), "enabled first")
   bad <- b; bad$replicate_seed[1] <- 1L

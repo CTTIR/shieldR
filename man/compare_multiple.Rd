@@ -7,7 +7,7 @@
 compare_multiple(values, groups, family = "comparison")
 }
 \arguments{
-\item{values}{Finite cohort-level outcomes.}
+\item{values}{Finite batch-level outcomes.}
 
 \item{groups}{Nonmissing group labels of the same length, at least three arms.}
 

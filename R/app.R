@@ -1,14 +1,14 @@
-#' Explore synthetic evacuation scenarios in Shiny
+#' Explore synthetic logistics scenarios in Shiny
 #'
 #' A local scenario workbench with an editable five-leg graph, independent
 #' policy comparisons and paired disruptions-disabled interventions. Teaching
-#' presets have zero physiological hazards and zero exposure. Every edited
+#' presets have zero item-condition hazards and zero exposure. Every edited
 #' scenario is validated by [shield_parameters()] before simulation.
 #'
 #' The primary endpoint is live arrival at Stage 2 by the administrative
 #' horizon. Arrival-time summaries condition on observed arrivals. The coupled
 #' policy is a heuristic, and neither the app nor its examples establish
-#' clinical or operational validity. Simulations use [simulate_shield()];
+#' application-specific validity. Simulations use [simulate_shield()];
 #' comparisons use the documented package analysis functions, with 10,000
 #' bootstrap resamples. The interactive workload is bounded; use scripts for
 #' full study runs. Independent policy arms use distinct master seeds; paired
@@ -79,7 +79,7 @@ shield_app <- function(launch = TRUE, ...) {
       stop(label, " must be a whole number between ", low, " and ", high,
            ".", call. = FALSE)
   }
-  bounded_integer(s$N, "Cohort size", 1, 60)
+  bounded_integer(s$N, "Batch size", 1, 60)
   bounded_integer(s$horizon, "Horizon", 1, 240)
   bounded_integer(s$n_rep, "Replications", 2, 100)
   bounded_integer(s$seed, "Seed", 0, .Machine$integer.max - 1000)
@@ -103,8 +103,8 @@ shield_app <- function(launch = TRUE, ...) {
   n_arms <- if (s$design == "intervention") 2L else length(policies)
   effort <- s$N * s$horizon * s$n_rep * n_arms
   if (effort > 250000)
-    stop("Interactive workload exceeds 250,000 patient-minute steps. Reduce ",
-         "cohort size, horizon, replications or policy count; use an R script ",
+    stop("Interactive workload exceeds 250,000 item-minute steps. Reduce ",
+         "batch size, horizon, replications or policy count; use an R script ",
          "for larger experiments.", call. = FALSE)
   args <- list(graph = snapshot$graph, N = s$N, horizon = s$horizon,
     slot = s$slot, departure_holds = seq(0, s$max_hold, by = s$slot),
@@ -156,17 +156,17 @@ shield_app <- function(launch = TRUE, ...) {
     pairs <- utils::combn(seq_along(runs), 2L)
     comparisons <- do.call(rbind, lapply(seq_len(ncol(pairs)), function(i) {
       a <- pairs[1L, i]; b <- pairs[2L, i]
-      compare_policies(runs[[a]]$surv_stage2, runs[[b]]$surv_stage2,
-        names(runs)[a], names(runs)[b], family = "interactive_surv_stage2",
+      compare_policies(runs[[a]]$viable_stage2, runs[[b]]$viable_stage2,
+        names(runs)[a], names(runs)[b], family = "interactive_viable_stage2",
         B = B, seed = config$settings$seed + i - 1L)
     }))
     comparisons$p_bh_log10 <- adjust_fdr(comparisons$p_raw_log10)
     comparisons$p_bh <- 10^comparisons$p_bh_log10
     if (length(runs) >= 3L) {
       omnibus <- compare_multiple(
-        unlist(lapply(runs, function(x) x$surv_stage2), use.names = FALSE),
-        rep(names(runs), lengths(lapply(runs, function(x) x$surv_stage2))),
-        family = "interactive_surv_stage2")
+        unlist(lapply(runs, function(x) x$viable_stage2), use.names = FALSE),
+        rep(names(runs), lengths(lapply(runs, function(x) x$viable_stage2))),
+        family = "interactive_viable_stage2")
     }
   }
   rownames(summary) <- NULL
@@ -194,7 +194,7 @@ shield_app <- function(launch = TRUE, ...) {
       endpoint = "Live arrival at Stage 2 by the administrative horizon",
       bootstrap_resamples = config$bootstrap_resamples,
       family = if (config$settings$design == "policies")
-        "All selected pairwise policy contrasts for surv_stage2" else NA_character_,
+        "All selected pairwise policy contrasts for viable_stage2" else NA_character_,
       session_info = utils::sessionInfo())), analysis)
 }
 
@@ -207,7 +207,7 @@ shield_app <- function(launch = TRUE, ...) {
 .shield_app_replay <- function(bundle, file) {
   config <- bundle$config
   lines <- c("# Reproduce a shieldR interactive experiment.",
-    "# Synthetic model outputs do not establish clinical validity.",
+    "# Synthetic model outputs do not establish application-specific validity.",
     "library(shieldR)", "set.seed(20260512)",
     paste0("# Original shieldR version: ", bundle$provenance$shieldR_version),
     "arguments <-", utils::capture.output(dput(config$arguments)),
@@ -226,15 +226,15 @@ shield_app <- function(launch = TRUE, ...) {
   invisible(file)
 }
 
-.shield_app_plot <- function(bundle, kind = c("survival", "resources", "time")) {
+.shield_app_plot <- function(bundle, kind = c("viability", "resources", "time")) {
   kind <- match.arg(kind)
-  endpoints <- switch(kind, survival = paste0("surv_stage", 1:3),
+  endpoints <- switch(kind, viability = paste0("viable_stage", 1:3),
     resources = paste0("util_L", 1:5), time = c("t_stage2_med", "t_stage3_med"))
   labels <- switch(kind,
-    survival = c("Stage 1 arrival alive", "Stage 2 arrival alive (primary)",
-                 "Stage 3 arrival alive"),
+    viability = c("Stage 1 arrival viable", "Stage 2 arrival viable (primary)",
+                 "Stage 3 arrival viable"),
     resources = paste("Leg", 1:5),
-    time = c("Stage 2: observed cohort medians", "Stage 3: observed cohort medians"))
+    time = c("Stage 2: observed batch medians", "Stage 3: observed batch medians"))
   raw <- .shield_app_raw(bundle)
   d <- do.call(rbind, lapply(seq_along(endpoints), function(i) {
     data.frame(arm = raw$arm, value = raw[[endpoints[i]]],
@@ -255,14 +255,14 @@ shield_app <- function(launch = TRUE, ...) {
       scales = if (kind == "time") "free_y" else "fixed") +
     ggplot2::labs(x = NULL, y = if (kind == "time") "Minutes" else
       if (kind == "resources") "Resource utilization" else "Proportion",
-      caption = "Points: independent cohort replications within each arm. Boxes: median and IQR.") +
+      caption = "Points: independent batch replications within each arm. Boxes: median and IQR.") +
     ggplot2::theme_minimal(base_size = 12) +
     ggplot2::theme(panel.grid.minor = ggplot2::element_blank(),
       panel.grid.major.x = ggplot2::element_blank(),
       strip.text = ggplot2::element_text(face = "bold"),
       axis.text.x = ggplot2::element_text(angle = 25, hjust = 1),
       plot.caption = ggplot2::element_text(hjust = 0))
-  if (kind == "survival") p <- p + ggplot2::scale_y_continuous(
+  if (kind == "viability") p <- p + ggplot2::scale_y_continuous(
     limits = c(0, 1), labels = function(x) paste0(round(100 * x), "%"))
   p
 }

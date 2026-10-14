@@ -14,8 +14,8 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 library(shieldR)
 ```
 
-The shieldR workbench lets you construct an explicit synthetic scenario,
-compare policy designs, inspect the cohort-level evidence, and export the
+The shieldR workbench lets you construct an abstract logistics-chain scenario,
+compare policy designs, inspect the batch-level evidence, and export the
 configuration and results for replay. It calls the same package simulation and
 inference functions used in scripted analyses. The interface has no separate
 implementation of the model.
@@ -57,11 +57,11 @@ not shared between users. Downloads persist only when you save them.
 ## A first experiment
 
 1. Keep **Balanced resources** as the teaching graph and **Single policy** as
-   the comparison design. Inspect the displayed cohort size, horizon,
+   the comparison design. Inspect the displayed batch size, horizon,
    replication count and master seed before running.
 2. Open **Graph**. The five-leg node and route labels are fixed; inspect the
    three numeric input columns. All teaching routes have zero exposure and the
-   initial physiology controls have zero hazard.
+   initial item condition controls have zero hazard.
 3. Select **Run experiment**. A progress indicator reports simulation and
    bootstrap stages. Inputs are validated before the model runs.
 4. Read **Outcomes**, then **Diagnostics**. Inspect the summary tables as well
@@ -70,7 +70,7 @@ not shared between users. Downloads persist only when you save them.
    and export**. They preserve the settings actually used by the completed run.
 
 The balanced teaching example inspects transport mechanics. It does not contain
-the manuscript's parameters or represent clinical calibration. Switch to
+the manuscript's parameters or represent item calibration. Switch to
 **Constrained resources** to examine resource scarcity and a shorter suggested
 horizon without introducing hazards.
 
@@ -109,10 +109,10 @@ The sidebar groups controls by purpose:
 
 | Group | What it controls |
 |---|---|
-| Cohorts and reproducibility | Cohort size, replication count, administrative horizon and master seed |
+| Batches and reproducibility | Batch size, replication count, administrative horizon and master seed |
 | Observation and dispatch | Reassessment, observation error, dispatch interval, allowable holds, loading/unloading and the policy response parameter |
-| Physiological assumptions | Explicit mortality and class-escalation rates |
-| Disruption assumptions | Disruption enablement, baseline probability, conditional fatality, delay and disruption-response assumptions |
+| Item-condition assumptions | Explicit loss and class-escalation rates |
+| Disruption assumptions | Disruption enablement, baseline probability, conditional destructiveity, delay and disruption-response assumptions |
 
 A maximum hold must be a multiple of the dispatch interval. Parameters not
 exposed by the form retain their documented constructor defaults, including the
@@ -130,24 +130,24 @@ Read experiment RDS files in R and use the replay script for a new run.
 |---|---|
 | Single policy | One arm, descriptive outcomes and diagnostics; no policy contrast |
 | Independent policy arms | Select two to four distinct policies; arm seeds increment from the master seed; all selected pairwise Stage 2 comparisons are reported |
-| Paired disruptions-disabled intervention | One policy run with disruptions enabled and disabled; matching seeds, parameters and replication counts; paired survival contrast |
+| Paired disruptions-disabled intervention | One policy run with disruptions enabled and disabled; matching seeds, parameters and replication counts; paired viability contrast |
 
 For independent arms, the **Comparisons** view reports Mann-Whitney U, Cliff's
 delta and the median difference with percentile bootstrap 95% intervals.
-Positive effects favor `arm_x` for the survival endpoint. All displayed
+Positive effects favor `arm_x` for the viability endpoint. All displayed
 pairwise Stage 2 comparisons constitute one explicit Benjamini-Hochberg FDR
 family. Three or more arms also produce a Kruskal-Wallis H statistic, degrees
 of freedom and p-value. This interactive family is separate from the
-manuscript's prespecified scenario-family analysis.
+comparison families declared in a separate scripted study.
 
 For the paired design, the contrast is **no disruptions minus disruptions**, expressed
-as a paired mean difference of cohort survival proportions. The interval
+as a paired mean difference of batch viability proportions. The interval
 resamples matched replication indices jointly. The paired design controls
 disruption enablement itself, regardless of the ordinary disruption checkbox. The
 neutral graph has zero exposure, so its paired contrast is zero.
 
 All comparison intervals use 10,000 bootstrap resamples. The statistical unit
-is the cohort replication. Small interactive experiments can produce unstable
+is the batch replication. Small interactive experiments can produce unstable
 estimates or point intervals on discrete outcomes; more bootstrap resamples do
 not compensate for an inadequate number of independent replications.
 
@@ -156,17 +156,17 @@ not compensate for an inadequate number of independent replications.
 | View | Evidence to inspect |
 |---|---|
 | Graph | The current input graph; it can differ from the graph of the last completed run |
-| Outcomes | Cohort points and boxplots for Stage 1, 2 and 3 arrival-alive proportions; valid counts, median and quartiles |
+| Outcomes | Batch points and boxplots for Stage 1, 2 and 3 arrival-viable proportions; valid counts, median and quartiles |
 | Comparisons | Independent or paired effect estimates and intervals; raw and adjusted log p-values; optional multi-arm omnibus |
 | Diagnostics | Fleet utilization by leg, conditional arrival times and the complete remaining endpoint summaries with missing counts |
-| Data and export | Individual cohort rows, seed schedule, software provenance and downloadable results |
+| Data and export | Individual batch rows, seed schedule, software provenance and downloadable results |
 | Methods and help | Policy information assumptions, endpoint definitions, inferential limits and reproducibility instructions |
 
-The primary endpoint is arrival alive at Stage 2 by the horizon. Physical arrival
-precedes unloading and ends physiological hazard. A nonarrival is not necessarily
-a death. Conditional arrival-time medians exclude patients who never arrived;
-undefined cohort medians remain missing. `n_pending` counts patients still alive
-without Stage 3 arrival. `n_att_fatal` counts fatal disruption events and is not the
+The primary endpoint is arrival viable at Stage 2 by the horizon. Physical arrival
+precedes unloading and ends item-condition hazard. A nonarrival is not necessarily
+a loss. Conditional arrival-time medians exclude items who never arrived;
+undefined batch medians remain missing. `n_pending` counts items still viable
+without Stage 3 arrival. `n_disruption_loss` counts destructive disruption events and is not the
 paired total intervention effect.
 
 After you edit an input, a visible message identifies the results as belonging
@@ -180,17 +180,17 @@ so a failed validation cannot silently attach old results to new assumptions.
 | Download | Contents and use |
 |---|---|
 | Complete experiment RDS | Schema version, full input/configuration, arm schedule, original `shield_run` objects, summaries, comparisons, omnibus output and session/software/RNG provenance |
-| Replay script R | Explicit constructor arguments and arm schedule; recreates cohort results and descriptive summaries; saves `shieldR_replayed.rds` |
-| Cohort results CSV | One row per cohort with arm label, seeds, identifiers and outcomes |
+| Replay script R | Explicit constructor arguments and arm schedule; recreates batch results and descriptive summaries; saves `shieldR_replayed.rds` |
+| Batch results CSV | One row per batch with arm label, seeds, identifiers and outcomes |
 | Summaries CSV | Median/IQR summaries, valid and missing counts by endpoint and arm |
 | Comparisons CSV | Complete pairwise or paired comparison rows; empty for a single-policy run |
-| Survival figure PNG / PDF | Current completed experiment's survival plot, with 600 dpi PNG and vector PDF |
+| Viability figure PNG / PDF | Current completed experiment's viability plot, with 600 dpi PNG and vector PDF |
 
 The replay script reproduces simulations and descriptive summaries. The RDS
 bundle also retains inferential tables and the omnibus result; retain it for
 a complete audit record. Use the same package source/environment to reproduce
-results exactly. The PNG/PDF downloads cover the survival figure; diagnostics
-and cohort tables remain available in the bundle for your own plotting.
+results exactly. The PNG/PDF downloads cover the viability figure; diagnostics
+and batch tables remain available in the bundle for your own plotting.
 
 After saving the experiment to a chosen analysis output directory, inspect it
 from R:
@@ -217,17 +217,17 @@ stopifnot(identical(replayed, bundle$runs[[1]]))
 
 ## Move a larger experiment into scripts
 
-The workbench accepts 1 to 60 patients per cohort, 2 to 100 replications per arm
+The workbench accepts 1 to 60 items per batch, 2 to 100 replications per arm
 and horizons from 1 to 240 minutes. The combined workload is limited to
-`patients * horizon * replications * arms <= 250000` as an interactive safeguard.
+`items * horizon * replications * arms <= 250000` as an interactive safeguard.
 This is a conservative input-size measure, not an exact runtime estimate.
 These caps apply to the app, not to the underlying package APIs.
 
 Use scripted studies for larger grids, durable checkpoints, parameter
 uncertainty analyses, custom comparison families or publication exports. The
-[study design tutorial](study-design.html) explains cohort-level inference and
+[study design tutorial](study-design.html) explains batch-level inference and
 replay. Study integrations require their own versioned validation and interface checks. The interface and its synthetic examples
-do not establish clinical or operational validity.
+do not establish application-specific validity.
 
 ```{r session-information}
 sessionInfo()

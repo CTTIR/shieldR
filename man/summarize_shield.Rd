@@ -2,7 +2,7 @@
 % Please edit documentation in R/simulation.R
 \name{summarize_shield}
 \alias{summarize_shield}
-\title{Summarize cohort outcomes}
+\title{Summarize batch outcomes}
 \usage{
 summarize_shield(x)
 }
@@ -12,8 +12,8 @@ summarize_shield(x)
 \value{
 Data frame of endpoint names, valid and missing replication counts,
 median, first quartile and third quartile. Arrival-time summaries are
-across defined cohort medians, not pooled patient times.
+across defined batch medians, not pooled item times.
 }
 \description{
-Summarize cohort outcomes
+Summarize batch outcomes
 }

@@ -7,7 +7,7 @@
 mann_whitney_u(x, y)
 }
 \arguments{
-\item{x, y}{Finite independent cohort-level observations.}
+\item{x, y}{Finite independent batch-level observations.}
 }
 \value{
 List U, p, p_log10, z, underflow. The log probability is authoritative

@@ -4,16 +4,16 @@
 \name{shieldR-package}
 \alias{shieldR}
 \alias{shieldR-package}
-\title{shieldR: Simulation of Evacuation Policies under Uncertainty}
+\title{shieldR: Logistics Chain Simulation under Dynamic Challenges}
 \description{
-A academic research framework for reproducible policy evaluation in a fixed
-five-leg evacuation chain. Scenario inputs are explicit; the included
-examples have neutral physiological and disruption_risk settings.
+An academic research framework for reproducible policy evaluation in a fixed
+five-leg logistics chain. Scenario inputs are explicit; the included
+examples have neutral item-condition and disruption_risk settings.
 }
 \section{Start here}{
 
 Create a teaching scenario with \code{\link[=example_scenario]{example_scenario()}} or validate your own
-inputs with \code{\link[=shield_parameters]{shield_parameters()}}. Run independent cohort replications using
+inputs with \code{\link[=shield_parameters]{shield_parameters()}}. Run independent batch replications using
 \code{\link[=simulate_shield]{simulate_shield()}} and inspect median/IQR summaries with \code{\link[=summarize_shield]{summarize_shield()}}.
 The optional \code{\link[=shield_app]{shield_app()}} workbench provides interactive configuration,
 simulation, inspection and export through the same package functions.
@@ -21,14 +21,15 @@ simulation, inspection and export through the same package functions.
 
 \section{Design and interpretation}{
 
-One row is one cohort replication. The primary endpoint \code{surv_stage2} is the
-proportion of the original cohort arriving alive at Stage 2 by the
+One row is one batch replication. The primary endpoint \code{viable_stage2} is the
+proportion of the original batch arriving viable at Stage 2 by the
 administrative horizon. Physical arrival is recorded before unloading and
-stops physiological hazard. Live nonarrivals are endpoint failures.
+stops base-model item-condition hazard. The optional item model continues
+condition dynamics after arrival. Viable nonarrivals are endpoint failures.
 Arrival-time medians are conditional on arrival and may be missing.
 
 \code{\link[=compare_policies]{compare_policies()}} applies a Mann-Whitney U comparison to independent
-cohorts and reports Cliff's delta and percentile bootstrap intervals.
+batches and reports Cliff's delta and percentile bootstrap intervals.
 \code{\link[=compare_multiple]{compare_multiple()}} reports a Kruskal-Wallis omnibus comparison.
 \code{\link[=compare_intervention]{compare_intervention()}} estimates a paired disruptions-disabled contrast.
 \code{\link[=adjust_fdr]{adjust_fdr()}} applies Benjamini-Hochberg adjustment to one explicitly
@@ -46,11 +47,11 @@ and software attributes; record \code{sessionInfo()} in the analysis output.
 
 \section{Scope}{
 
-The coupled P3 policy is a heuristic with known disruption_model-model assumptions;
+The coupled P3 policy is a heuristic with known disruption-response assumptions;
 the package does not solve an equilibrium. Internal verification and replay
-do not establish clinical or operational validity. Controlled study inputs,
+do not establish application-specific validity. Controlled study inputs,
 scenario grids and publication products remain in the originating project.
-The package and its documentation remain private pending release decisions.
+The public package is distributed under the MIT license.
 }
 
 \seealso{

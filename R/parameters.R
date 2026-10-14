@@ -1,20 +1,20 @@
 #' Construct an explicit five-leg scenario
 #'
-#' Neutral defaults switch off physiological and disruption hazards. They are
+#' Neutral defaults switch off item-condition and disruption hazards. They are
 #' teaching settings, not the parameters of the SHIELD manuscript.
 #' The topology is fixed: Source, Collection, parallel Transfer nodes, parallel Stage 1 nodes,
 #' Stage 2 and Stage 3. Every leg has routes A, B and C. Time is in whole minutes.
-#' A live arrival at Stage 2 ends physiological hazard. Stage 3 is terminal.
+#' A live arrival at Stage 2 ends item-condition hazard. Stage 3 is terminal.
 #'
 #' @param graph Data frame with exactly the columns `leg`, `from`, `to`,
 #'   `route`, `travel_min`, `exposure_weight`, `vehicle_fraction`. One row per
 #'   leg L1--L5 and route A--C. See [example_scenario()] for the schema.
-#' @param N Positive integer cohort size.
+#' @param N Positive integer batch size.
 #' @param horizon Positive integer administrative horizon in minutes.
 #' @param slot Positive integer dispatch interval in minutes.
 #' @param departure_holds Increasing nonnegative whole-minute holds, starting
 #'   at zero; each must be a multiple of `slot`.
-#' @param h Three finite nonnegative instantaneous mortality rates for classes
+#' @param h Three finite nonnegative instantaneous loss rates for classes
 #'   1, 2 and 3, before multiplication by `hazard_band`.
 #' @param esc32,esc21 Nonnegative class escalation rates before scaling.
 #' @param mix Three integer class counts summing to `N`; `NULL` uses a
@@ -25,15 +25,15 @@
 #' @param disruption_risk Named vector of probabilities with names `low` and `high`.
 #' @param disruption_risk_level Selected named disruption_risk level.
 #' @param p_cap Maximum disruption probability, in (0, 1].
-#' @param q Conditional disruption fatality probability and security-loss weight.
-#' @param att_delay Nonnegative integer nonfatal disruption delay in minutes.
+#' @param q Conditional disruption destructiveity probability and security-loss weight.
+#' @param att_delay Nonnegative integer nondestructive disruption delay in minutes.
 #' @param lambda Nonnegative finite response parameter.
 #' @param atk_window Positive integer nominal departure-history window.
 #' @param beta Nonnegative finite policy softmax parameter.
 #' @param beta_prior Two strictly positive Beta prior shapes.
 #' @param eps_time Positive route-time tie-break weight for P2.
 #' @param disruptions_enabled Logical; whether to simulate disruption outcomes.
-#' @param hazard_band Positive multiplier of mortality and escalation rates.
+#' @param hazard_band Positive multiplier of loss and escalation rates.
 #' @return A `shield_parameters` list. Treat derived fields as read-only and
 #'   reconstruct through this function when changing a scenario.
 #' @export
@@ -173,11 +173,11 @@ check_probability <- function(x, name, n) {
 #' Neutral teaching scenarios
 #'
 #' Both examples use equal abstract travel durations and zero exposure and
-#' physiological hazards. They do not contain the controlled study inputs.
+#' item-condition hazards. They do not contain the controlled study inputs.
 #' `constrained` reduces vehicle availability and shortens the horizon to
 #' illustrate congestion and administrative censoring.
 #' @param kind Either `balanced` or `constrained`.
-#' @param N Positive integer cohort size.
+#' @param N Positive integer batch size.
 #' @return A [shield_parameters()] object.
 #' @export
 #' @examples

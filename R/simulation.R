@@ -14,18 +14,18 @@ with_shield_rng <- function(seed, code) {
   force(code)
 }
 
-#' Simulate independent cohort replications
+#' Simulate independent batch replications
 #'
-#' Each row represents one cohort. All patients enter at time zero. The engine
+#' Each row represents one batch. All items enter at time zero. The engine
 #' advances in one-minute intervals and preserves the original event ordering.
 #' P0 uses initial true class and a fixed route; P1 uses noisy reassessment;
 #' P2 updates route beliefs; P3 couples reassessment, route, destination and
 #' departure holds. P3 knows the specified disruption_model response model and uses an
 #' entropy-regularized heuristic. It does not solve an equilibrium.
 #'
-#' The master seed creates a per-replication seed schedule. Clinical, policy
-#' and disruption streams are separated using L'Ecuyer-CMRG. Clinical draws are
-#' indexed by patient and minute. The caller's RNG kind and seed are restored.
+#' The master seed creates a per-replication seed schedule. Item, policy
+#' and disruption streams are separated using L'Ecuyer-CMRG. Item draws are
+#' indexed by item and minute. The caller's RNG kind and seed are restored.
 #' Equal seeds and equal replication counts support an disruptions-disabled pair.
 #' Use distinct seeds for independent policy arms.
 #'
@@ -38,14 +38,14 @@ with_shield_rng <- function(seed, code) {
 #' @param seed Integer seed; default 20260512.
 #' @param disruptions_enabled Optional logical override of the scenario setting.
 #' @return A `shield_run` data frame with replication identifiers and seeds,
-#'   survival-to-arrival proportions at Stages 1--3, conditional arrival-time
+#'   viability-to-arrival proportions at Stages 1--3, conditional arrival-time
 #'   medians, disruptions, dispatches, holds, route counts and resource utilization.
 #'   Scenario parameters, software version and RNG kind are stored as attributes.
-#'   For the legacy mode the primary endpoint is `surv_stage2`. The opt-in
-#'   [with_clinical_model()] extension adds overall `surv_30d` from injury,
-#'   `surv_24h`, cause-specific death and treatment-access endpoints. Its risk
-#'   continues after arrival; it does not establish clinical validity.
-#'   Live nonarrivals at the transport horizon are
+#'   For the legacy mode the primary endpoint is `viable_stage2`. The opt-in
+#'   [with_item_model()] extension adds overall `viable_30d` from damage,
+#'   `viable_24h`, cause-specific loss and servicing-access endpoints. Its risk
+#'   continues after arrival; it does not establish application-specific validity.
+#'   Viable nonarrivals at the transport horizon are
 #'   endpoint failures; missing arrival times remain `NA`.
 #' @export
 simulate_shield <- function(parameters, policy = c("P0", "P1", "P2", "P3"),
@@ -69,22 +69,22 @@ simulate_shield <- function(parameters, policy = c("P0", "P1", "P2", "P3"),
   result
 }
 
-#' Summarize cohort outcomes
+#' Summarize batch outcomes
 #'
 #' @param x A `shield_run` returned by [simulate_shield()].
 #' @return Data frame of endpoint names, valid and missing replication counts,
 #'   median, first quartile and third quartile. Arrival-time summaries are
-#'   across defined cohort medians, not pooled patient times.
+#'   across defined batch medians, not pooled item times.
 #' @export
 summarize_shield <- function(x) {
   if (!inherits(x, "shield_run")) stop("x must be a shield_run", call. = FALSE)
-  fields <- c("surv_stage1", "surv_stage2", "surv_stage3", "t_stage2_med", "t_stage3_med",
-    paste0("util_L", 1:5), "n_dispatch", "n_disruption", "n_att_fatal", "n_pending",
+  fields <- c("viable_stage1", "viable_stage2", "viable_stage3", "t_stage2_med", "t_stage3_med",
+    paste0("util_L", 1:5), "n_dispatch", "n_disruption", "n_disruption_loss", "n_pending",
     "hold_mean", "hold_rate")
-  if (!is.null(attr(x, "parameters")$clinical_model)) fields <- c(fields,
-    "surv_30d", "surv_24h", "death_bleeding", "death_other", "death_second_hit",
-    "hemostasis_access", "never_hemostasis", "death_before_hemostasis",
-    "t_hemostasis_med", "t_procedure_med", "procedure_utilization", "exposure_proxy")
+  if (!is.null(attr(x, "parameters")$item_model)) fields <- c(fields,
+    "viable_30d", "viable_24h", "loss_degradation", "loss_other", "loss_second_hit",
+    "stabilization_access", "never_stabilization", "loss_before_stabilization",
+    "t_stabilization_med", "t_processing_med", "processing_utilization", "exposure_proxy")
   do.call(rbind, lapply(fields, function(nm) {
     v <- x[[nm]]
     good <- v[is.finite(v)]

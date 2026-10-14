@@ -62,7 +62,7 @@
         })
       state$bundle <- bundle
       state$snapshot <- current
-      state$message <- sprintf("Completed %d cohort replications across %d arm(s).",
+      state$message <- sprintf("Completed %d batch replications across %d arm(s).",
         config$settings$n_rep * nrow(config$arms), nrow(config$arms))
     }, error = function(e) state$error <- conditionMessage(e))
   })
@@ -78,9 +78,9 @@
   })
 
   output$outcome_note <- shiny::renderUI({
-    if (is.null(state$bundle)) return(shiny::p("Run an experiment to see cohort outcomes."))
+    if (is.null(state$bundle)) return(shiny::p("Run an experiment to see batch outcomes."))
     s <- state$bundle$config$settings
-    shiny::p(sprintf("Last completed experiment: %d patients per cohort; %d replications per arm; %d-minute horizon. Primary endpoint: arrival alive at Stage 2.",
+    shiny::p(sprintf("Last completed experiment: %d items per batch; %d replications per arm; %d-minute horizon. Primary endpoint: arrival viable at Stage 2.",
       s$N, s$n_rep, s$horizon))
   })
   output$comparison_note <- shiny::renderUI({
@@ -89,7 +89,7 @@
     if (design == "single") return(shiny::p(
       "This is a single-policy experiment. Choose independent policy arms or a paired intervention to estimate a contrast."))
     if (design == "intervention") return(shiny::p(
-      "Paired contrast: no disruptions minus disruptions, on the survival-proportion scale. The mean paired difference and 95% interval use 10,000 joint bootstrap resamples. This total intervention effect includes downstream and horizon effects."))
+      "Paired contrast: no disruptions minus disruptions, on the viability-proportion scale. The mean paired difference and 95% interval use 10,000 joint bootstrap resamples. This total intervention effect includes downstream and horizon effects."))
     shiny::p("Independent arms use distinct seeds. Positive Cliff's delta and median difference favour arm_x. Mann-Whitney U compares distributions. All displayed Stage 2 pairwise contrasts form one Benjamini-Hochberg FDR family. Intervals use 10,000 bootstrap resamples; point intervals are flagged. An omnibus test is shown for three or more arms.")
   })
 
@@ -100,20 +100,20 @@
   })
   output$primary <- render_table(function() {
     x <- state$bundle$summary
-    x[x$endpoint %in% c("surv_stage1", "surv_stage2", "surv_stage3"), ]
+    x[x$endpoint %in% c("viable_stage1", "viable_stage2", "viable_stage3"), ]
   })
   output$diagnostics <- render_table(function() {
     x <- state$bundle$summary
-    x[!x$endpoint %in% c("surv_stage1", "surv_stage2", "surv_stage3"), ]
+    x[!x$endpoint %in% c("viable_stage1", "viable_stage2", "viable_stage3"), ]
   })
   output$comparisons <- render_table(function() state$bundle$comparisons)
   output$omnibus <- render_table(function() state$bundle$omnibus)
   output$raw <- render_table(function() .shield_app_raw(state$bundle))
 
-  output$survival_plot <- shiny::renderPlot({
+  output$viability_plot <- shiny::renderPlot({
     shiny::req(state$bundle)
-    .shield_app_plot(state$bundle, "survival")
-  }, alt = "Survival-to-arrival proportions by arm and care level, with cohort points, median and interquartile range.")
+    .shield_app_plot(state$bundle, "viability")
+  }, alt = "Viability-to-arrival proportions by arm and service level, with batch points, median and interquartile range.")
   output$resource_plot <- shiny::renderPlot({
     shiny::req(state$bundle)
     .shield_app_plot(state$bundle, "resources")
@@ -122,9 +122,9 @@
     shiny::req(state$bundle)
     p <- .shield_app_plot(state$bundle, "time")
     shiny::validate(shiny::need(nrow(p$data) > 0,
-      "No defined Stage 2 or Stage 3 arrival-time medians in this experiment. Inspect survival and the horizon."))
+      "No defined Stage 2 or Stage 3 arrival-time medians in this experiment. Inspect viability and the horizon."))
     p
-  }, alt = "Distribution of defined cohort median arrival times at Stages 2 and 3.")
+  }, alt = "Distribution of defined batch median arrival times at Stages 2 and 3.")
   output$provenance <- shiny::renderPrint({
     shiny::req(state$bundle)
     p <- state$bundle$provenance
@@ -162,10 +162,10 @@
   for (extension in c("png", "pdf")) local({
     ext <- extension
     output[[paste0("download_", ext)]] <- shiny::downloadHandler(
-      filename = function() filename(paste0("survival.", ext)),
+      filename = function() filename(paste0("viability.", ext)),
       content = function(file) {
         shiny::req(state$bundle)
-        plot <- .shield_app_plot(state$bundle, "survival")
+        plot <- .shield_app_plot(state$bundle, "viability")
         if (ext == "pdf") {
           .shield_app_save_pdf(file, plot)
         } else {

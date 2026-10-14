@@ -1,3 +1,10 @@
+# shieldR 0.6.0
+
+- Reframe the public model as abstract logistics-chain simulation with changing item specifications.
+- Rename condition-model functions, observation fields, viability endpoints and workbench labels consistently.
+- Preserve the simulation equations and random-draw schedules; this is a terminology and interface revision, not a newly calibrated model.
+- Earlier serialized objects and scripts require explicit migration to the renamed interface.
+
 # shieldR 0.5.0
 
 * Introduce the public MIT-licensed academic edition with abstract network stages
@@ -6,10 +13,10 @@
 
 # shieldR 0.4.0
 
-* Add an opt-in bleeding-trauma clinical model with actual treatment events,
-  finite procedural capacity and overall survival at 30 days from injury.
-* Add aggregate calibration and independent stochastic admission-cohort replay.
-* Preserve legacy execution by default and support separately pinned clinical
+* Add an opt-in degradation-trauma item model with actual servicing events,
+  finite procedural capacity and overall viability at 30 days from damage.
+* Add aggregate calibration and independent stochastic admission-batch replay.
+* Preserve legacy execution by default and support separately pinned item
   comparisons with frozen planning assumptions and observed information.
 
 # shieldR 0.3.0
@@ -17,7 +24,7 @@
 - Add matched initial-observation and updated-observation policy controls.
 - Separate reactive current-risk planning from the P3 response forecast while
   retaining the same decision architecture.
-- Preserve uncontrolled simulation behavior and document the treatment-free
+- Preserve uncontrolled simulation behavior and document the servicing-free
   endpoint and separate-experiment requirement.
 
 # shieldR 0.2.0
@@ -37,7 +44,7 @@
 
 - Initial private package extraction of the five-leg SHIELD simulation.
 - Explicit validated scenario inputs and two neutral teaching examples.
-- Reproducible cohort simulation with preserved caller RNG state.
+- Reproducible batch simulation with preserved caller RNG state.
 - Independent-arm, multi-arm and paired-intervention comparison functions.
 - Documented endpoint and information-timing assumptions.
 - Stable log-ratio forecasts for extreme response parameters outside the
