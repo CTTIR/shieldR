@@ -6,7 +6,10 @@
     "P1: repeated reassessment" = "P1", "P2: route learning" = "P2",
     "P3: coupled heuristic" = "P3")
   bslib::page_sidebar(
-    title = "shieldR | Scenario workbench", fillable = FALSE,
+    title = shiny::tagList(
+      shiny::tags$img(src = "shieldr-assets/logo.svg", alt = "", height = "48",
+        style = "margin-right:10px;vertical-align:middle"),
+      "shieldR | Scenario workbench"), fillable = FALSE,
     theme = bslib::bs_theme(version = 5, bg = "#fafafa", fg = "#212121",
       primary = "#292929", secondary = "#626262",
       base_font = bslib::font_collection("system-ui", "Segoe UI", "Arial"),

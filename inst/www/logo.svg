@@ -1,0 +1,113 @@
+<svg width="500" height="580" viewBox="0 0 500 580" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgshd" x1="0" y1="0" x2="0.15" y2="1">
+      <stop offset="0%"  stop-color="#1a1340"/>
+      <stop offset="100%" stop-color="#0c0820"/>
+    </linearGradient>
+    <linearGradient id="distA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#7C3AED" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#7C3AED" stop-opacity="0.03"/>
+    </linearGradient>
+    <linearGradient id="distB" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#E0913A" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#E0913A" stop-opacity="0.03"/>
+    </linearGradient>
+    <clipPath id="hexshd">
+      <polygon points="250,30 455,145 455,375 250,490 45,375 45,145"/>
+    </clipPath>
+  </defs>
+
+  <polygon points="250,30 455,145 455,375 250,490 45,375 45,145" fill="url(#bgshd)"/>
+
+  <g clip-path="url(#hexshd)">
+
+    <!-- faint grid -->
+    <line x1="45" y1="210" x2="455" y2="210" stroke="#2a2060" stroke-width="0.4" opacity="0.4"/>
+    <line x1="45" y1="270" x2="455" y2="270" stroke="#2a2060" stroke-width="0.4" opacity="0.4"/>
+    <line x1="45" y1="330" x2="455" y2="330" stroke="#2a2060" stroke-width="0.4" opacity="0.4"/>
+    <line x1="150" y1="145" x2="150" y2="490" stroke="#2a2060" stroke-width="0.4" opacity="0.3"/>
+    <line x1="250" y1="145" x2="250" y2="490" stroke="#2a2060" stroke-width="0.4" opacity="0.3"/>
+    <line x1="350" y1="145" x2="350" y2="490" stroke="#2a2060" stroke-width="0.4" opacity="0.3"/>
+
+    <!-- faint shield outline (name nod, understated) -->
+    <path d="M 250,150 C 300,166 326,170 348,168 C 348,250 330,300 250,338
+             C 170,300 152,250 152,168 C 174,170 200,166 250,150 Z"
+      fill="none" stroke="#3a2f7a" stroke-width="1.4" opacity="0.4"/>
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- FIVE-LEG TRANSFER NETWORK — the simulated evacuation      -->
+    <!-- chain of 5 nodes with routes; a branch = policy choice    -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- route edges -->
+    <g stroke="#7C3AED" stroke-width="2" fill="none" opacity="0.7" stroke-linecap="round">
+      <path d="M 150,208 Q 185,196 214,210"/>
+      <path d="M 214,210 Q 242,224 268,214"/>
+      <!-- branch point: two policy routes to leg 4 -->
+      <path d="M 268,214 Q 300,200 330,200" stroke-dasharray="1 0"/>
+      <path d="M 268,214 Q 300,244 330,250" stroke="#E0913A" opacity="0.65"/>
+      <path d="M 330,200 Q 346,222 340,250"/>
+    </g>
+    <!-- route-risk learning: a risky edge marked -->
+    <path d="M 268,214 Q 300,244 330,250" fill="none" stroke="#E0913A"
+      stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
+
+    <!-- nodes (5 legs: incident → staging → transit → hospital A/B → definitive) -->
+    <!-- leg 1 incident -->
+    <circle cx="150" cy="208" r="11" fill="#2a1f55" stroke="#9F8CF5" stroke-width="2"/>
+    <polygon points="150,202 152,207 157,207 153,210 155,215 150,212 145,215 147,210 143,207 148,207" fill="#E0913A" opacity="0.9"/>
+    <!-- leg 2 staging -->
+    <circle cx="214" cy="210" r="10" fill="#2a1f55" stroke="#9F8CF5" stroke-width="2"/>
+    <circle cx="214" cy="210" r="3" fill="#C4B5F7"/>
+    <!-- leg 3 transit (vehicle) -->
+    <circle cx="268" cy="214" r="10" fill="#2a1f55" stroke="#9F8CF5" stroke-width="2"/>
+    <rect x="263" y="210" width="10" height="7" rx="1.5" fill="#C4B5F7"/>
+    <line x1="268" y1="211" x2="268" y2="216" stroke="#2a1f55" stroke-width="1"/>
+    <line x1="265" y1="213.5" x2="271" y2="213.5" stroke="#2a1f55" stroke-width="1"/>
+    <!-- leg 4a hospital (policy route A) -->
+    <circle cx="330" cy="200" r="10" fill="#2a1f55" stroke="#9F8CF5" stroke-width="2"/>
+    <text font-family="Arial, sans-serif" font-weight="700" font-size="10" fill="#C4B5F7" text-anchor="middle" x="330" y="204">H</text>
+    <!-- leg 4b hospital (policy route B, orange) -->
+    <circle cx="330" cy="250" r="9" fill="#2a1f55" stroke="#E0913A" stroke-width="2"/>
+    <text font-family="Arial, sans-serif" font-weight="700" font-size="9" fill="#E0913A" text-anchor="middle" x="330" y="253.5">H</text>
+    <!-- leg 5 definitive care -->
+    <circle cx="340" cy="250" r="0" />
+    <circle cx="356" cy="224" r="11" fill="#1a1340" stroke="#B9A6FF" stroke-width="2.4"/>
+    <path d="M 356,218 v 12 M 350,224 h 12" stroke="#B9A6FF" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- patient deterioration marker on a transit (amber = worsening) -->
+    <circle cx="241" cy="212" r="2.6" fill="#E0913A"/>
+    <circle cx="299" cy="207" r="2.4" fill="#9FE8C0"/>
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- POLICY COMPARISON — two outcome distributions + test     -->
+    <!-- bottom: compare_policies(), Mann-Whitney                 -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <line x1="96" y1="358" x2="404" y2="358" stroke="#4a3a8a" stroke-width="1" opacity="0.6"/>
+    <!-- policy A dist (purple) -->
+    <path d="M 110,356 C 150,352 165,300 195,300 C 225,300 240,352 280,356 L 280,358 L 110,358 Z" fill="url(#distA)"/>
+    <path d="M 110,356 C 150,352 165,300 195,300 C 225,300 240,352 280,356" fill="none" stroke="#B9A6FF" stroke-width="2" stroke-linecap="round"/>
+    <!-- policy B dist (amber, shifted) -->
+    <path d="M 210,356 C 250,352 268,314 300,314 C 332,314 348,352 392,356 L 392,358 L 210,358 Z" fill="url(#distB)"/>
+    <path d="M 210,356 C 250,352 268,314 300,314 C 332,314 348,352 392,356" fill="none" stroke="#E0913A" stroke-width="2" stroke-linecap="round"/>
+    <!-- significance bracket -->
+    <line x1="195" y1="290" x2="300" y2="290" stroke="#9FE8C0" stroke-width="1.2" opacity="0.8"/>
+    <line x1="195" y1="290" x2="195" y2="296" stroke="#9FE8C0" stroke-width="1.2" opacity="0.8"/>
+    <line x1="300" y1="290" x2="300" y2="296" stroke="#9FE8C0" stroke-width="1.2" opacity="0.8"/>
+    <text font-family="monospace" font-size="8" fill="#9FE8C0" opacity="0.85" text-anchor="middle" x="247" y="286">p &lt; .05</text>
+
+    <!-- small CI / bootstrap marks -->
+    <circle cx="195" cy="300" r="3" fill="#B9A6FF"/>
+    <circle cx="300" cy="314" r="3" fill="#E0913A"/>
+
+    <!-- annotation -->
+    <text font-family="monospace" font-size="8" fill="#9F8CF5" opacity="0.6"
+      text-anchor="middle" x="250" y="384">simulate · compare policies</text>
+
+  </g>
+
+  <!-- Hex border — statistics group purple -->
+  <polygon points="250,30 455,145 455,375 250,490 45,375 45,145"
+    fill="none" stroke="#534AB7" stroke-width="11" stroke-linejoin="round"/>
+  <polygon points="250,44 441,153 441,367 250,476 59,367 59,153"
+    fill="none" stroke="#7C3AED" stroke-width="1.5" stroke-linejoin="round" opacity="0.6"/>
+</svg>

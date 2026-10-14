@@ -1,4 +1,4 @@
-# shieldR
+# shieldR <img src="man/figures/logo.svg" align="right" height="139" alt="shieldR hex logo" />
 
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE.md)
