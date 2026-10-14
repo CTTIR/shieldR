@@ -1,0 +1,187 @@
+---
+title: "Getting started with shieldR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with shieldR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+set.seed(20260512)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(shieldR)
+```
+
+## Your first experiment
+
+This tutorial takes you from a neutral scenario to saved, reproducible results.
+Only the installed `shieldR` package is needed for the code below. Small cohort
+and replication counts keep the tutorial quick; they are teaching choices and
+are not a study design or a precision justification.
+
+The package implements a fixed five-leg research model. Its teaching scenarios
+contain no manuscript-specific route or hazard inputs. They are deliberately
+neutral examples without exposure or physiological hazards.
+
+```{r scenario}
+scenario <- example_scenario(N = 4L)
+scenario$graph
+run <- simulate_shield(scenario, "P0", n_rep = 3L, seed = 20260512L)
+summarize_shield(run)
+```
+
+## Interpret the endpoints
+
+The statistical unit is the cohort replication. The primary endpoint,
+`surv_stage2`, measures arrival alive at Stage 2 by the administrative horizon. Arrival is
+recorded before unloading. Physiological hazard ends there, while downstream
+transport continues to Stage 3. Conditional arrival-time medians remain missing
+when no patient arrives; they are never replaced by zero.
+
+The constrained example uses fewer vehicles and a shorter horizon. Its purpose
+is to illustrate that failure to arrive is an endpoint failure even without
+a death.
+
+```{r constrained}
+limited <- example_scenario("constrained", N = 4L)
+short_run <- simulate_shield(limited, n_rep = 3L)
+summarize_shield(short_run)
+```
+
+## Construct an explicit scenario
+
+The fixed topology is:
+
+```text
+Source -> Collection -> Transfer-A / Transfer-B -> Stage1-a / Stage1-b -> Stage2 -> Stage3
+        L1       L2                L3                L4       L5
+```
+
+Each leg offers routes A, B and C. Parallel destinations and route labels are
+separate concepts: choosing a route does not itself identify the destination.
+Vehicles carry one patient and are shared within the documented leg pools.
+
+To define an experiment, pass your own graph and hazard, observation and policy
+settings to `shield_parameters()`. The documented graph schema fixes five legs
+and three routes per leg. All event durations are whole minutes. Defaults are
+neutral teaching values, not calibration or doctrine.
+
+`scenario$graph` includes derived indices. Select only the seven input columns
+before reconstructing or exporting a graph for later use:
+
+```{r explicit-inputs}
+graph_columns <- c("leg", "from", "to", "route", "travel_min",
+                   "exposure_weight", "vehicle_fraction")
+graph <- scenario$graph[graph_columns]
+rebuilt <- shield_parameters(graph = graph, N = 4L, horizon = 60L)
+stopifnot(identical(rebuilt, scenario))
+```
+
+| Column | Contract |
+|---|---|
+| `leg` | One of L1 to L5, with exactly one row for each route |
+| `from`, `to` | The fixed node-group names shown by `example_scenario()$graph` |
+| `route` | A, B or C; 15 distinct leg-route rows in total |
+| `travel_min` | Strictly positive whole minutes |
+| `exposure_weight` | Finite number in the closed interval from zero to one |
+| `vehicle_fraction` | Strictly positive, finite multiplier of cohort size, constant within a leg |
+
+The constructor also checks observation probabilities, class counts, hazards,
+and duration constraints. Reconstruct from inputs when changing a scenario;
+editing a derived field such as `V` or `leg_time` leaves related fields stale.
+The following catches an intentionally invalid graph to show the diagnostic:
+
+```{r input-error}
+invalid_graph <- graph
+invalid_graph$travel_min[1] <- 0
+tryCatch(
+  shield_parameters(invalid_graph),
+  error = function(e) conditionMessage(e)
+)
+```
+
+## Compare designs explicitly
+
+Independent policy comparisons use different seeds. `compare_policies()`
+returns a Mann-Whitney U comparison, Cliff's delta and bootstrap intervals for
+delta and the median difference. It does not perform a preliminary normality
+test. Its intervals quantify Monte Carlo sampling uncertainty conditional on the
+model. This short example explicitly reduces bootstrap resamples for speed;
+study reporting uses the default 10,000.
+
+```{r comparison}
+a <- simulate_shield(scenario, "P0", n_rep = 3L, seed = 20260512L)
+b <- simulate_shield(scenario, "P3", n_rep = 3L, seed = 20260512L + 1L)
+compare_policies(b$surv_stage2, a$surv_stage2, "P3", "P0", B = 100L)
+```
+
+The neutral scenario is tied by construction. A point bootstrap interval on a
+discrete endpoint is flagged rather than interpreted as empirical certainty.
+For several comparisons, collect `p_raw_log10` values in each prespecified
+family and call `adjust_fdr()` separately for that family. Very small tails
+should be reported using log probabilities; the linear field is floored when
+it cannot represent the computed value.
+
+Paired disruptions-disabled interventions instead use the same seed and replication
+count. The package aligns rows and checks their replication identities.
+
+```{r paired}
+on <- simulate_shield(scenario, "P3", "adaptive", n_rep = 3L,
+                      disruptions_enabled = TRUE)
+off <- simulate_shield(scenario, "P3", "adaptive", n_rep = 3L,
+                       disruptions_enabled = FALSE)
+compare_intervention(on, off, B = 100L)
+```
+
+Here exposure is zero, so the contrast is zero. In a nonzero disruption_risk experiment,
+the contrast includes downstream changes and horizon effects. It is not a
+count of direct disruption deaths or proof of a better policy.
+
+P3 uses a known disruption_model model and an entropy-regularized decision heuristic.
+Its comparisons with P1 and P2 do not isolate individual component effects.
+All assumptions require scientific review for a new application.
+
+The [study design tutorial](study-design.html) develops independent comparisons,
+paired interventions, complete comparison-family adjustment, and replay in more
+detail. The [workbench tutorial](interactive-exploration.html) covers the Shiny
+interface.
+
+## Save results with provenance
+
+CSV is convenient for a table, but it does not preserve the scenario and
+software attributes needed by `compare_intervention()`. Save the full run as
+RDS and write an environment record alongside derived exports. The temporary
+folder below makes this example self-contained; use a named output directory
+inside your analysis project for a real study.
+
+```{r save-results}
+output_dir <- tempfile("shieldR-tutorial-")
+dir.create(output_dir)
+saveRDS(run, file.path(output_dir, "cohort-run.rds"))
+utils::write.csv(summarize_shield(run),
+                 file.path(output_dir, "endpoint-summary.csv"), row.names = FALSE)
+writeLines(capture.output(sessionInfo()),
+           file.path(output_dir, "sessionInfo.txt"))
+restored <- readRDS(file.path(output_dir, "cohort-run.rds"))
+stopifnot(identical(run, restored))
+list.files(output_dir)
+```
+
+## Troubleshooting
+
+| Symptom | Check |
+|---|---|
+| Every policy has the same survival | The neutral examples have no physiological or disruption hazards; ties are expected |
+| Survival is below one without any deaths | Some patients may be alive but have not arrived by the administrative horizon |
+| Arrival-time summaries are missing | No arrival occurred in one or more replications; retain missingness explicitly |
+| Graph validation fails | Keep exactly the seven input columns and all 15 unique leg-route rows |
+| A paired comparison is rejected | Keep original run attributes, matching configurations and identical replication seeds |
+| A bootstrap interval is a single point | Inspect discreteness and replication counts; this does not establish empirical certainty |
+| The vignette is not installed | Install from a built source archive or use `build_vignettes = TRUE` |
+
+## Session information
+
+```{r environment}
+sessionInfo()
+```

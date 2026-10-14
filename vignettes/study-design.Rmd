@@ -1,0 +1,277 @@
+---
+title: "Study design, inference and reproducibility"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Study design, inference and reproducibility}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+set.seed(20260512)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>",
+                      fig.width = 7, fig.height = 4)
+library(shieldR)
+```
+
+A reproducible experiment needs a declared endpoint, a comparison design, a
+replication schedule and an explicit multiplicity family. This tutorial shows
+those decisions using neutral teaching inputs. It does not reproduce the SHIELD
+manuscript or provide calibrated scenario assumptions.
+
+## Define the experiment before looking at outcomes
+
+The unit of analysis is an independently simulated cohort. Patients within a
+cohort share queues, vehicles, observations and disruption_risk history, so they are not
+independent statistical replicates. Use cohort-level outcomes for the functions
+below.
+
+```{r analysis-plan}
+master_seed <- 20260512L
+scenario <- example_scenario("constrained", N = 6L)
+policies <- c("P0", "P1", "P3")
+arm_seeds <- setNames(master_seed + seq_along(policies) - 1L, policies)
+n_rep <- 6L
+bootstrap_resamples <- 10000L
+endpoint <- "surv_stage2"
+comparison_family <- "teaching-policy-comparisons-at-Stage2"
+data.frame(policy = policies, seed = unname(arm_seeds), n_rep = n_rep)
+```
+
+The master seed is 20260512. Different arms receive documented, distinct seeds
+derived from it. Six replications keep this vignette small; choose the study
+replication count using a prospective Monte Carlo precision assessment. The
+bootstrap uses the full reporting default of 10,000 resamples. A smaller
+bootstrap count may be useful for an interactive preview but must be identified
+as such and replaced for a final analysis.
+
+The primary SHIELD endpoint is overall survival as operationalized here by
+arrival alive at Stage 2 by the administrative horizon. This is a proportion of
+the original cohort, not a Kaplan-Meier survival probability at an arbitrary
+time. A patient still alive elsewhere at the horizon is an endpoint failure.
+Arrival is recorded before unloading and ends physiological hazard; transport
+can continue to Stage 3. Downstream disruptions can still affect the Stage 3 endpoint.
+
+## Run independent policy arms
+
+```{r independent-arms}
+arms <- setNames(lapply(policies, function(policy) {
+  simulate_shield(scenario, policy = policy, disruption_model = "static",
+                  n_rep = n_rep, seed = arm_seeds[[policy]])
+}), policies)
+summary_P0 <- summarize_shield(arms$P0)
+summary_P0[summary_P0$endpoint %in%
+             c("surv_stage2", "t_stage2_med", "util_L4", "n_pending"), ]
+```
+
+Each row in an arm is one replication; each row above describes an endpoint
+across those replications. The medians and quartiles do not describe the
+parameter distribution or uncertainty about the model's scientific validity.
+
+```{r endpoint-plot, fig.cap="Neutral teaching run: cohort-level Stage 2 arrival-alive proportions by policy."}
+plot(stats::ecdf(arms$P0[[endpoint]]), verticals = TRUE, do.points = FALSE,
+     xlim = c(0, 1), ylim = c(0, 1),
+     xlab = "Proportion arriving alive at Stage 2",
+     ylab = "Cumulative proportion of cohort replications", main = "")
+lines(stats::ecdf(arms$P1[[endpoint]]), verticals = TRUE, do.points = FALSE,
+      lty = 2)
+lines(stats::ecdf(arms$P3[[endpoint]]), verticals = TRUE, do.points = FALSE,
+      lty = 3)
+legend("bottomright", legend = policies, lty = 1:3, bty = "n")
+```
+
+The neutral scenario has zero exposure and physiological hazards. Differences
+in arrival outcomes can reflect congestion or the administrative horizon.
+The plot is a teaching output and establishes no policy advantage in practice.
+
+## Report nonparametric comparisons in full
+
+`compare_policies()` applies a two-sided, tie-corrected Mann-Whitney U
+approximation to independent arms. The test compares distributions; it is not
+specifically a test of medians. It also returns Cliff's delta and the difference
+in medians with percentile bootstrap 95% intervals. This is a primary
+nonparametric framework, with no preliminary normality test.
+
+```{r independent-comparisons}
+comparisons <- do.call(rbind, lapply(c("P1", "P3"), function(policy) {
+  compare_policies(
+    arms[[policy]][[endpoint]], arms$P0[[endpoint]],
+    label_x = policy, label_y = "P0", family = comparison_family,
+    B = bootstrap_resamples, seed = master_seed
+  )
+}))
+comparisons[c("arm_x", "arm_y", "n_x", "n_y", "U", "p_raw_log10",
+              "cliff_delta", "cliff_lwr", "cliff_upr",
+              "med_diff", "med_diff_lwr", "med_diff_upr",
+              "med_diff_ci_degenerate")]
+```
+
+Effects are oriented as `x` minus `y`. Positive values favor `x` for survival;
+for delay or resource use, whether larger values are desirable depends on the
+question. Do not infer direction from the policy labels alone. Cliff's delta
+contrasts the probabilities of a randomly drawn `x` exceeding or falling below
+a randomly drawn `y`, accounting for ties.
+
+Retain sample sizes, median/IQR descriptives, the U statistic, raw and adjusted
+p-values, effect estimates and intervals in the analysis output. The bootstrap
+intervals quantify Monte Carlo sampling uncertainty conditional on the model.
+They do not include parameter uncertainty, structural uncertainty, measurement
+validity or uncertainty from choosing a model after seeing the result.
+
+A bootstrap interval can collapse on this discrete endpoint. Inspect the
+`med_diff_ci_degenerate` flag and the interval endpoints; a point interval is
+not evidence of empirical certainty.
+
+### Declare the complete FDR family
+
+The family below contains both planned policy contrasts at the same endpoint.
+Adjust its complete set of p-values together. If a study defines additional
+endpoints or scenarios in the same family, include them before adjustment.
+Selecting only significant or interesting contrasts changes the family.
+
+```{r multiplicity}
+comparisons$p_bh_log10 <- adjust_fdr(comparisons$p_raw_log10)
+comparisons[c("family", "arm_x", "arm_y", "p_raw_log10", "p_bh_log10")]
+```
+
+The helpers retain base-10 log p-values so extreme tails remain distinguishable.
+`p_raw_log10` is authoritative when a linear p-value underflows; use log
+probabilities or a properly formatted bound instead of reporting a computed
+probability as zero. `adjust_fdr()` implements Benjamini-Hochberg adjustment for
+one supplied family and leaves missing entries missing. It does not infer a
+hypothesis grid or silently pool separate families.
+
+### More than two arms
+
+For a prespecified omnibus comparison, use Kruskal-Wallis and retain its H
+statistic and degrees of freedom. Any decision to gate pairwise contrasts on
+that omnibus result belongs to the declared study analysis plan.
+
+```{r omnibus}
+values <- unlist(lapply(arms, `[[`, endpoint), use.names = FALSE)
+groups <- rep(names(arms), vapply(arms, nrow, integer(1)))
+compare_multiple(values, groups, family = "teaching-omnibus-at-Stage2")
+```
+
+The omnibus helper reports the test statistic and p-value. Pairwise effect
+sizes and their intervals come from explicitly chosen contrasts; the function
+does not select post-hoc comparisons or manufacture a multi-arm effect size.
+For association questions, the study's primary nonparametric choice is Spearman;
+specify the variables, independent unit and any bootstrap interval separately.
+
+## Paired disruptions-disabled intervention
+
+A paired intervention is a different design. It requires identical parameters,
+policy, disruption_risk-response family, replication count and seed schedule, with disruption
+enablement as the only changed setting. Clinical draws are indexed by patient
+and minute and use a stream separate from policy and disruption draws.
+
+```{r paired-intervention}
+with_disruptions <- simulate_shield(
+  scenario, policy = "P3", disruption_model = "adaptive", n_rep = n_rep,
+  seed = master_seed, disruptions_enabled = TRUE
+)
+without_disruptions <- simulate_shield(
+  scenario, policy = "P3", disruption_model = "adaptive", n_rep = n_rep,
+  seed = master_seed, disruptions_enabled = FALSE
+)
+compare_intervention(with_disruptions, without_disruptions,
+                     B = bootstrap_resamples, seed = master_seed)
+```
+
+The contrast is **no disruptions minus disruptions**, estimated as a paired mean
+difference of cohort proportions with a paired percentile bootstrap interval.
+Pair indices are resampled jointly. The helper checks matching identities and
+aligns rows by replication identifier.
+
+The neutral exposure is zero, so the intervention has no effect here. In a
+user-specified disruption_risk experiment, this is a total modelled intervention effect,
+including downstream decisions and administrative-horizon effects. It is not
+identical to `n_att_fatal` or a count of direct disruption deaths. Matched arms must
+not be passed to the independent-arm Mann-Whitney U helper.
+
+## Preserve missing outcomes and replay the experiment
+
+Arrival-time medians are conditional on arrival. If an arm contains an
+undefined median, `compare_policies()` rejects that nonfinite input. Decide
+prospectively whether a comparison of defined cohort medians is meaningful,
+report the missing counts by arm, and keep the survival/arrival endpoint
+alongside it. Replacing a missing time by zero or the horizon changes the
+estimand.
+
+Simulation and bootstrap calls restore the caller's RNG state and kind, while
+recording their own reproducible configuration. Repeating a run with the same
+parameters, software and seeds reproduces its cohort results:
+
+```{r replay}
+state_before <- .Random.seed
+replayed <- simulate_shield(scenario, policy = "P0", disruption_model = "static",
+                           n_rep = n_rep, seed = arm_seeds[["P0"]])
+stopifnot(identical(arms$P0, replayed),
+          identical(state_before, .Random.seed))
+```
+
+### Replay one cohort or distribute a fixed schedule
+
+Use `replication_seeds()` to construct the complete cell schedule once, then
+send individual seeds to `simulate_replication()` from your analysis scheduler.
+The latter takes a replication seed directly; it does not sample a new cell
+schedule or attach study identifiers. Checkpoint naming and workload allocation
+remain the analysis project's responsibility.
+
+```{r individual-replication}
+schedule <- replication_seeds(n_rep = n_rep, seed = arm_seeds[["P0"]])
+stopifnot(identical(schedule, arms$P0$replicate_seed))
+first_cohort <- simulate_replication(
+  scenario, policy = "P0", disruption_model = "static",
+  replication_seed = schedule[1]
+)
+stopifnot(all(vapply(names(first_cohort), function(column) {
+  identical(first_cohort[[column]], arms$P0[[column]][1])
+}, logical(1))))
+```
+
+Generate the declared full schedule before splitting into chunks. Restarting a
+master seed independently for each chunk repeats the beginning of the schedule
+and creates duplicate replications. For an disruptions-disabled pair, use the same
+schedule in both configurations. Preserve the total replication count and the
+mapping from each seed to its replication identifier in durable checkpoints.
+
+For analysis pipelines that already manage their own data frames,
+`mann_whitney_u()` exposes the tested U calculation and log tail probability,
+`bootstrap_statistic()` exposes named independent or paired interval estimators,
+and `effect_magnitude()` provides descriptive Cliff's delta labels. These
+primitives do not establish independence or pairing for the caller; prefer the
+higher-level comparison functions when using complete run objects.
+
+### Save the complete request
+
+Save the request, full result object, analysis settings and session information.
+An RDS retains attributes required for pairing, whereas CSV retains only table
+columns.
+
+```{r reproducibility-bundle}
+request <- list(parameters = scenario, policy = "P0", disruption_model = "static",
+                n_rep = n_rep, seed = arm_seeds[["P0"]])
+bundle <- list(request = request, run = arms$P0,
+               analysis = list(endpoint = endpoint,
+                               family = comparison_family,
+                               bootstrap_resamples = bootstrap_resamples,
+                               master_seed = master_seed),
+               session_info = sessionInfo())
+bundle_file <- tempfile("shieldR-study-", fileext = ".rds")
+saveRDS(bundle, bundle_file)
+restored <- readRDS(bundle_file)
+stopifnot(identical(do.call(simulate_shield, restored$request), restored$run))
+```
+
+For a real analysis, use a named output directory and retain an immutable copy
+of the exact source archive or package commit, the scenario input hash, seed
+schedule, replication counts and an environment lockfile. A version number
+alone cannot distinguish two uncommitted source states with the same version.
+Study scheduling, frozen input/output manifests and publication exports remain
+in the analysis project. Method changes require explicit validation before adoption by a study.
+
+```{r session-information}
+sessionInfo()
+```

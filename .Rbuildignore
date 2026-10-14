@@ -1,0 +1,17 @@
+^shieldR\.Rproj$
+^\.Rproj\.user$
+^\.git.*$
+^dev$
+^output$
+^\.local$
+^.*\.Rcheck$
+^.*\.tar\.gz$
+^AGENTS\.md$
+^ANALYSIS_PACKAGE_SYNC\.md$
+^_pkgdown\.yml$
+^docs$
+
+^\.local-private$
+^AGENTS\.md$
+^CLAUDE.*$
+^admin$

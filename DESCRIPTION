@@ -1,0 +1,26 @@
+Package: shieldR
+Title: Simulation of Evacuation Policies under Uncertainty
+Version: 0.5.0
+Authors@R: person("R.", "Heller",
+    email = "58561665+r-heller@users.noreply.github.com", role = c("aut", "cre"))
+Description: A research implementation of a five-leg evacuation-chain
+    simulation with patient deterioration, imperfect reassessment, finite
+    vehicle resources, route-risk beliefs, and static or adaptive disruption-risk
+    responses. Supports reproducible policy comparisons and paired
+    disruptions-disabled interventions. Includes neutral teaching scenarios and
+    nonparametric analysis helpers. The model is a synthetic research
+    framework; its decision heuristics have no established clinical or
+    operational validity.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: R (>= 4.1.0)
+Imports: grDevices, parallel, stats, utils
+Suggests: testthat (>= 3.0.0), knitr, rmarkdown, digest,
+    shiny (>= 1.8.0), bslib (>= 0.6.0), DT, ggplot2
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+URL: https://github.com/CTTIR/shieldR
+BugReports: https://github.com/CTTIR/shieldR/issues
+Config/roxygen2/version: 8.0.0
+Config/Needs/website: CTTIR/themakR

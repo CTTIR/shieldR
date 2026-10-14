@@ -1,0 +1,233 @@
+---
+title: "Explore and reproduce experiments in the Shiny workbench"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Explore and reproduce experiments in the Shiny workbench}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+set.seed(20260512)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(shieldR)
+```
+
+The shieldR workbench lets you construct an explicit synthetic scenario,
+compare policy designs, inspect the cohort-level evidence, and export the
+configuration and results for replay. It calls the same package simulation and
+inference functions used in scripted analyses. The interface has no separate
+implementation of the model.
+
+## Launch locally
+
+Install the optional dependencies once, then launch from an interactive R
+session:
+
+```{r launch, eval=FALSE}
+install.packages(c("shiny", "bslib", "DT", "ggplot2"))
+shield_app()
+```
+
+The application opens in a browser or viewer and runs in the local R process.
+Stop the running app from the R console when finished. Arguments after
+`launch` are forwarded to `shiny::runApp()`; for explicit local access:
+
+```{r launch-options, eval=FALSE}
+shield_app(host = "127.0.0.1", launch.browser = TRUE)
+```
+
+Constructing the application without starting a server is useful for testing
+or integration with an existing Shiny deployment:
+
+```{r app-object}
+app_packages <- c("shiny", "bslib", "DT", "ggplot2")
+if (all(vapply(app_packages, requireNamespace, logical(1), quietly = TRUE))) {
+  app <- shield_app(launch = FALSE)
+  stopifnot(inherits(app, "shiny.appobj"))
+}
+```
+
+Uploaded graphs are processed in the running R session. The app uses local
+system fonts and does not send inputs to an external analysis service. Hosting
+it on another machine changes where that processing occurs. Session state is
+not shared between users. Downloads persist only when you save them.
+
+## A first experiment
+
+1. Keep **Balanced resources** as the teaching graph and **Single policy** as
+   the comparison design. Inspect the displayed cohort size, horizon,
+   replication count and master seed before running.
+2. Open **Graph**. The five-leg node and route labels are fixed; inspect the
+   three numeric input columns. All teaching routes have zero exposure and the
+   initial physiology controls have zero hazard.
+3. Select **Run experiment**. A progress indicator reports simulation and
+   bootstrap stages. Inputs are validated before the model runs.
+4. Read **Outcomes**, then **Diagnostics**. Inspect the summary tables as well
+   as the plots, especially missing arrival-time counts.
+5. Save the **Complete experiment RDS** and **Replay script R** from **Data
+   and export**. They preserve the settings actually used by the completed run.
+
+The balanced teaching example inspects transport mechanics. It does not contain
+the manuscript's parameters or represent clinical calibration. Switch to
+**Constrained resources** to examine resource scarcity and a shorter suggested
+horizon without introducing hazards.
+
+Changing the teaching graph replaces its vehicle fractions and suggested
+horizon; it does not reset other settings you have edited. Review those settings
+before interpreting the new run.
+
+## Configure the graph and assumptions
+
+The **Graph** table has exactly the seven columns accepted by
+`shield_parameters()`: `leg`, `from`, `to`, `route`, `travel_min`,
+`exposure_weight` and `vehicle_fraction`. The topology requires 15 unique
+leg-route rows.
+
+Double-click a numeric cell to edit it. Changing `vehicle_fraction` updates all
+three routes within that leg, because the fleet belongs to the leg. The
+constructor rounds fleet size up and enforces at least two vehicles per leg.
+A graph CSV can be imported or exported; import requires that same schema and
+is limited to 64 KB. Invalid edits and uploads produce an explanatory message
+and preserve the previous valid graph.
+
+You can prepare a compatible neutral CSV from R:
+
+```{r graph-export}
+scenario <- example_scenario()
+graph_columns <- c("leg", "from", "to", "route", "travel_min",
+                   "exposure_weight", "vehicle_fraction")
+graph_file <- tempfile("shieldR-graph-", fileext = ".csv")
+utils::write.csv(scenario$graph[graph_columns], graph_file, row.names = FALSE)
+imported <- utils::read.csv(graph_file, stringsAsFactors = FALSE,
+                            check.names = FALSE)
+stopifnot(inherits(shield_parameters(imported), "shield_parameters"))
+```
+
+The sidebar groups controls by purpose:
+
+| Group | What it controls |
+|---|---|
+| Cohorts and reproducibility | Cohort size, replication count, administrative horizon and master seed |
+| Observation and dispatch | Reassessment, observation error, dispatch interval, allowable holds, loading/unloading and the policy response parameter |
+| Physiological assumptions | Explicit mortality and class-escalation rates |
+| Disruption assumptions | Disruption enablement, baseline probability, conditional fatality, delay and disruption_risk-response assumptions |
+
+A maximum hold must be a multiple of the dispatch interval. Parameters not
+exposed by the form retain their documented constructor defaults, including the
+rounded class mix, and are recorded in the complete experiment bundle. The
+form sets the two named disruption_risk levels to the same entered baseline and selects
+the low label. Use `shield_parameters()` in an R script when your design needs
+separate disruption_risk levels or other settings not exposed by the form.
+
+The app does not import previously saved results as a new interactive session.
+Read experiment RDS files in R and use the replay script for a new run.
+
+## Choose the comparison design
+
+| Design | Seed structure and output |
+|---|---|
+| Single policy | One arm, descriptive outcomes and diagnostics; no policy contrast |
+| Independent policy arms | Select two to four distinct policies; arm seeds increment from the master seed; all selected pairwise Stage 2 comparisons are reported |
+| Paired disruptions-disabled intervention | One policy run with disruptions enabled and disabled; matching seeds, parameters and replication counts; paired survival contrast |
+
+For independent arms, the **Comparisons** view reports Mann-Whitney U, Cliff's
+delta and the median difference with percentile bootstrap 95% intervals.
+Positive effects favor `arm_x` for the survival endpoint. All displayed
+pairwise Stage 2 comparisons constitute one explicit Benjamini-Hochberg FDR
+family. Three or more arms also produce a Kruskal-Wallis H statistic, degrees
+of freedom and p-value. This interactive family is separate from the
+manuscript's prespecified scenario-family analysis.
+
+For the paired design, the contrast is **no disruptions minus disruptions**, expressed
+as a paired mean difference of cohort survival proportions. The interval
+resamples matched replication indices jointly. The paired design controls
+disruption enablement itself, regardless of the ordinary disruption checkbox. The
+neutral graph has zero exposure, so its paired contrast is zero.
+
+All comparison intervals use 10,000 bootstrap resamples. The statistical unit
+is the cohort replication. Small interactive experiments can produce unstable
+estimates or point intervals on discrete outcomes; more bootstrap resamples do
+not compensate for an inadequate number of independent replications.
+
+## Read each view together with its limitations
+
+| View | Evidence to inspect |
+|---|---|
+| Graph | The current input graph; it can differ from the graph of the last completed run |
+| Outcomes | Cohort points and boxplots for Stage 1, 2 and 3 arrival-alive proportions; valid counts, median and quartiles |
+| Comparisons | Independent or paired effect estimates and intervals; raw and adjusted log p-values; optional multi-arm omnibus |
+| Diagnostics | Fleet utilization by leg, conditional arrival times and the complete remaining endpoint summaries with missing counts |
+| Data and export | Individual cohort rows, seed schedule, software provenance and downloadable results |
+| Methods and help | Policy information assumptions, endpoint definitions, inferential limits and reproducibility instructions |
+
+The primary endpoint is arrival alive at Stage 2 by the horizon. Physical arrival
+precedes unloading and ends physiological hazard. A nonarrival is not necessarily
+a death. Conditional arrival-time medians exclude patients who never arrived;
+undefined cohort medians remain missing. `n_pending` counts patients still alive
+without Stage 3 arrival. `n_att_fatal` counts fatal disruption events and is not the
+paired total intervention effect.
+
+After you edit an input, a visible message identifies the results as belonging
+to the last completed experiment. Run again to apply the new configuration.
+Experiment downloads retain that last completed run; the graph download is
+explicitly the **current** graph. Starting a new run clears the old experiment,
+so a failed validation cannot silently attach old results to new assumptions.
+
+## Export an experiment you can replay
+
+| Download | Contents and use |
+|---|---|
+| Complete experiment RDS | Schema version, full input/configuration, arm schedule, original `shield_run` objects, summaries, comparisons, omnibus output and session/software/RNG provenance |
+| Replay script R | Explicit constructor arguments and arm schedule; recreates cohort results and descriptive summaries; saves `shieldR_replayed.rds` |
+| Cohort results CSV | One row per cohort with arm label, seeds, identifiers and outcomes |
+| Summaries CSV | Median/IQR summaries, valid and missing counts by endpoint and arm |
+| Comparisons CSV | Complete pairwise or paired comparison rows; empty for a single-policy run |
+| Survival figure PNG / PDF | Current completed experiment's survival plot, with 600 dpi PNG and vector PDF |
+
+The replay script reproduces simulations and descriptive summaries. The RDS
+bundle also retains inferential tables and the omnibus result; retain it for
+a complete audit record. Use the same package source/environment to reproduce
+results exactly. The PNG/PDF downloads cover the survival figure; diagnostics
+and cohort tables remain available in the bundle for your own plotting.
+
+After saving the experiment to a chosen analysis output directory, inspect it
+from R:
+
+```{r inspect-download, eval=FALSE}
+bundle <- readRDS("shieldR_experiment.rds")
+bundle$config$arms
+bundle$provenance$shieldR_version
+bundle$provenance$session_info
+bundle$summary
+bundle$comparisons
+bundle$omnibus
+
+# Reproduce the first arm from the recorded request.
+arm <- bundle$config$arms[1, ]
+replayed <- simulate_shield(
+  bundle$config$parameters,
+  policy = arm$policy, disruption_model = arm$disruption_model,
+  n_rep = bundle$config$settings$n_rep, seed = arm$seed,
+  disruptions_enabled = arm$disruptions_enabled
+)
+stopifnot(identical(replayed, bundle$runs[[1]]))
+```
+
+## Move a larger experiment into scripts
+
+The workbench accepts 1 to 60 patients per cohort, 2 to 100 replications per arm
+and horizons from 1 to 240 minutes. The combined workload is limited to
+`patients * horizon * replications * arms <= 250000` as an interactive safeguard.
+This is a conservative input-size measure, not an exact runtime estimate.
+These caps apply to the app, not to the underlying package APIs.
+
+Use scripted studies for larger grids, durable checkpoints, parameter
+uncertainty analyses, custom comparison families or publication exports. The
+[study design tutorial](study-design.html) explains cohort-level inference and
+replay. Study integrations require their own versioned validation and interface checks. The interface and its synthetic examples
+do not establish clinical or operational validity.
+
+```{r session-information}
+sessionInfo()
+```
