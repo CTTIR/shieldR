@@ -1,5 +1,6 @@
 ---
 title: "Getting started with shieldR"
+author: "R. Heller"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Getting started with shieldR}
@@ -134,11 +135,11 @@ off <- simulate_shield(scenario, "P3", "adaptive", n_rep = 3L,
 compare_intervention(on, off, B = 100L)
 ```
 
-Here exposure is zero, so the contrast is zero. In a nonzero disruption_risk experiment,
+Here exposure is zero, so the contrast is zero. In a nonzero disruption risk experiment,
 the contrast includes downstream changes and horizon effects. It is not a
 count of direct disruption deaths or proof of a better policy.
 
-P3 uses a known disruption_model model and an entropy-regularized decision heuristic.
+P3 uses a known disruption-response model and an entropy-regularized decision heuristic.
 Its comparisons with P1 and P2 do not isolate individual component effects.
 All assumptions require scientific review for a new application.
 

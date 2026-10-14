@@ -29,3 +29,8 @@ CLAUDE_CODE_*.md
 __pycache__/
 *.pyc
 Rplots.pdf
+
+/docs/
+/inst/doc/
+/vignettes/*.html
+/vignettes/*.R
