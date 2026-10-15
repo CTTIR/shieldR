@@ -36,6 +36,7 @@ shield_app <- function(launch = TRUE, ...) {
       stop("Install optional package '", pkg, "' to use shield_app().",
            call. = FALSE)
   }
+  shiny::addResourcePath("shieldr-assets", system.file("www", package = "shieldR"))
   app <- shiny::shinyApp(ui = .shield_app_ui(), server = .shield_app_server)
   if (launch) {
     shiny::runApp(app, ...)
