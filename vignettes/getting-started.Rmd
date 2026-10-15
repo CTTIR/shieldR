@@ -1,0 +1,242 @@
+---
+title: "Getting started with shieldR"
+author: "R. Heller"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with shieldR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+set.seed(20260512)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(shieldR)
+```
+
+## Your first experiment
+
+This tutorial takes you from a neutral scenario to saved, reproducible results.
+Only the installed `shieldR` package is needed for the code below. Small batch
+and replication counts keep the tutorial quick; they are teaching choices and
+are not a study design or a precision justification.
+
+The package implements a fixed five-leg research model. Its teaching scenarios
+use synthetic route and condition inputs. The default examples disable
+exposure and item-condition hazards so that network mechanics are easy to inspect.
+
+```{r scenario}
+scenario <- example_scenario(N = 4L)
+scenario$graph
+run <- simulate_shield(scenario, "P0", n_rep = 3L, seed = 20260512L)
+summarize_shield(run)
+```
+
+## Interpret the endpoints
+
+The statistical unit is the batch replication. The primary endpoint,
+`viable_stage2`, measures arrival viable at Stage 2 by the administrative horizon. Arrival is
+recorded before unloading. Item-condition hazard ends there, while downstream
+transport continues to Stage 3. Conditional arrival-time medians remain missing
+when no item arrives; they are never replaced by zero.
+
+The constrained example uses fewer vehicles and a shorter horizon. Its purpose
+is to illustrate that failure to arrive is an endpoint failure even without
+a loss.
+
+```{r constrained}
+limited <- example_scenario("constrained", N = 4L)
+short_run <- simulate_shield(limited, n_rep = 3L)
+summarize_shield(short_run)
+```
+
+## Construct an explicit scenario
+
+The fixed topology is:
+
+```text
+Source -> Collection -> Transfer-A / Transfer-B -> Stage1-a / Stage1-b -> Stage2 -> Stage3
+        L1       L2                L3                L4       L5
+```
+
+Each leg offers routes A, B and C. Parallel destinations and route labels are
+separate concepts: choosing a route does not itself identify the destination.
+Vehicles carry one item and are shared within the documented leg pools.
+
+To define an experiment, pass your own graph and hazard, observation and policy
+settings to `shield_parameters()`. The documented graph schema fixes five legs
+and three routes per leg. All event durations are whole minutes. Defaults are
+synthetic teaching values, not calibrated logistics parameters.
+
+`scenario$graph` includes derived indices. Select only the seven input columns
+before reconstructing or exporting a graph for later use:
+
+```{r explicit-inputs}
+graph_columns <- c("leg", "from", "to", "route", "travel_min",
+                   "exposure_weight", "vehicle_fraction")
+graph <- scenario$graph[graph_columns]
+rebuilt <- shield_parameters(graph = graph, N = 4L, horizon = 60L)
+stopifnot(identical(rebuilt, scenario))
+```
+
+| Column | Contract |
+|---|---|
+| `leg` | One of L1 to L5, with exactly one row for each route |
+| `from`, `to` | The fixed node-group names shown by `example_scenario()$graph` |
+| `route` | A, B or C; 15 distinct leg-route rows in total |
+| `travel_min` | Strictly positive whole minutes |
+| `exposure_weight` | Finite number in the closed interval from zero to one |
+| `vehicle_fraction` | Strictly positive, finite multiplier of batch size, constant within a leg |
+
+The constructor also checks observation probabilities, class counts, hazards,
+and duration constraints. Reconstruct from inputs when changing a scenario;
+editing a derived field such as `V` or `leg_time` leaves related fields stale.
+The following catches an intentionally invalid graph to show the diagnostic:
+
+```{r input-error}
+invalid_graph <- graph
+invalid_graph$travel_min[1] <- 0
+tryCatch(
+  shield_parameters(invalid_graph),
+  error = function(e) conditionMessage(e)
+)
+```
+
+## Time-varying logistics-item specifications
+
+An item has a true condition and an observed specification. These need not agree:
+observations can be noisy, missing, delayed or retained from an earlier time.
+The basic model updates item classes and viability each minute. The optional
+`with_item_model()` extension adds a dimensionless condition index, a degradation
+indicator and finite-capacity processing at Stage 2. Processing can stabilize an
+item; residual degradation and other losses can continue afterwards.
+
+| Specification | Interpretation |
+|---|---|
+| `fragility` | Positive class-specific weights controlling susceptibility to loss |
+| `obs_condition_index` | Latest delivered, noisy condition measurement; higher is better in this synthetic model |
+| `obs_degradation` | Latest observed degradation flag |
+| `obs_time`, `obs_missing` | Measurement time and whether the latest observation was missing |
+| `refresh`, `delivery` | Observation interval and delivery delay in minutes |
+| `useful_updates` | Whether later observations are delivered; does not stop underlying condition changes |
+
+The observed fields belong to the internal `item_specs` state table. They are
+used by the decision rules; ordinary run rows contain batch-level outcomes.
+The index equation and its thresholds are synthetic, dimensionless assumptions,
+not a physical sensor calibration. `with_decision_controls(..., item =
+"initial_observed")` freezes the information used for decisions while item
+conditions continue to evolve. The default `item = "updated"` uses delivered
+updates. This separates information freshness from the physical process.
+
+The following explicit specification activates condition changes and finite
+processing capacity. The coefficients are illustrative and uncalibrated.
+The processing extension continues to fixed 24-hour and 30-day follow-up times;
+these are model assumptions, separate from the transport horizon.
+
+```{r changing-item-specifications}
+item_model <- list(
+  degradation_scale = 0.2, early_other = 0.02, late_other = 0.1,
+  tau = 40, residual = 0.1,
+  prep = c(1, 2, 3), processing = c(2, 3, 4), failure = 0,
+  capacity = 1L, fragility = c(1.2, 1, 0.8),
+  sensitivity = 0.7, specificity = 0.95, persistence = 1,
+  missing = 0, refresh = 2L, delivery = 0L,
+  useful_updates = TRUE, item_age = 0
+)
+dynamic <- with_item_model(example_scenario(N = 4L), item_model)
+updated <- with_decision_controls(dynamic, item = "updated")
+initial <- with_decision_controls(dynamic, item = "initial_observed")
+updated_run <- simulate_shield(updated, "P3", n_rep = 3L, seed = 20260512L)
+initial_run <- simulate_shield(initial, "P3", n_rep = 3L, seed = 20260513L)
+summarize_shield(updated_run)
+summarize_shield(initial_run)
+```
+
+Both arms retain the same condition dynamics. Only the information used by the
+allocation rule differs. A small synthetic comparison does not establish that
+one information policy is better in a real logistics application.
+
+## Compare designs explicitly
+
+Independent policy comparisons use different seeds. `compare_policies()`
+returns a Mann-Whitney U comparison, Cliff's delta and bootstrap intervals for
+delta and the median difference. It does not perform a preliminary normality
+test. Its intervals quantify Monte Carlo sampling uncertainty conditional on the
+model. This short example explicitly reduces bootstrap resamples for speed;
+study reporting uses the default 10,000.
+
+```{r comparison}
+a <- simulate_shield(scenario, "P0", n_rep = 3L, seed = 20260512L)
+b <- simulate_shield(scenario, "P3", n_rep = 3L, seed = 20260512L + 1L)
+compare_policies(b$viable_stage2, a$viable_stage2, "P3", "P0", B = 100L)
+```
+
+The neutral scenario is tied by construction. A point bootstrap interval on a
+discrete endpoint is flagged rather than interpreted as empirical certainty.
+For several comparisons, collect `p_raw_log10` values in each prespecified
+family and call `adjust_fdr()` separately for that family. Very small tails
+should be reported using log probabilities; the linear field is floored when
+it cannot represent the computed value.
+
+Paired disruptions-disabled interventions instead use the same seed and replication
+count. The package aligns rows and checks their replication identities.
+
+```{r paired}
+on <- simulate_shield(scenario, "P3", "adaptive", n_rep = 3L,
+                      disruptions_enabled = TRUE)
+off <- simulate_shield(scenario, "P3", "adaptive", n_rep = 3L,
+                       disruptions_enabled = FALSE)
+compare_intervention(on, off, B = 100L)
+```
+
+Here exposure is zero, so the contrast is zero. In a nonzero disruption risk experiment,
+the contrast includes downstream changes and horizon effects. It is not a
+count of direct disruption losses or proof of a better policy.
+
+P3 uses a known disruption-response model and an entropy-regularized decision heuristic.
+Its comparisons with P1 and P2 do not isolate individual component effects.
+All assumptions require scientific review for a new application.
+
+The [study design tutorial](study-design.html) develops independent comparisons,
+paired interventions, complete comparison-family adjustment, and replay in more
+detail. The [workbench tutorial](interactive-exploration.html) covers the Shiny
+interface.
+
+## Save results with provenance
+
+CSV is convenient for a table, but it does not preserve the scenario and
+software attributes needed by `compare_intervention()`. Save the full run as
+RDS and write an environment record alongside derived exports. The temporary
+folder below makes this example self-contained; use a named output directory
+inside your analysis project for a real study.
+
+```{r save-results}
+output_dir <- tempfile("shieldR-tutorial-")
+dir.create(output_dir)
+saveRDS(run, file.path(output_dir, "batch-run.rds"))
+utils::write.csv(summarize_shield(run),
+                 file.path(output_dir, "endpoint-summary.csv"), row.names = FALSE)
+writeLines(capture.output(sessionInfo()),
+           file.path(output_dir, "sessionInfo.txt"))
+restored <- readRDS(file.path(output_dir, "batch-run.rds"))
+stopifnot(identical(run, restored))
+list.files(output_dir)
+```
+
+## Troubleshooting
+
+| Symptom | Check |
+|---|---|
+| Every policy has the same viability | The neutral examples have no item-condition or disruption hazards; ties are expected |
+| Viability is below one without any losses | Some items may be viable but have not arrived by the administrative horizon |
+| Arrival-time summaries are missing | No arrival occurred in one or more replications; retain missingness explicitly |
+| Graph validation fails | Keep exactly the seven input columns and all 15 unique leg-route rows |
+| A paired comparison is rejected | Keep original run attributes, matching configurations and identical replication seeds |
+| A bootstrap interval is a single point | Inspect discreteness and replication counts; this does not establish empirical certainty |
+| The vignette is not installed | Install from a built source archive or use `build_vignettes = TRUE` |
+
+## Session information
+
+```{r environment}
+sessionInfo()
+```
