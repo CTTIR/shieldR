@@ -44,7 +44,7 @@ test_that("configuration validates design, workload and reconstructs parameters"
   snapshot$settings$seed <- .Machine$integer.max
   expect_error(.shield_app_configure(snapshot), "Seed")
   snapshot$settings$N <- NA_real_
-  expect_error(.shield_app_configure(snapshot), "Cohort size")
+  expect_error(.shield_app_configure(snapshot), "Batch size")
 })
 
 test_that("graph edits preserve topology and synchronize fleet by leg", {
@@ -93,15 +93,15 @@ test_that("paired app design preserves exact intervention identities", {
                    bundle$runs[[2]]$replicate_seed)
   expect_equal(bundle$comparisons, compare_intervention(bundle$runs[[1]],
     bundle$runs[[2]], B = 20L))
-  expect_equal(bundle$runs[[1]]$surv_stage2, c(0, 0))
-  expect_equal(bundle$runs[[2]]$surv_stage2, c(1, 1))
-  expect_equal(bundle$runs[[1]]$n_att_fatal, c(2, 2))
+  expect_equal(bundle$runs[[1]]$viable_stage2, c(0, 0))
+  expect_equal(bundle$runs[[2]]$viable_stage2, c(1, 1))
+  expect_equal(bundle$runs[[1]]$n_disruption_loss, c(2, 2))
   expect_equal(bundle$comparisons$mean_difference, 1)
   expect_true(bundle$comparisons$point_interval)
   expect_equal(nrow(bundle$omnibus), 0L)
 })
 
-test_that("replay export reconstructs the complete simulated cohort results", {
+test_that("replay export reconstructs the complete simulated batch results", {
   bundle <- .shield_app_run(.shield_app_configure(.app_snapshot()))
   path <- tempfile(fileext = ".R")
   on.exit(unlink(path), add = TRUE)
@@ -134,10 +134,10 @@ test_that("server graphs, outcomes and exports describe the accepted run", {
     expect_equal(state$graph$travel_min[1], 2)
     session$setInputs(run = 1L)
     expect_null(state$error)
-    expect_match(state$message, "Completed 2 cohort")
+    expect_match(state$message, "Completed 2 batch")
     expect_equal(nrow(state$bundle$summary), 16L)
     expect_false(is.null(output$primary))
-    expect_false(is.null(output$survival_plot))
+    expect_false(is.null(output$viability_plot))
     expect_false(is.null(output$resource_plot))
     expect_false(is.null(output$time_plot))
     bundle_path <- output$download_bundle
@@ -202,7 +202,7 @@ test_that("missing arrivals remain missing in diagnostics and empty-time state",
     time_row <- rows[rows$endpoint == "t_stage2_med", ]
     expect_equal(time_row$missing, 2L)
     expect_true(is.na(time_row$median))
-    expect_equal(rows$median[rows$endpoint == "surv_stage2"], 0)
+    expect_equal(rows$median[rows$endpoint == "viable_stage2"], 0)
     expect_error(output$time_plot, "No defined Stage 2")
   })
 })

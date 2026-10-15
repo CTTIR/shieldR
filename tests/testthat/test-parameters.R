@@ -20,7 +20,7 @@ test_that("graph schema and topology are validated without project files", {
   expect_error(shield_parameters(bad), "finite numeric")
 })
 
-test_that("invalid cohorts and event-time inputs fail at construction", {
+test_that("invalid batches and event-time inputs fail at construction", {
   g <- toy_graph()
   expect_error(shield_parameters(g, N = 1.5), "integer")
   expect_error(shield_parameters(g, N = NA_real_), "finite")

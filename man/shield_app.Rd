@@ -2,7 +2,7 @@
 % Please edit documentation in R/app.R
 \name{shield_app}
 \alias{shield_app}
-\title{Explore synthetic evacuation scenarios in Shiny}
+\title{Explore synthetic logistics scenarios in Shiny}
 \usage{
 shield_app(launch = TRUE, ...)
 }
@@ -18,14 +18,14 @@ A \code{shiny.appobj}, invisibly when launched.
 \description{
 A local scenario workbench with an editable five-leg graph, independent
 policy comparisons and paired disruptions-disabled interventions. Teaching
-presets have zero physiological hazards and zero exposure. Every edited
+presets have zero item-condition hazards and zero exposure. Every edited
 scenario is validated by \code{\link[=shield_parameters]{shield_parameters()}} before simulation.
 }
 \details{
 The primary endpoint is live arrival at Stage 2 by the administrative
 horizon. Arrival-time summaries condition on observed arrivals. The coupled
 policy is a heuristic, and neither the app nor its examples establish
-clinical or operational validity. Simulations use \code{\link[=simulate_shield]{simulate_shield()}};
+application-specific validity. Simulations use \code{\link[=simulate_shield]{simulate_shield()}};
 comparisons use the documented package analysis functions, with 10,000
 bootstrap resamples. The interactive workload is bounded; use scripts for
 full study runs. Independent policy arms use distinct master seeds; paired

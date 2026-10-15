@@ -7,7 +7,7 @@
 replication_seeds(n_rep, seed = 20260512L)
 }
 \arguments{
-\item{n_rep}{Positive integer total number of cohort replications.}
+\item{n_rep}{Positive integer total number of batch replications.}
 
 \item{seed}{Master/cell seed, default 20260512.}
 }

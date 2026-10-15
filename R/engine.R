@@ -7,7 +7,7 @@ init_rng_full <- function() {
   policy <- parallel::nextRNGStream(base)
   disruption <- parallel::nextRNGStream(policy)
   e <- new.env(parent = emptyenv())
-  e$clinical <- base
+  e$item <- base
   e$policy <- policy
   e$disruption <- disruption
   e
@@ -23,8 +23,8 @@ draw_rng_full <- function(rng, stream, n) {
 }
 
 simulate_once_full <- function(policy, disruption_model, params) {
-  if (!is.null(params$clinical_model)) return(simulate_once_clinical_v1(policy, disruption_model, params))
-  state <- init_patients_full(params)
+  if (!is.null(params$item_model)) return(simulate_once_item_v1(policy, disruption_model, params))
+  state <- init_items_full(params)
   rng <- init_rng_full()
   theta <- init_theta_full(params)
   base_disruption_risk <- unname(params$disruption_risk[params$disruption_risk_level])
@@ -37,13 +37,13 @@ simulate_once_full <- function(policy, disruption_model, params) {
   vehicle_free <- lapply(pools, function(x) rep(0, x$vehicles))
   departure_time <- lapply(pools, function(x) rep(NA_real_, x$vehicles))
   assignment_time <- lapply(pools, function(x) rep(NA_real_, x$vehicles))
-  departure_patient <- lapply(pools, function(x) rep(NA_integer_, x$vehicles))
+  departure_item <- lapply(pools, function(x) rep(NA_integer_, x$vehicles))
   departure_route <- lapply(pools, function(x) rep(NA_integer_, x$vehicles))
   departure_dest <- lapply(pools, function(x) rep(NA_integer_, x$vehicles))
   departure_hold <- lapply(pools, function(x) rep(NA_integer_, x$vehicles))
 
   n_disruption <- 0L
-  n_disruption_fatal <- 0L
+  n_disruption_destructive <- 0L
   n_dispatch <- integer(n_leg)
   route_count <- matrix(0L, n_leg, params$R)
   destination_count <- integer(length(NODE))
@@ -52,8 +52,8 @@ simulate_once_full <- function(policy, disruption_model, params) {
 
   for (time in 0:params$horizon) {
     ## 1a. Record physical stage arrival before unloading. This is the
-    ## endpoint boundary; clinical hazard stops at physical Stage-2 arrival.
-    physical <- which(state$status == 1L & state$alive &
+    ## endpoint boundary; item hazard stops at physical Stage-2 arrival.
+    physical <- which(state$status == 1L & state$viable &
                       !is.na(state$dest) & !is.na(state$t_arrival) &
                       state$t_arrival <= time)
     if (length(physical)) {
@@ -68,7 +68,7 @@ simulate_once_full <- function(policy, disruption_model, params) {
     }
 
     ## 1b. A casualty becomes available at a node after unloading.
-    arrived <- which(state$status == 1L & state$alive &
+    arrived <- which(state$status == 1L & state$viable &
                      !is.na(state$dest) & !is.na(state$t_eta) &
                      state$t_eta <= time)
     if (length(arrived)) {
@@ -81,12 +81,12 @@ simulate_once_full <- function(policy, disruption_model, params) {
 
     if (time == params$horizon) break
 
-    ## 2. Cancel reservations whose patient died while loading/holding.
+    ## 2. Cancel reservations whose item failed while loading/holding.
     ## The vehicle was occupied until cancellation, but no traversal, disruption
     ## observation or realised-route count is created by a cancelled trip.
     for (pool_i in seq_len(n_pool)) {
       reserved <- which(!is.na(departure_time[[pool_i]]))
-      cancelled <- reserved[!state$alive[departure_patient[[pool_i]][reserved]]]
+      cancelled <- reserved[!state$viable[departure_item[[pool_i]][reserved]]]
       if (length(cancelled)) {
         leg <- pools[[pool_i]]$leg
         busy_minutes[leg] <- busy_minutes[leg] + sum(
@@ -94,17 +94,17 @@ simulate_once_full <- function(policy, disruption_model, params) {
         vehicle_free[[pool_i]][cancelled] <- time
         departure_time[[pool_i]][cancelled] <- NA_real_
         assignment_time[[pool_i]][cancelled] <- NA_real_
-        departure_patient[[pool_i]][cancelled] <- NA_integer_
+        departure_item[[pool_i]][cancelled] <- NA_integer_
         departure_route[[pool_i]][cancelled] <- NA_integer_
         departure_dest[[pool_i]][cancelled] <- NA_integer_
         departure_hold[[pool_i]][cancelled] <- NA_integer_
       }
     }
 
-    ## Once every casualty is dead or has physically reached Stage 3, all
+    ## Once every casualty is failed or has physically reached Stage 3, all
     ## endpoints are fixed. Vehicle cycles were booked at departure, so the
     ## remaining empty return travel needs no minute-by-minute processing.
-    if (all(!state$alive | !is.na(state$t_stage3))) break
+    if (all(!state$viable | !is.na(state$t_stage3))) break
 
     ## Resolve live departures. Allocations use a start-of-minute history
     ## snapshot so simultaneous departures cannot react to one another.
@@ -116,7 +116,7 @@ simulate_once_full <- function(policy, disruption_model, params) {
       going <- which(!is.na(departure_time[[pool_i]]) &
                      departure_time[[pool_i]] <= time)
       for (vehicle in going) {
-        patient <- departure_patient[[pool_i]][vehicle]
+        item <- departure_item[[pool_i]][vehicle]
         route <- departure_route[[pool_i]][vehicle]
         dest <- departure_dest[[pool_i]][vehicle]
 
@@ -136,11 +136,11 @@ simulate_once_full <- function(policy, disruption_model, params) {
         disruption_delay <- 0L
         if (disrupted) {
           n_disruption <- n_disruption + 1L
-          if (state$alive[patient]) {
+          if (state$viable[item]) {
             if (disruption_u[2L] < params$q) {
-              state$alive[patient] <- FALSE
-              state$status[patient] <- 3L
-              n_disruption_fatal <- n_disruption_fatal + 1L
+              state$viable[item] <- FALSE
+              state$status[item] <- 3L
+              n_disruption_destructive <- n_disruption_destructive + 1L
             } else {
               disruption_delay <- params$att_delay
             }
@@ -150,10 +150,10 @@ simulate_once_full <- function(policy, disruption_model, params) {
         }
 
         travel <- params$leg_time[leg, route]
-        if (state$alive[patient]) {
-          state$t_arrival[patient] <- time + travel + disruption_delay
-          state$t_eta[patient] <- state$t_arrival[patient] + params$t_unload
-          state$dest[patient] <- dest
+        if (state$viable[item]) {
+          state$t_arrival[item] <- time + travel + disruption_delay
+          state$t_eta[item] <- state$t_arrival[item] + params$t_unload
+          state$dest[item] <- dest
         }
         cycle_after_departure <- travel + disruption_delay + params$t_unload + travel
         vehicle_free[[pool_i]][vehicle] <- time + cycle_after_departure
@@ -168,7 +168,7 @@ simulate_once_full <- function(policy, disruption_model, params) {
 
         departure_time[[pool_i]][vehicle] <- NA_real_
         assignment_time[[pool_i]][vehicle] <- NA_real_
-        departure_patient[[pool_i]][vehicle] <- NA_integer_
+        departure_item[[pool_i]][vehicle] <- NA_integer_
         departure_route[[pool_i]][vehicle] <- NA_integer_
         departure_dest[[pool_i]][vehicle] <- NA_integer_
         departure_hold[[pool_i]][vehicle] <- NA_integer_
@@ -181,26 +181,26 @@ simulate_once_full <- function(policy, disruption_model, params) {
                                         route = routes))
     }
 
-    ## 3. Patient information is refreshed before this minute's decisions.
+    ## 3. Item information is refreshed before this minute's decisions.
     if (time %% params$reassess == 0L) {
-      state <- reassess_patients_full(
+      state <- reassess_items_full(
         state, params,
-        u_error = draw_rng_full(rng, "clinical", params$N),
-        u_shift = draw_rng_full(rng, "clinical", params$N))
+        u_error = draw_rng_full(rng, "item", params$N),
+        u_shift = draw_rng_full(rng, "item", params$N))
       if (time == 0L && !is.null(params$decision_controls))
         state$obs_initial <- state$obs
     }
 
     ## 4. Current plus committed downstream demand prevents batch herding.
-    waiting <- tabulate(state$node[state$alive & state$status == 0L],
+    waiting <- tabulate(state$node[state$viable & state$status == 0L],
                         nbins = length(NODE))
-    travelling_dest <- state$dest[state$alive & state$status == 1L &
+    travelling_dest <- state$dest[state$viable & state$status == 1L &
                                   !is.na(state$dest)]
     reserved_dest <- integer(0)
     for (pool_i in seq_len(n_pool)) {
       scheduled <- which(!is.na(departure_dest[[pool_i]]))
       scheduled <- scheduled[
-        state$alive[departure_patient[[pool_i]][scheduled]]]
+        state$viable[departure_item[[pool_i]][scheduled]]]
       reserved_dest <- c(reserved_dest,
                          departure_dest[[pool_i]][scheduled])
     }
@@ -232,20 +232,20 @@ simulate_once_full <- function(policy, disruption_model, params) {
           scheduled = scheduled_by_leg[[leg]],
           decision_u = draw_rng_full(rng, "policy", 1L))
         if (is.null(decision)) break
-        patient <- decision$patient
-        origin <- state$node[patient]
+        item <- decision$item
+        origin <- state$node[item]
         waiting[origin] <- waiting[origin] - 1L
         demand[origin] <- demand[origin] - 1L
         demand[decision$dest] <- demand[decision$dest] + 1L
 
-        state$status[patient] <- 1L
-        state$t_eta[patient] <- NA_real_
-        state$t_arrival[patient] <- NA_real_
-        state$dest[patient] <- NA_integer_
+        state$status[item] <- 1L
+        state$t_eta[item] <- NA_real_
+        state$t_arrival[item] <- NA_real_
+        state$dest[item] <- NA_integer_
         assignment_time[[pool_i]][vehicle] <- time
         departure_time[[pool_i]][vehicle] <-
           time + params$t_load + decision$hold
-        departure_patient[[pool_i]][vehicle] <- patient
+        departure_item[[pool_i]][vehicle] <- item
         departure_route[[pool_i]][vehicle] <- decision$route
         departure_dest[[pool_i]][vehicle] <- decision$dest
         departure_hold[[pool_i]][vehicle] <- decision$hold
@@ -258,10 +258,10 @@ simulate_once_full <- function(policy, disruption_model, params) {
     }
 
     ## 5. Hazard and escalation continue during waiting, holding and transit.
-    state <- update_patient_state_full(
+    state <- update_item_state_full(
       state, 1, params,
-      u_death = draw_rng_full(rng, "clinical", params$N),
-      u_escalate = draw_rng_full(rng, "clinical", params$N))
+      u_loss = draw_rng_full(rng, "item", params$N),
+      u_escalate = draw_rng_full(rng, "item", params$N))
   }
 
   ## Count occupancy of reservations still loading at administrative
@@ -280,15 +280,15 @@ simulate_once_full <- function(policy, disruption_model, params) {
   reached2 <- sum(!is.na(state$t_stage2))
   reached3 <- sum(!is.na(state$t_stage3))
   result <- data.frame(
-    surv_stage1 = reached1 / n,
-    surv_stage2 = reached2 / n,
-    surv_stage3 = reached3 / n,
+    viable_stage1 = reached1 / n,
+    viable_stage2 = reached2 / n,
+    viable_stage3 = reached3 / n,
     n_stage1 = reached1, n_stage2 = reached2, n_stage3 = reached3,
     t_stage2_med = if (reached2) stats::median(state$t_stage2, na.rm = TRUE) else NA_real_,
     t_stage3_med = if (reached3) stats::median(state$t_stage3, na.rm = TRUE) else NA_real_,
     n_dispatch = sum(n_dispatch), n_disruption = n_disruption,
-    n_att_fatal = n_disruption_fatal,
-    n_pending = sum(state$alive & is.na(state$t_stage3)),
+    n_disruption_loss = n_disruption_destructive,
+    n_pending = sum(state$viable & is.na(state$t_stage3)),
     hold_mean = if (length(holds)) mean(holds) else 0,
     hold_rate = if (length(holds)) mean(holds > 0L) else 0,
     stringsAsFactors = FALSE)

@@ -33,7 +33,7 @@ Caller RNG state is restored. Intervals quantify Monte Carlo uncertainty
 conditional on the model and do not propagate parameter uncertainty.
 }
 \description{
-Percentile intervals for independent arms or explicitly paired cohort
+Percentile intervals for independent arms or explicitly paired batch
 outcomes. The caller must establish pairing before passing paired vectors.
 Prefer \code{\link[=compare_intervention]{compare_intervention()}} when working with complete shield_run objects,
 because it also verifies settings and replication identities.

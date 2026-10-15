@@ -28,12 +28,12 @@ test_that("RNG restoration also covers missing seed and error paths", {
   expect_identical(RNGkind(), old_kind)
 })
 
-test_that("disruption toggles retain clinical random numbers when disruptions have no consequences", {
+test_that("disruption toggles retain item random numbers when disruptions have no consequences", {
   s <- stochastic_scenario()
   s$q <- 0
   s$att_delay <- 0L
   a <- simulate_shield(s, "P0", "adaptive", n_rep = 4L, disruptions_enabled = TRUE)
   b <- simulate_shield(s, "P0", "adaptive", n_rep = 4L, disruptions_enabled = FALSE)
-  for (nm in c("replicate_seed", "surv_stage1", "surv_stage2", "surv_stage3",
+  for (nm in c("replicate_seed", "viable_stage1", "viable_stage2", "viable_stage3",
                 "t_stage2_med", "t_stage3_med")) expect_identical(a[[nm]], b[[nm]])
 })

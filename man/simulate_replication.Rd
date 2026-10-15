@@ -2,7 +2,7 @@
 % Please edit documentation in R/analysis-interface.R
 \name{simulate_replication}
 \alias{simulate_replication}
-\title{Simulate one cohort using an explicit replication seed}
+\title{Simulate one batch using an explicit replication seed}
 \usage{
 simulate_replication(
   parameters,
@@ -22,7 +22,7 @@ with \code{\link[=with_decision_controls]{with_decision_controls()}} for a separ
 \item{replication_seed}{One nonnegative integer seed.}
 }
 \value{
-One-row data frame of cohort outcomes, without study identifiers.
+One-row data frame of batch outcomes, without study identifiers.
 }
 \description{
 This entry point supports external schedulers and durable checkpoints.

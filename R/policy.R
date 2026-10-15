@@ -1,9 +1,9 @@
 # Five-stage network simulation model.
 
-select_patient_full <- function(state, nodes,
+select_item_full <- function(state, nodes,
                                 basis = c("initial", "observed")) {
   basis <- match.arg(basis)
-  waiting <- which(state$alive & state$status == 0L & state$node %in% nodes)
+  waiting <- which(state$viable & state$status == 0L & state$node %in% nodes)
   if (!length(waiting)) return(NA_integer_)
   priority <- if (basis == "initial") state$cls0[waiting] else state$obs[waiting]
   waiting[order(priority, waiting)][1L]
@@ -25,15 +25,15 @@ decide_transport_full <- function(policy = c("P0", "P1", "P2", "P3"),
   state <- prepare_decision_state_full(state, params)
   basis <- if (!is.null(control)) "observed" else
     if (policy %in% c("P0", "P2")) "initial" else "observed"
-  patient <- select_patient_full(state, origins, basis)
-  if (is.na(patient)) return(NULL)
+  item <- select_item_full(state, origins, basis)
+  if (is.na(item)) return(NULL)
 
   dests <- params$leg_dests[[leg]]
   disruption_risk <- theta_hat_full(theta)[leg, ]
   travel <- params$leg_time[leg, ]
 
   if (policy == "P3") {
-    urgency <- urgency_index_full(state, 0, params, observed = TRUE)[patient]
+    urgency <- urgency_index_full(state, 0, params, observed = TRUE)[item]
     queue_wait <- params$kappa_node[dests] * demand[dests]
     choices <- expand.grid(route = seq_len(params$R), dest_i = seq_along(dests),
                            KEEP.OUT.ATTRS = FALSE)
@@ -81,7 +81,7 @@ decide_transport_full <- function(policy = c("P0", "P1", "P2", "P3"),
     probability <- probability / sum(probability)
     if (is.null(decision_u)) decision_u <- stats::runif(1)
     selected <- which(decision_u <= cumsum(probability))[1L]
-    return(list(patient = patient,
+    return(list(item = item,
                 route = as.integer(choices$route[selected]),
                 dest = as.integer(dests[choices$dest_i[selected]]),
                 hold = as.integer(params$departure_holds[best_hold[selected]])))
@@ -93,5 +93,5 @@ decide_transport_full <- function(policy = c("P0", "P1", "P2", "P3"),
     P1 = 1L,
     P2 = as.integer(which.min(params$q * disruption_risk +
                               params$eps_time * travel)))
-  list(patient = patient, route = route, dest = as.integer(dest), hold = 0L)
+  list(item = item, route = route, dest = as.integer(dest), hold = 0L)
 }

@@ -1,6 +1,6 @@
 set.seed(20260512)
 
-test_that("external scheduling reproduces the cohort runner including chunk order", {
+test_that("external scheduling reproduces the batch runner including chunk order", {
   s <- example_scenario(N = 3L)
   seed <- 20260512L
   schedule <- replication_seeds(5L, seed)

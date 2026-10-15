@@ -11,7 +11,7 @@ effect_magnitude(delta)
 }
 \value{
 Character magnitude labels. These descriptive thresholds are not
-clinical importance margins and do not establish practical benefit.
+application-specific importance margins and do not establish practical benefit.
 }
 \description{
 Describe Cliff's delta using conventional magnitude thresholds

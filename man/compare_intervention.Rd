@@ -7,7 +7,7 @@
 compare_intervention(
   disruptions,
   no_disruptions,
-  endpoint = "surv_stage2",
+  endpoint = "viable_stage2",
   B = 10000L,
   seed = 20260512L
 )
@@ -16,8 +16,8 @@ compare_intervention(
 \item{disruptions, no_disruptions}{\code{shield_run} objects from \code{\link[=simulate_shield]{simulate_shield()}} with
 identical seeds, replication counts and settings except disruption enablement.}
 
-\item{endpoint}{Arrival survival at Stages 1--3, or clinical \code{surv_24h} /
-\code{surv_30d} when both runs use the clinical extension.}
+\item{endpoint}{Arrival viability at Stages 1--3, or item \code{viable_24h} /
+\code{viable_30d} when both runs use the item extension.}
 
 \item{B}{Positive integer paired bootstrap resamples; default 10,000.}
 
@@ -32,5 +32,5 @@ Checks that the two runs have matching parameters, policy, disruption_model,
 replication identifiers and seeds, with disruptions enabled only in the first.
 Rows are aligned by replication identifier. The contrast is no disruptions minus
 disruptions, a total modelled intervention effect that includes downstream and
-administrative-horizon effects. It is not direct disruption mortality.
+administrative-horizon effects. It is not direct disruption loss.
 }

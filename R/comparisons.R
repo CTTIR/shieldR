@@ -8,7 +8,7 @@ check_sample <- function(x, name) {
 #' Applies a two-sided, tie-corrected Mann-Whitney U approximation, Cliff's
 #' delta and percentile bootstrap intervals for delta and the median difference.
 #' Positive effects favour `x`. This test compares distributions; it is not
-#' specifically a test of medians. Observations must be independent cohorts.
+#' specifically a test of medians. Observations must be independent batches.
 #' Normality testing is not a prerequisite. Intervals describe Monte Carlo
 #' sampling uncertainty conditional on the assumed model.
 #'
@@ -40,7 +40,7 @@ compare_policies <- function(x, y, label_x = "x", label_y = "y", family = "compa
 }
 
 #' Kruskal-Wallis comparison of multiple independent arms
-#' @param values Finite cohort-level outcomes.
+#' @param values Finite batch-level outcomes.
 #' @param groups Nonmissing group labels of the same length, at least three arms.
 #' @param family Explicit comparison-family label.
 #' @return One row containing H, degrees of freedom and raw and log10 p-values.
@@ -74,22 +74,22 @@ adjust_fdr <- function(log10_p) {
 #' replication identifiers and seeds, with disruptions enabled only in the first.
 #' Rows are aligned by replication identifier. The contrast is no disruptions minus
 #' disruptions, a total modelled intervention effect that includes downstream and
-#' administrative-horizon effects. It is not direct disruption mortality.
+#' administrative-horizon effects. It is not direct disruption loss.
 #'
 #' @param disruptions,no_disruptions `shield_run` objects from [simulate_shield()] with
 #'   identical seeds, replication counts and settings except disruption enablement.
-#' @param endpoint Arrival survival at Stages 1--3, or clinical `surv_24h` /
-#'   `surv_30d` when both runs use the clinical extension.
+#' @param endpoint Arrival viability at Stages 1--3, or item `viable_24h` /
+#'   `viable_30d` when both runs use the item extension.
 #' @param B Positive integer paired bootstrap resamples; default 10,000.
 #' @param seed Bootstrap seed; default 20260512.
 #' @return One row with paired mean difference and percentile 95 percent
 #'   interval on the proportion scale. Replication indices are resampled jointly.
 #' @export
-compare_intervention <- function(disruptions, no_disruptions, endpoint = "surv_stage2",
+compare_intervention <- function(disruptions, no_disruptions, endpoint = "viable_stage2",
                                   B = 10000L, seed = 20260512L) {
   if (!inherits(disruptions, "shield_run") || !inherits(no_disruptions, "shield_run"))
     stop("both inputs must be shield_run objects", call. = FALSE)
-  endpoint <- match.arg(endpoint, c("surv_stage1", "surv_stage2", "surv_stage3", "surv_24h", "surv_30d"))
+  endpoint <- match.arg(endpoint, c("viable_stage1", "viable_stage2", "viable_stage3", "viable_24h", "viable_30d"))
   check_scalar(B, "B", 1, integer = TRUE)
   a <- disruptions[order(disruptions$rep), ]; b <- no_disruptions[order(no_disruptions$rep), ]
   pa <- attr(disruptions, "parameters"); pb <- attr(no_disruptions, "parameters")

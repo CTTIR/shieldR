@@ -11,7 +11,7 @@ development:
 home:
   title: shieldR
   description: 'Academic research software for reproducible simulation and comparison
-    of evacuation policies under uncertainty.
+    of logistics policies under uncertainty.
 
     '
   links:
@@ -35,7 +35,7 @@ reference:
   - shield_parameters
   - with_decision_controls
 - title: Simulation and reproducibility
-  desc: Run cohorts, inspect outcomes, and preserve a fixed replication schedule.
+  desc: Run batches, inspect outcomes, and preserve a fixed replication schedule.
   contents:
   - simulate_shield
   - summarize_shield
@@ -63,9 +63,9 @@ reference:
   - shieldR-package
 - title: Additional analysis interfaces
   contents:
-  - calibrate_clinical_model
-  - simulate_clinical_reference
-  - with_clinical_model
+  - calibrate_item_model
+  - simulate_item_reference
+  - with_item_model
 articles:
 - title: Learn shieldR
   navbar: null
