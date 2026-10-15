@@ -1,5 +1,8 @@
 # shieldR
 
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE.md)
+
 [![R package checks](https://github.com/CTTIR/shieldR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/CTTIR/shieldR/actions/workflows/R-CMD-check.yaml)
 
 **Simulate, compare, and explain evacuation policies under uncertainty.**
@@ -94,7 +97,7 @@ compare_intervention(with_disruptions, without_disruptions)
 ```
 
 These teaching inputs have zero exposure, so toggling disruptions has no effect.
-For a user-specified nonzero disruption_risk scenario, the same API estimates the total
+For a user-specified nonzero disruption risk scenario, the same API estimates the total
 modelled intervention contrast. It checks matching settings and replication
 identities. Independent policy arms instead require distinct seeds.
 
@@ -106,7 +109,7 @@ version and RNG kind as attributes.
 
 | Columns or attributes | Meaning |
 |---|---|
-| `policy`, `disruption_model`, `disruptions` | Decision rule, disruption_risk-response family and disruption enablement |
+| `policy`, `disruption_model`, `disruptions` | Decision rule, disruption-response family and disruption enablement |
 | `rep`, `cell_seed`, `replicate_seed` | Replication identity and reproducible seed schedule |
 | `surv_stage1`, `surv_stage2`, `surv_stage3` | Proportions of the original cohort arriving alive at each stage |
 | `n_stage1`, `n_stage2`, `n_stage3` | Corresponding arrival counts |
@@ -133,7 +136,7 @@ still uses median and IQR.
   P2 learns route risk; P3 couples patient priority, route, destination and hold.
 - Same-time departures share pre-batch history. Observed disruption outcomes update
   beliefs before later dispatch decisions in the same minute.
-- P3 knows the specified disruption_model-model family and response parameters. Its
+- P3 knows the specified disruption-response family and response parameters. Its
   forecast and softmax rule are heuristics. P1/P2 are not factorial ablations.
 - One row is one cohort replication. `surv_stage2` is the primary arrival-alive
   endpoint; live nonarrivals at the administrative horizon count as failures.
@@ -195,3 +198,10 @@ previous private analysis environments. Existing study installations and their
 validated numerical records are separate from this public edition.
 
 No clinical validation, policy superiority, or scientific certification is claimed.
+
+## Authors and citation
+
+R. Heller. Use `citation("shieldR")` for installed-version metadata and record
+the exact package revision, scenario definition and `sessionInfo()` with each
+analysis. Report reproducible problems using synthetic inputs in
+[GitHub issues](https://github.com/CTTIR/shieldR/issues).

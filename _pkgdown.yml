@@ -1,87 +1,77 @@
-# Private local documentation. No deployment URL or publishing workflow.
-destination: output/pkgdown
-
+destination: docs
 template:
   package: themakR
   math-rendering: mathml
   bslib:
-    base_font: "system-ui"
-    heading_font: "system-ui"
-    code_font: "monospace"
-  includes:
-    in_header: |
-      <meta name="robots" content="noindex, nofollow, noarchive">
-
+    base_font: system-ui
+    heading_font: system-ui
+    code_font: monospace
 development:
   mode: auto
-
 home:
   title: shieldR
-  description: >
-    Academic research software for reproducible simulation and comparison
+  description: 'Academic research software for reproducible simulation and comparison
     of evacuation policies under uncertainty.
+
+    '
   links:
-    - text: Getting started
-      href: articles/getting-started.html
-    - text: Study design and reproducibility
-      href: articles/study-design.html
-    - text: Interactive exploration
-      href: articles/interactive-exploration.html
+  - text: Getting started
+    href: articles/getting-started.html
+  - text: Study design and reproducibility
+    href: articles/study-design.html
+  - text: Interactive exploration
+    href: articles/interactive-exploration.html
   sidebar:
-    structure: [links, license, authors]
-
-footer:
-  structure:
-    left: developed_by
-    right: ~
-
+    structure:
+    - links
+    - license
+    - citation
+    - authors
 reference:
-  - title: Scenarios and validation
-    desc: Construct explicit inputs for the fixed five-leg model.
-    contents:
-      - example_scenario
-      - shield_parameters
-      - with_decision_controls
-
-  - title: Simulation and reproducibility
-    desc: Run cohorts, inspect outcomes, and preserve a fixed replication schedule.
-    contents:
-      - simulate_shield
-      - summarize_shield
-      - replication_seeds
-      - simulate_replication
-
-  - title: Comparisons and inference
-    desc: Explicit independent and paired designs with nonparametric inference.
-    contents:
-      - compare_policies
-      - compare_multiple
-      - compare_intervention
-      - adjust_fdr
-
-  - title: Analysis primitives
-    desc: Compose study-owned pipelines with documented statistical helpers.
-    contents:
-      - mann_whitney_u
-      - bootstrap_statistic
-      - effect_magnitude
-
-  - title: Interactive workbench
-    desc: Build, run, inspect and export synthetic experiments locally.
-    contents:
-      - shield_app
-
-  - title: Package
-    contents:
-      - shieldR-package
-
+- title: Scenarios and validation
+  desc: Construct explicit inputs for the fixed five-leg model.
+  contents:
+  - example_scenario
+  - shield_parameters
+  - with_decision_controls
+- title: Simulation and reproducibility
+  desc: Run cohorts, inspect outcomes, and preserve a fixed replication schedule.
+  contents:
+  - simulate_shield
+  - summarize_shield
+  - replication_seeds
+  - simulate_replication
+- title: Comparisons and inference
+  desc: Explicit independent and paired designs with nonparametric inference.
+  contents:
+  - compare_policies
+  - compare_multiple
+  - compare_intervention
+  - adjust_fdr
+- title: Analysis primitives
+  desc: Compose study-owned pipelines with documented statistical helpers.
+  contents:
+  - mann_whitney_u
+  - bootstrap_statistic
+  - effect_magnitude
+- title: Interactive workbench
+  desc: Build, run, inspect and export synthetic experiments locally.
+  contents:
+  - shield_app
+- title: Package
+  contents:
+  - shieldR-package
+- title: Additional analysis interfaces
+  contents:
+  - calibrate_clinical_model
+  - simulate_clinical_reference
+  - with_clinical_model
 articles:
-  - title: Learn shieldR
-    navbar: ~
-    contents:
-      - getting-started
-      - study-design
-      - interactive-exploration
+- title: Learn shieldR
+  navbar: null
+  contents:
+  - getting-started
+  - study-design
+  - interactive-exploration
 
-# Inherit themakR's navigation and native light/dark/auto toggle.
-# The public R-universe installation sidebar is omitted for this private package.
+llm-docs: false

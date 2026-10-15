@@ -1,5 +1,6 @@
 ---
 title: "Explore and reproduce experiments in the Shiny workbench"
+author: "R. Heller"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Explore and reproduce experiments in the Shiny workbench}
@@ -111,14 +112,14 @@ The sidebar groups controls by purpose:
 | Cohorts and reproducibility | Cohort size, replication count, administrative horizon and master seed |
 | Observation and dispatch | Reassessment, observation error, dispatch interval, allowable holds, loading/unloading and the policy response parameter |
 | Physiological assumptions | Explicit mortality and class-escalation rates |
-| Disruption assumptions | Disruption enablement, baseline probability, conditional fatality, delay and disruption_risk-response assumptions |
+| Disruption assumptions | Disruption enablement, baseline probability, conditional fatality, delay and disruption-response assumptions |
 
 A maximum hold must be a multiple of the dispatch interval. Parameters not
 exposed by the form retain their documented constructor defaults, including the
 rounded class mix, and are recorded in the complete experiment bundle. The
-form sets the two named disruption_risk levels to the same entered baseline and selects
+form sets the two named disruption risk levels to the same entered baseline and selects
 the low label. Use `shield_parameters()` in an R script when your design needs
-separate disruption_risk levels or other settings not exposed by the form.
+separate disruption risk levels or other settings not exposed by the form.
 
 The app does not import previously saved results as a new interactive session.
 Read experiment RDS files in R and use the replay script for a new run.
