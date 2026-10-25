@@ -1,4 +1,4 @@
-# shieldR <img src="man/figures/logo.svg" align="right" height="139" alt="shieldR hex logo" />
+# shieldR <img src="man/figures/logo.png" align="right" width="120" height="139" alt="shieldR hex logo" />
 
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE.md)
@@ -251,3 +251,7 @@ must be reviewed and revised before inclusion, and references must be verified
 against their DOI, arXiv ID or ISBN.
 
 Local software setup: vLLM with Python/PyTorch, plus R and RStudio.
+
+## Branding
+
+Editable R artwork and regeneration instructions are in [tools/branding](https://github.com/CTTIR/shieldR/blob/main/tools/branding/README.md).

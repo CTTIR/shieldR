@@ -1,113 +1,17 @@
-<svg width="500" height="580" viewBox="0 0 500 580" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="bgshd" x1="0" y1="0" x2="0.15" y2="1">
-      <stop offset="0%"  stop-color="#1a1340"/>
-      <stop offset="100%" stop-color="#0c0820"/>
-    </linearGradient>
-    <linearGradient id="distA" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%"  stop-color="#7C3AED" stop-opacity="0.4"/>
-      <stop offset="100%" stop-color="#7C3AED" stop-opacity="0.03"/>
-    </linearGradient>
-    <linearGradient id="distB" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%"  stop-color="#E0913A" stop-opacity="0.4"/>
-      <stop offset="100%" stop-color="#E0913A" stop-opacity="0.03"/>
-    </linearGradient>
-    <clipPath id="hexshd">
-      <polygon points="250,30 455,145 455,375 250,490 45,375 45,145"/>
-    </clipPath>
-  </defs>
-
-  <polygon points="250,30 455,145 455,375 250,490 45,375 45,145" fill="url(#bgshd)"/>
-
-  <g clip-path="url(#hexshd)">
-
-    <!-- faint grid -->
-    <line x1="45" y1="210" x2="455" y2="210" stroke="#2a2060" stroke-width="0.4" opacity="0.4"/>
-    <line x1="45" y1="270" x2="455" y2="270" stroke="#2a2060" stroke-width="0.4" opacity="0.4"/>
-    <line x1="45" y1="330" x2="455" y2="330" stroke="#2a2060" stroke-width="0.4" opacity="0.4"/>
-    <line x1="150" y1="145" x2="150" y2="490" stroke="#2a2060" stroke-width="0.4" opacity="0.3"/>
-    <line x1="250" y1="145" x2="250" y2="490" stroke="#2a2060" stroke-width="0.4" opacity="0.3"/>
-    <line x1="350" y1="145" x2="350" y2="490" stroke="#2a2060" stroke-width="0.4" opacity="0.3"/>
-
-    <!-- faint shield outline (name nod, understated) -->
-    <path d="M 250,150 C 300,166 326,170 348,168 C 348,250 330,300 250,338
-             C 170,300 152,250 152,168 C 174,170 200,166 250,150 Z"
-      fill="none" stroke="#3a2f7a" stroke-width="1.4" opacity="0.4"/>
-
-    <!-- ══════════════════════════════════════════════════════ -->
-    <!-- FIVE-LEG TRANSFER NETWORK — the simulated evacuation      -->
-    <!-- chain of 5 nodes with routes; a branch = policy choice    -->
-    <!-- ══════════════════════════════════════════════════════ -->
-    <!-- route edges -->
-    <g stroke="#7C3AED" stroke-width="2" fill="none" opacity="0.7" stroke-linecap="round">
-      <path d="M 150,208 Q 185,196 214,210"/>
-      <path d="M 214,210 Q 242,224 268,214"/>
-      <!-- branch point: two policy routes to leg 4 -->
-      <path d="M 268,214 Q 300,200 330,200" stroke-dasharray="1 0"/>
-      <path d="M 268,214 Q 300,244 330,250" stroke="#E0913A" opacity="0.65"/>
-      <path d="M 330,200 Q 346,222 340,250"/>
-    </g>
-    <!-- route-risk learning: a risky edge marked -->
-    <path d="M 268,214 Q 300,244 330,250" fill="none" stroke="#E0913A"
-      stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
-
-    <!-- nodes (5 legs: incident → staging → transit → hospital A/B → definitive) -->
-    <!-- leg 1 incident -->
-    <circle cx="150" cy="208" r="11" fill="#2a1f55" stroke="#9F8CF5" stroke-width="2"/>
-    <polygon points="150,202 152,207 157,207 153,210 155,215 150,212 145,215 147,210 143,207 148,207" fill="#E0913A" opacity="0.9"/>
-    <!-- leg 2 staging -->
-    <circle cx="214" cy="210" r="10" fill="#2a1f55" stroke="#9F8CF5" stroke-width="2"/>
-    <circle cx="214" cy="210" r="3" fill="#C4B5F7"/>
-    <!-- leg 3 transit (vehicle) -->
-    <circle cx="268" cy="214" r="10" fill="#2a1f55" stroke="#9F8CF5" stroke-width="2"/>
-    <rect x="263" y="210" width="10" height="7" rx="1.5" fill="#C4B5F7"/>
-    <line x1="268" y1="211" x2="268" y2="216" stroke="#2a1f55" stroke-width="1"/>
-    <line x1="265" y1="213.5" x2="271" y2="213.5" stroke="#2a1f55" stroke-width="1"/>
-    <!-- leg 4a hospital (policy route A) -->
-    <circle cx="330" cy="200" r="10" fill="#2a1f55" stroke="#9F8CF5" stroke-width="2"/>
-    <text font-family="Arial, sans-serif" font-weight="700" font-size="10" fill="#C4B5F7" text-anchor="middle" x="330" y="204">H</text>
-    <!-- leg 4b hospital (policy route B, orange) -->
-    <circle cx="330" cy="250" r="9" fill="#2a1f55" stroke="#E0913A" stroke-width="2"/>
-    <text font-family="Arial, sans-serif" font-weight="700" font-size="9" fill="#E0913A" text-anchor="middle" x="330" y="253.5">H</text>
-    <!-- leg 5 definitive care -->
-    <circle cx="340" cy="250" r="0" />
-    <circle cx="356" cy="224" r="11" fill="#1a1340" stroke="#B9A6FF" stroke-width="2.4"/>
-    <path d="M 356,218 v 12 M 350,224 h 12" stroke="#B9A6FF" stroke-width="2" stroke-linecap="round"/>
-
-    <!-- patient deterioration marker on a transit (amber = worsening) -->
-    <circle cx="241" cy="212" r="2.6" fill="#E0913A"/>
-    <circle cx="299" cy="207" r="2.4" fill="#9FE8C0"/>
-
-    <!-- ══════════════════════════════════════════════════════ -->
-    <!-- POLICY COMPARISON — two outcome distributions + test     -->
-    <!-- bottom: compare_policies(), Mann-Whitney                 -->
-    <!-- ══════════════════════════════════════════════════════ -->
-    <line x1="96" y1="358" x2="404" y2="358" stroke="#4a3a8a" stroke-width="1" opacity="0.6"/>
-    <!-- policy A dist (purple) -->
-    <path d="M 110,356 C 150,352 165,300 195,300 C 225,300 240,352 280,356 L 280,358 L 110,358 Z" fill="url(#distA)"/>
-    <path d="M 110,356 C 150,352 165,300 195,300 C 225,300 240,352 280,356" fill="none" stroke="#B9A6FF" stroke-width="2" stroke-linecap="round"/>
-    <!-- policy B dist (amber, shifted) -->
-    <path d="M 210,356 C 250,352 268,314 300,314 C 332,314 348,352 392,356 L 392,358 L 210,358 Z" fill="url(#distB)"/>
-    <path d="M 210,356 C 250,352 268,314 300,314 C 332,314 348,352 392,356" fill="none" stroke="#E0913A" stroke-width="2" stroke-linecap="round"/>
-    <!-- significance bracket -->
-    <line x1="195" y1="290" x2="300" y2="290" stroke="#9FE8C0" stroke-width="1.2" opacity="0.8"/>
-    <line x1="195" y1="290" x2="195" y2="296" stroke="#9FE8C0" stroke-width="1.2" opacity="0.8"/>
-    <line x1="300" y1="290" x2="300" y2="296" stroke="#9FE8C0" stroke-width="1.2" opacity="0.8"/>
-    <text font-family="monospace" font-size="8" fill="#9FE8C0" opacity="0.85" text-anchor="middle" x="247" y="286">p &lt; .05</text>
-
-    <!-- small CI / bootstrap marks -->
-    <circle cx="195" cy="300" r="3" fill="#B9A6FF"/>
-    <circle cx="300" cy="314" r="3" fill="#E0913A"/>
-
-    <!-- annotation -->
-    <text font-family="monospace" font-size="8" fill="#9F8CF5" opacity="0.6"
-      text-anchor="middle" x="250" y="384">simulate · compare policies</text>
-
-  </g>
-
-  <!-- Hex border — statistics group purple -->
-  <polygon points="250,30 455,145 455,375 250,490 45,375 45,145"
-    fill="none" stroke="#534AB7" stroke-width="11" stroke-linejoin="round"/>
-  <polygon points="250,44 441,153 441,367 250,476 59,367 59,153"
-    fill="none" stroke="#7C3AED" stroke-width="1.5" stroke-linejoin="round" opacity="0.6"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="432" height="498" viewBox="0 0 432 498">
+<path fill-rule="nonzero" fill="rgb(100%, 100%, 100%)" fill-opacity="1" d="M 216 4.980469 L 427.679688 126.988281 L 427.679688 371.011719 L 216 493.019531 L 4.320312 371.011719 L 4.320312 126.988281 Z M 216 4.980469 "/>
+<path fill-rule="nonzero" fill="rgb(93.333333%, 75.294118%, 34.901961%)" fill-opacity="1" d="M 216 10.957031 L 422.496094 129.976562 L 422.496094 368.023438 L 216 487.042969 L 9.503906 368.023438 L 9.503906 129.976562 Z M 216 10.957031 "/>
+<path fill-rule="nonzero" fill="rgb(20%, 18.431373%, 12.156863%)" fill-opacity="1" d="M 216 14.941406 L 419.039062 131.96875 L 419.039062 366.03125 L 216 483.058594 L 12.960938 366.03125 L 12.960938 131.96875 Z M 216 14.941406 "/>
+<path fill-rule="nonzero" fill="rgb(1.176471%, 3.921569%, 7.058824%)" fill-opacity="0.25098" d="M 101.570312 149.226562 L 220.457031 112.136719 L 339.34375 149.226562 L 317.054688 279.042969 L 276.1875 338.386719 L 220.457031 379.1875 L 164.730469 338.386719 L 123.863281 279.042969 Z M 101.570312 149.226562 "/>
+<path fill-rule="nonzero" fill="rgb(96.862745%, 88.627451%, 69.803922%)" fill-opacity="1" d="M 97.113281 141.4375 L 216 104.347656 L 334.886719 141.4375 L 312.59375 271.253906 L 271.726562 330.597656 L 216 371.398438 L 160.273438 330.597656 L 119.40625 271.253906 Z M 97.113281 141.4375 "/>
+<path fill-rule="nonzero" fill="rgb(92.156863%, 70.588235%, 21.960784%)" fill-opacity="1" d="M 216 119.183594 L 320.027344 152.566406 L 297.734375 271.253906 L 256.867188 326.890625 L 216 356.5625 Z M 216 119.183594 "/>
+<path fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(37.254902%, 30.980392%, 12.941176%)" stroke-opacity="1" stroke-miterlimit="10" d="M 152.839844 204.492188 L 212.285156 293.507812 L 279.160156 211.910156 "/>
+<path fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(37.254902%, 30.980392%, 12.941176%)" stroke-opacity="1" stroke-miterlimit="10" d="M 152.839844 204.492188 L 279.160156 211.910156 "/>
+<path fill-rule="nonzero" fill="rgb(1.176471%, 3.921569%, 7.058824%)" fill-opacity="0.25098" d="M 180.664062 210.425781 C 180.664062 223.742188 169.871094 234.535156 156.558594 234.535156 C 143.242188 234.535156 132.449219 223.742188 132.449219 210.425781 C 132.449219 197.113281 143.242188 186.316406 156.558594 186.316406 C 169.871094 186.316406 180.664062 197.113281 180.664062 210.425781 "/>
+<path fill-rule="nonzero" fill="rgb(95.686275%, 97.254902%, 98.823529%)" fill-opacity="1" d="M 176.949219 204.492188 C 176.949219 217.808594 166.15625 228.601562 152.839844 228.601562 C 139.527344 228.601562 128.734375 217.808594 128.734375 204.492188 C 128.734375 191.175781 139.527344 180.382812 152.839844 180.382812 C 166.15625 180.382812 176.949219 191.175781 176.949219 204.492188 "/>
+<path fill-rule="nonzero" fill="rgb(1.176471%, 3.921569%, 7.058824%)" fill-opacity="0.25098" d="M 240.109375 299.441406 C 240.109375 312.757812 229.316406 323.550781 216 323.550781 C 202.683594 323.550781 191.890625 312.757812 191.890625 299.441406 C 191.890625 286.128906 202.683594 275.335938 216 275.335938 C 229.316406 275.335938 240.109375 286.128906 240.109375 299.441406 "/>
+<path fill-rule="nonzero" fill="rgb(95.686275%, 97.254902%, 98.823529%)" fill-opacity="1" d="M 236.394531 293.507812 C 236.394531 306.824219 225.597656 317.617188 212.285156 317.617188 C 198.96875 317.617188 188.175781 306.824219 188.175781 293.507812 C 188.175781 280.191406 198.96875 269.398438 212.285156 269.398438 C 225.597656 269.398438 236.394531 280.191406 236.394531 293.507812 "/>
+<path fill-rule="nonzero" fill="rgb(1.176471%, 3.921569%, 7.058824%)" fill-opacity="0.25098" d="M 306.980469 217.84375 C 306.980469 231.160156 296.1875 241.953125 282.875 241.953125 C 269.558594 241.953125 258.765625 231.160156 258.765625 217.84375 C 258.765625 204.53125 269.558594 193.734375 282.875 193.734375 C 296.1875 193.734375 306.980469 204.53125 306.980469 217.84375 "/>
+<path fill-rule="nonzero" fill="rgb(95.686275%, 97.254902%, 98.823529%)" fill-opacity="1" d="M 303.265625 211.910156 C 303.265625 225.226562 292.472656 236.019531 279.160156 236.019531 C 265.84375 236.019531 255.050781 225.226562 255.050781 211.910156 C 255.050781 198.59375 265.84375 187.800781 279.160156 187.800781 C 292.472656 187.800781 303.265625 198.59375 303.265625 211.910156 "/>
 </svg>
