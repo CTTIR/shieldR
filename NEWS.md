@@ -1,5 +1,9 @@
 # shieldR 0.6.0
 
+* Standardize the named v5 package logo across README, documentation pages
+  and available application headers, with matching light and dark artwork.
+
+
 - Reframe the public model as abstract logistics-chain simulation with changing item specifications.
 - Rename condition-model functions, observation fields, viability endpoints and workbench labels consistently.
 - Preserve the simulation equations and random-draw schedules; this is a terminology and interface revision, not a newly calibrated model.
