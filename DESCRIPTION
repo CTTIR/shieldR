@@ -2,7 +2,7 @@ Package: shieldR
 Title: Logistics Chain Simulation under Dynamic Challenges
 Version: 0.6.0
 Authors@R: person("R.", "Heller",
-    email = "58561665+r-heller@users.noreply.github.com", role = c("aut", "cre"))
+    email = "raban.heller@uni-ulm.de", role = c("aut", "cre"))
 Description: A research implementation of a fixed five-leg logistics chain
     with time-varying item specifications, imperfect observations, finite
     transport resources, route-risk learning, and static or adaptive disruptions.
