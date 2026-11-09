@@ -21,3 +21,8 @@
 ^tools/branding$
 ^LICENSE\.md$
 ^pkgdown$
+^cran-comments\.md$
+^CITATION\.cff$
+^codemeta\.json$
+^\.zenodo\.json$
+^README\.Rmd$
