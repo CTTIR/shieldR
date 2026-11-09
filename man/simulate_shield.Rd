@@ -55,3 +55,8 @@ indexed by item and minute. The caller's RNG kind and seed are restored.
 Equal seeds and equal replication counts support an disruptions-disabled pair.
 Use distinct seeds for independent policy arms.
 }
+\examples{
+scenario <- example_scenario(N = 4L)
+run <- simulate_shield(scenario, policy = "P0", n_rep = 3L, seed = 20260512L)
+run[, c("rep", "viable_stage2", "t_stage2_med")]
+}

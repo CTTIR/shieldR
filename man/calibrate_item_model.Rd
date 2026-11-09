@@ -28,3 +28,23 @@ sample. Fits degradation and early/late residual coefficients. Numerical
 interval integration is explicit. Aggregate fitting is not item
 validation and does not identify unserviced pre-service trajectories.
 }
+\examples{
+item_model <- list(
+  degradation_scale = 0.2, early_other = 0.02, late_other = 0.1,
+  tau = 40, residual = 0.1,
+  prep = c(1, 2, 3), processing = c(2, 3, 4), failure = 0,
+  capacity = 1L, fragility = c(1.2, 1, 0.8),
+  sensitivity = 0.7, specificity = 0.95, persistence = 1,
+  missing = 0, refresh = 2L, delivery = 0L,
+  useful_updates = TRUE, item_age = 0
+)
+fit <- calibrate_item_model(
+  item_model,
+  control = c(30, 60, 90, 120, Inf),
+  fragility = c(1.2, 1, 1, 0.8, 1),
+  targets = c(loss_24 = 0.1, loss_30 = 0.15, degradation_24 = 0.05),
+  step = 30
+)
+fit$expected
+fit$convergence
+}

@@ -30,3 +30,8 @@ The seed is a replication seed, not a cell/master seed. Obtain a complete
 schedule with \code{\link[=replication_seeds]{replication_seeds()}} before splitting work into chunks.
 The caller's RNG kind and state are restored, including on error.
 }
+\examples{
+scenario <- example_scenario(N = 4L)
+seeds <- replication_seeds(2L, seed = 20260512L)
+simulate_replication(scenario, policy = "P0", replication_seed = seeds[1])
+}

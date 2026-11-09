@@ -83,7 +83,7 @@ simulate_once_full <- function(policy, disruption_model, params) {
 
     ## 2. Cancel reservations whose item failed while loading/holding.
     ## The vehicle was occupied until cancellation, but no traversal, disruption
-    ## observation or realised-route count is created by a cancelled trip.
+    ## observation or realized-route count is created by a cancelled trip.
     for (pool_i in seq_len(n_pool)) {
       reserved <- which(!is.na(departure_time[[pool_i]]))
       cancelled <- reserved[!state$viable[departure_item[[pool_i]][reserved]]]

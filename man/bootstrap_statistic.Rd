@@ -38,3 +38,9 @@ outcomes. The caller must establish pairing before passing paired vectors.
 Prefer \code{\link[=compare_intervention]{compare_intervention()}} when working with complete shield_run objects,
 because it also verifies settings and replication identities.
 }
+\examples{
+x <- c(0.50, 0.75, 0.75, 1.00)
+y <- c(0.25, 0.50, 0.50, 0.75, 1.00)
+bootstrap_statistic(x, y, B = 500L)
+bootstrap_statistic(x, y, statistic = "median_difference", B = 500L)
+}

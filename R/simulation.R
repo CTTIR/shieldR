@@ -47,6 +47,10 @@ with_shield_rng <- function(seed, code) {
 #'   continues after arrival; it does not establish application-specific validity.
 #'   Viable nonarrivals at the transport horizon are
 #'   endpoint failures; missing arrival times remain `NA`.
+#' @examples
+#' scenario <- example_scenario(N = 4L)
+#' run <- simulate_shield(scenario, policy = "P0", n_rep = 3L, seed = 20260512L)
+#' run[, c("rep", "viable_stage2", "t_stage2_med")]
 #' @export
 simulate_shield <- function(parameters, policy = c("P0", "P1", "P2", "P3"),
     disruption_model = c("static", "adaptive"), n_rep = 10L, seed = 20260512L,
@@ -75,6 +79,9 @@ simulate_shield <- function(parameters, policy = c("P0", "P1", "P2", "P3"),
 #' @return Data frame of endpoint names, valid and missing replication counts,
 #'   median, first quartile and third quartile. Arrival-time summaries are
 #'   across defined batch medians, not pooled item times.
+#' @examples
+#' run <- simulate_shield(example_scenario(N = 4L), "P0", n_rep = 3L)
+#' summarize_shield(run)
 #' @export
 summarize_shield <- function(x) {
   if (!inherits(x, "shield_run")) stop("x must be a shield_run", call. = FALSE)

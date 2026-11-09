@@ -31,6 +31,14 @@ interval on the proportion scale. Replication indices are resampled jointly.
 Checks that the two runs have matching parameters, policy, disruption_model,
 replication identifiers and seeds, with disruptions enabled only in the first.
 Rows are aligned by replication identifier. The contrast is no disruptions minus
-disruptions, a total modelled intervention effect that includes downstream and
+disruptions, a total modeled intervention effect that includes downstream and
 administrative-horizon effects. It is not direct disruption loss.
+}
+\examples{
+scenario <- example_scenario(N = 4L)
+on <- simulate_shield(scenario, "P3", "adaptive", n_rep = 3L,
+                      disruptions_enabled = TRUE)
+off <- simulate_shield(scenario, "P3", "adaptive", n_rep = 3L,
+                       disruptions_enabled = FALSE)
+compare_intervention(on, off, B = 100L)
 }

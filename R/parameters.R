@@ -25,7 +25,7 @@
 #' @param disruption_risk Named vector of probabilities with names `low` and `high`.
 #' @param disruption_risk_level Selected named disruption_risk level.
 #' @param p_cap Maximum disruption probability, in (0, 1].
-#' @param q Conditional disruption destructiveity probability and security-loss weight.
+#' @param q Conditional disruption destructiveness probability and security-loss weight.
 #' @param att_delay Nonnegative integer nondestructive disruption delay in minutes.
 #' @param lambda Nonnegative finite response parameter.
 #' @param atk_window Positive integer nominal departure-history window.
@@ -36,6 +36,12 @@
 #' @param hazard_band Positive multiplier of loss and escalation rates.
 #' @return A `shield_parameters` list. Treat derived fields as read-only and
 #'   reconstruct through this function when changing a scenario.
+#' @examples
+#' scenario <- example_scenario(N = 4L)
+#' graph <- scenario$graph[c("leg", "from", "to", "route", "travel_min",
+#'                           "exposure_weight", "vehicle_fraction")]
+#' rebuilt <- shield_parameters(graph = graph, N = 4L, horizon = 60L)
+#' identical(rebuilt, scenario)
 #' @export
 shield_parameters <- function(graph, N = 20L, horizon = 60L, slot = 1L,
     departure_holds = 0:2, h = c(0, 0, 0), esc32 = 0, esc21 = 0,

@@ -18,3 +18,8 @@ chunking must not change its declared length or resample the schedule.
 \description{
 Construct the reproducible seed schedule for a complete cell
 }
+\examples{
+replication_seeds(3L)
+# The same master seed always gives the same schedule.
+identical(replication_seeds(3L), replication_seeds(3L))
+}

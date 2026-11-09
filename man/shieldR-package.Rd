@@ -59,11 +59,11 @@ The public package is distributed under the MIT license.
 \code{\link[=compare_policies]{compare_policies()}}, \code{\link[=compare_intervention]{compare_intervention()}}, \code{\link[=shield_app]{shield_app()}}
 }
 \author{
-\strong{Maintainer}: R. Heller \email{58561665+r-heller@users.noreply.github.com}
+\strong{Maintainer}: R. Heller \email{raban.heller@uni-ulm.de} (\href{https://orcid.org/0000-0001-8006-9742}{ORCID})
 
 Authors:
 \itemize{
-  \item R. Heller \email{58561665+r-heller@users.noreply.github.com}
+  \item R. Heller \email{raban.heller@uni-ulm.de} (\href{https://orcid.org/0000-0001-8006-9742}{ORCID})
 }
 
 }

@@ -10,6 +10,10 @@
 #' @param disruption_model Either static or adaptive.
 #' @param replication_seed One nonnegative integer seed.
 #' @return One-row data frame of batch outcomes, without study identifiers.
+#' @examples
+#' scenario <- example_scenario(N = 4L)
+#' seeds <- replication_seeds(2L, seed = 20260512L)
+#' simulate_replication(scenario, policy = "P0", replication_seed = seeds[1])
 #' @export
 simulate_replication <- function(parameters, policy = c("P0", "P1", "P2", "P3"),
     disruption_model = c("static", "adaptive"), replication_seed = 20260512L) {
@@ -24,6 +28,10 @@ simulate_replication <- function(parameters, policy = c("P0", "P1", "P2", "P3"),
 #' @param seed Master/cell seed, default 20260512.
 #' @return Integer vector of length n_rep. Generate the complete schedule once;
 #'   chunking must not change its declared length or resample the schedule.
+#' @examples
+#' replication_seeds(3L)
+#' # The same master seed always gives the same schedule.
+#' identical(replication_seeds(3L), replication_seeds(3L))
 #' @export
 replication_seeds <- function(n_rep, seed = 20260512L) {
   check_scalar(n_rep, "n_rep", 1, integer = TRUE)
@@ -45,6 +53,11 @@ replication_seeds <- function(n_rep, seed = 20260512L) {
 #' @return Named vector with est, lwr and upr; orientation is x minus y.
 #'   Caller RNG state is restored. Intervals quantify Monte Carlo uncertainty
 #'   conditional on the model and do not propagate parameter uncertainty.
+#' @examples
+#' x <- c(0.50, 0.75, 0.75, 1.00)
+#' y <- c(0.25, 0.50, 0.50, 0.75, 1.00)
+#' bootstrap_statistic(x, y, B = 500L)
+#' bootstrap_statistic(x, y, statistic = "median_difference", B = 500L)
 #' @export
 bootstrap_statistic <- function(x, y, statistic = c("cliffs_delta", "median_difference",
     "mean_difference"), paired = FALSE, B = 10000L, conf = .95, seed = 20260512L) {
@@ -69,6 +82,8 @@ bootstrap_statistic <- function(x, y, statistic = c("cliffs_delta", "median_diff
 #'   for very small tails. The linear value is floored if necessary. Uses the
 #'   same two-sided, tie- and continuity-corrected approximation as
 #'   [compare_policies()]. No preliminary normality test is performed.
+#' @examples
+#' mann_whitney_u(c(1, 3, 5, 7), c(2, 4, 6, 8, 10))
 #' @export
 mann_whitney_u <- function(x, y) {
   check_sample(x, "x"); check_sample(y, "y")
@@ -81,6 +96,8 @@ mann_whitney_u <- function(x, y) {
 #' @param delta Finite numeric Cliff's delta values in `[-1, 1]`.
 #' @return Character magnitude labels. These descriptive thresholds are not
 #'   application-specific importance margins and do not establish practical benefit.
+#' @examples
+#' effect_magnitude(c(-0.5, 0.1, 0.3))
 #' @export
 effect_magnitude <- function(delta) {
   check_sample(delta, "delta")

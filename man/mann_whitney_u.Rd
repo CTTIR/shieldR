@@ -18,3 +18,6 @@ same two-sided, tie- and continuity-corrected approximation as
 \description{
 Mann-Whitney U with log-scale tail probabilities
 }
+\examples{
+mann_whitney_u(c(1, 3, 5, 7), c(2, 4, 6, 8, 10))
+}
