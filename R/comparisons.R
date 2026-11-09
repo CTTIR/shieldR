@@ -7,7 +7,7 @@ check_sample <- function(x, name) {
 #'
 #' Applies a two-sided, tie-corrected Mann-Whitney U approximation, Cliff's
 #' delta and percentile bootstrap intervals for delta and the median difference.
-#' Positive effects favour `x`. This test compares distributions; it is not
+#' Positive effects favor `x`. This test compares distributions; it is not
 #' specifically a test of medians. Observations must be independent batches.
 #' Normality testing is not a prerequisite. Intervals describe Monte Carlo
 #' sampling uncertainty conditional on the assumed model.
@@ -23,6 +23,12 @@ check_sample <- function(x, name) {
 #'   `p_raw` is floored at the smallest normal positive double when necessary.
 #'   Point intervals are flagged. Apply [adjust_fdr()] to an explicitly defined
 #'   family of comparisons. The caller's RNG state is restored.
+#' @examples
+#' scenario <- example_scenario(N = 4L)
+#' fixed <- simulate_shield(scenario, "P0", n_rep = 4L, seed = 20260512L)
+#' coupled <- simulate_shield(scenario, "P3", n_rep = 4L, seed = 20260513L)
+#' compare_policies(coupled$viable_stage2, fixed$viable_stage2,
+#'                  label_x = "P3", label_y = "P0", B = 200L)
 #' @export
 compare_policies <- function(x, y, label_x = "x", label_y = "y", family = "comparison",
                             B = 10000L, seed = 20260512L) {
@@ -46,6 +52,10 @@ compare_policies <- function(x, y, label_x = "x", label_y = "y", family = "compa
 #' @return One row containing H, degrees of freedom and raw and log10 p-values.
 #'   This is an omnibus test. Pairwise contrasts and multiplicity gates must be
 #'   specified by the study; no post-hoc test is selected automatically.
+#' @examples
+#' values <- c(0.50, 0.60, 0.55, 0.70, 0.80, 0.75, 0.90, 0.95, 0.85)
+#' groups <- rep(c("P0", "P1", "P3"), each = 3)
+#' compare_multiple(values, groups)
 #' @export
 compare_multiple <- function(values, groups, family = "comparison") {
   check_sample(values, "values")
@@ -61,6 +71,9 @@ compare_multiple <- function(values, groups, family = "comparison") {
 #'   values are preserved and excluded from the family size. `-Inf` is allowed.
 #' @return Adjusted log10 p-values in input order. The caller supplies each
 #'   prespecified family separately; no SHIELD hypothesis grid is embedded.
+#' @examples
+#' # Raw p-values of one prespecified comparison family, on the log10 scale
+#' adjust_fdr(log10(c(0.001, 0.02, 0.04, 0.3)))
 #' @export
 adjust_fdr <- function(log10_p) {
   if (!is.numeric(log10_p) || any(log10_p > 0, na.rm = TRUE))
@@ -73,7 +86,7 @@ adjust_fdr <- function(log10_p) {
 #' Checks that the two runs have matching parameters, policy, disruption_model,
 #' replication identifiers and seeds, with disruptions enabled only in the first.
 #' Rows are aligned by replication identifier. The contrast is no disruptions minus
-#' disruptions, a total modelled intervention effect that includes downstream and
+#' disruptions, a total modeled intervention effect that includes downstream and
 #' administrative-horizon effects. It is not direct disruption loss.
 #'
 #' @param disruptions,no_disruptions `shield_run` objects from [simulate_shield()] with
@@ -84,6 +97,13 @@ adjust_fdr <- function(log10_p) {
 #' @param seed Bootstrap seed; default 20260512.
 #' @return One row with paired mean difference and percentile 95 percent
 #'   interval on the proportion scale. Replication indices are resampled jointly.
+#' @examples
+#' scenario <- example_scenario(N = 4L)
+#' on <- simulate_shield(scenario, "P3", "adaptive", n_rep = 3L,
+#'                       disruptions_enabled = TRUE)
+#' off <- simulate_shield(scenario, "P3", "adaptive", n_rep = 3L,
+#'                        disruptions_enabled = FALSE)
+#' compare_intervention(on, off, B = 100L)
 #' @export
 compare_intervention <- function(disruptions, no_disruptions, endpoint = "viable_stage2",
                                   B = 10000L, seed = 20260512L) {

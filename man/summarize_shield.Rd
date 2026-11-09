@@ -17,3 +17,7 @@ across defined batch medians, not pooled item times.
 \description{
 Summarize batch outcomes
 }
+\examples{
+run <- simulate_shield(example_scenario(N = 4L), "P0", n_rep = 3L)
+summarize_shield(run)
+}

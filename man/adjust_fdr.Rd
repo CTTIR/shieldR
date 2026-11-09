@@ -17,3 +17,7 @@ prespecified family separately; no SHIELD hypothesis grid is embedded.
 \description{
 Adjust one explicitly defined family using Benjamini-Hochberg FDR
 }
+\examples{
+# Raw p-values of one prespecified comparison family, on the log10 scale
+adjust_fdr(log10(c(0.001, 0.02, 0.04, 0.3)))
+}

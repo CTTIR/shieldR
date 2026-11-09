@@ -13,6 +13,19 @@
 #'   Rates are cumulative coefficients; tau and all times are minutes.
 #' @param planner Same schema, fixed across truth sensitivity conditions.
 #' @return A new parameter object with an opt-in item configuration.
+#' @examples
+#' item_model <- list(
+#'   degradation_scale = 0.2, early_other = 0.02, late_other = 0.1,
+#'   tau = 40, residual = 0.1,
+#'   prep = c(1, 2, 3), processing = c(2, 3, 4), failure = 0,
+#'   capacity = 1L, fragility = c(1.2, 1, 0.8),
+#'   sensitivity = 0.7, specificity = 0.95, persistence = 1,
+#'   missing = 0, refresh = 2L, delivery = 0L,
+#'   useful_updates = TRUE, item_age = 0
+#' )
+#' dynamic <- with_item_model(example_scenario(N = 4L), item_model)
+#' run <- simulate_shield(dynamic, "P3", n_rep = 2L, seed = 20260512L)
+#' summarize_shield(run)
 #' @export
 with_item_model <- function(parameters, model, planner = model) {
   if (!inherits(parameters, "shield_parameters")) stop("invalid parameters")
@@ -85,6 +98,25 @@ item_hazard_v1 <- function(t, control, fragility, model) {
 #' @param intake Nonnegative damage-to-intake offset in minutes.
 #' @param step Integration interval in minutes.
 #' @return List with fitted model, expected outcomes and optimizer convergence.
+#' @examples
+#' item_model <- list(
+#'   degradation_scale = 0.2, early_other = 0.02, late_other = 0.1,
+#'   tau = 40, residual = 0.1,
+#'   prep = c(1, 2, 3), processing = c(2, 3, 4), failure = 0,
+#'   capacity = 1L, fragility = c(1.2, 1, 0.8),
+#'   sensitivity = 0.7, specificity = 0.95, persistence = 1,
+#'   missing = 0, refresh = 2L, delivery = 0L,
+#'   useful_updates = TRUE, item_age = 0
+#' )
+#' fit <- calibrate_item_model(
+#'   item_model,
+#'   control = c(30, 60, 90, 120, Inf),
+#'   fragility = c(1.2, 1, 1, 0.8, 1),
+#'   targets = c(loss_24 = 0.1, loss_30 = 0.15, degradation_24 = 0.05),
+#'   step = 30
+#' )
+#' fit$expected
+#' fit$convergence
 #' @export
 calibrate_item_model <- function(model, control, fragility, targets,
     intake = 0, step = 5) {
@@ -279,6 +311,17 @@ item_endpoints_v1 <- function(state, params) {
 #' @param intake Damage-to-intake offset in minutes.
 #' @param seed Integer seed, default 20260512.
 #' @return Named vector of intake-clock loss and degradation loss risks.
+#' @examples
+#' item_model <- list(
+#'   degradation_scale = 0.2, early_other = 0.02, late_other = 0.1,
+#'   tau = 40, residual = 0.1,
+#'   prep = c(1, 2, 3), processing = c(2, 3, 4), failure = 0,
+#'   capacity = 1L, fragility = c(1.2, 1, 0.8),
+#'   sensitivity = 0.7, specificity = 0.95, persistence = 1,
+#'   missing = 0, refresh = 2L, delivery = 0L,
+#'   useful_updates = TRUE, item_age = 0
+#' )
+#' simulate_item_reference(item_model, N = 50L)
 #' @export
 simulate_item_reference <- function(model, N=100L, intake=0, seed=20260512L) {
   model$capacity <- N; model$item_age <- intake

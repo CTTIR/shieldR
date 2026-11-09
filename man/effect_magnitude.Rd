@@ -16,3 +16,6 @@ application-specific importance margins and do not establish practical benefit.
 \description{
 Describe Cliff's delta using conventional magnitude thresholds
 }
+\examples{
+effect_magnitude(c(-0.5, 0.1, 0.3))
+}

@@ -66,7 +66,7 @@ rounded 1:2:2 mix with the residual allocated to class 3.}
 
 \item{p_cap}{Maximum disruption probability, in (0, 1].}
 
-\item{q}{Conditional disruption destructiveity probability and security-loss weight.}
+\item{q}{Conditional disruption destructiveness probability and security-loss weight.}
 
 \item{att_delay}{Nonnegative integer nondestructive disruption delay in minutes.}
 
@@ -94,4 +94,11 @@ synthetic settings rather than calibrated application parameters.
 The topology is fixed: Source, Collection, parallel Transfer nodes, parallel Stage 1 nodes,
 Stage 2 and Stage 3. Every leg has routes A, B and C. Time is in whole minutes.
 A live arrival at Stage 2 ends item-condition hazard. Stage 3 is terminal.
+}
+\examples{
+scenario <- example_scenario(N = 4L)
+graph <- scenario$graph[c("leg", "from", "to", "route", "travel_min",
+                          "exposure_weight", "vehicle_fraction")]
+rebuilt <- shield_parameters(graph = graph, N = 4L, horizon = 60L)
+identical(rebuilt, scenario)
 }

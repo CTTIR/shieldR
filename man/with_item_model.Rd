@@ -27,3 +27,17 @@ other loss processes, finite processing capacity, and noisy item specifications.
 The condition index is dimensionless and synthetic. Coefficients and thresholds
 require validation for each application; this is not a calibrated materials model.
 }
+\examples{
+item_model <- list(
+  degradation_scale = 0.2, early_other = 0.02, late_other = 0.1,
+  tau = 40, residual = 0.1,
+  prep = c(1, 2, 3), processing = c(2, 3, 4), failure = 0,
+  capacity = 1L, fragility = c(1.2, 1, 0.8),
+  sensitivity = 0.7, specificity = 0.95, persistence = 1,
+  missing = 0, refresh = 2L, delivery = 0L,
+  useful_updates = TRUE, item_age = 0
+)
+dynamic <- with_item_model(example_scenario(N = 4L), item_model)
+run <- simulate_shield(dynamic, "P3", n_rep = 2L, seed = 20260512L)
+summarize_shield(run)
+}

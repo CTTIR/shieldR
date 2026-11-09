@@ -21,3 +21,8 @@ specified by the study; no post-hoc test is selected automatically.
 \description{
 Kruskal-Wallis comparison of multiple independent arms
 }
+\examples{
+values <- c(0.50, 0.60, 0.55, 0.70, 0.80, 0.75, 0.90, 0.95, 0.85)
+groups <- rep(c("P0", "P1", "P3"), each = 3)
+compare_multiple(values, groups)
+}

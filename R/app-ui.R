@@ -68,7 +68,7 @@
           shiny::checkboxInput("disruptions_enabled", "Enable disruptions", FALSE),
           shiny::helpText("The paired intervention always runs disruptions on and off. Nonzero disruption_risk and graph exposure are needed for disruption events."),
           numeric("disruption_risk", "Baseline disruption probability", 0, 0, 1, .01),
-          numeric("q", "Conditional disruption destructiveity probability", 0, 0, 1, .01),
+          numeric("q", "Conditional disruption destructiveness probability", 0, 0, 1, .01),
           numeric("att_delay", "Nondestructive disruption delay (minutes)", 0, 0, 120),
           numeric("lambda", "Adaptive response parameter", 0, 0, NULL, .1),
           numeric("atk_window", "Departure-history window (minutes)", 1, 1, 120))
@@ -133,7 +133,7 @@
       shiny::tags$li("P3 couples reassessment, route, destination and departure holds. It assumes the specified disruption_model response model and uses an entropy-regularized heuristic; it does not solve an equilibrium.")),
     shiny::h4("Choose the comparison before running"),
     shiny::p("Independent policy arms receive distinct master seeds. All selected pairwise Stage 2 comparisons form one explicit Benjamini-Hochberg family. The app reports Mann-Whitney U, Cliff's delta and a median difference with 95% percentile bootstrap intervals. With at least three arms it also reports Kruskal-Wallis H and degrees of freedom. Declare separate comparison families explicitly for a scripted study."),
-    shiny::p("The paired intervention uses the same policy, disruption_model, parameters, master seed and replication count with disruptions enabled and disabled. Its contrast is no disruptions minus disruptions, summarized as a paired mean difference and bootstrap interval. The total modelled effect includes downstream delays and horizon effects; it is not a direct count of disruption losses."),
+    shiny::p("The paired intervention uses the same policy, disruption_model, parameters, master seed and replication count with disruptions enabled and disabled. Its contrast is no disruptions minus disruptions, summarized as a paired mean difference and bootstrap interval. The total modeled effect includes downstream delays and horizon effects; it is not a direct count of disruption losses."),
     shiny::h4("Interpret uncertainty within the model"),
     shiny::p("Intervals use 10,000 bootstrap resamples and describe Monte Carlo sampling uncertainty conditional on the supplied assumptions. The small interactive experiments can have unstable estimates or point intervals, especially for discrete viability proportions. Increasing replication count does not resolve model uncertainty or establish empirical validity. Median and IQR are descriptive; normality testing is not a preliminary step."),
     shiny::h4("Endpoint and resource semantics"),
