@@ -1,3 +1,13 @@
+# shieldR 0.7.0
+
+* Prepare the package for CRAN: every exported function now has a runnable
+  example, the `Description` mentions the optional 'shiny' workbench, the
+  maintainer ORCID and `Language` are declared, and `cran-comments.md` is added.
+* Use consistent US spelling in documentation and fix the parameter label
+  "destructiveness" (previously misspelled) for `q` in `shield_parameters()`
+  and the workbench.
+* Run the GitHub Actions R CMD check with `--as-cran`.
+
 # shieldR 0.6.0
 
 * Standardize the named v5 package logo across README, documentation pages

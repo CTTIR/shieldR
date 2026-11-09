@@ -136,7 +136,7 @@ The sidebar groups controls by purpose:
 | Batches and reproducibility | Batch size, replication count, administrative horizon and master seed |
 | Observation and dispatch | Reassessment, observation error, dispatch interval, allowable holds, loading/unloading and the policy response parameter |
 | Item-condition assumptions | Explicit loss and class-escalation rates |
-| Disruption assumptions | Disruption enablement, baseline probability, conditional destructiveity, delay and disruption-response assumptions |
+| Disruption assumptions | Disruption enablement, baseline probability, conditional destructiveness, delay and disruption-response assumptions |
 
 A maximum hold must be a multiple of the dispatch interval. Parameters not
 exposed by the form retain their documented constructor defaults, including the

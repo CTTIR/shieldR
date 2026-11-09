@@ -210,7 +210,7 @@ Pair indices are resampled jointly. The helper checks matching identities and
 aligns rows by replication identifier.
 
 The neutral exposure is zero, so the intervention has no effect here. In a
-user-specified disruption risk experiment, this is a total modelled intervention effect,
+user-specified disruption risk experiment, this is a total modeled intervention effect,
 including downstream decisions and administrative-horizon effects. It is not
 identical to `n_disruption_loss` or a count of direct disruption losses. Matched arms must
 not be passed to the independent-arm Mann-Whitney U helper.

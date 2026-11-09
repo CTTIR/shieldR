@@ -1,17 +1,21 @@
 Package: shieldR
 Title: Logistics Chain Simulation under Dynamic Challenges
-Version: 0.6.0
+Version: 0.7.0
 Authors@R: person("R.", "Heller",
-    email = "raban.heller@uni-ulm.de", role = c("aut", "cre"))
-Description: A research implementation of a fixed five-leg logistics chain
-    with time-varying item specifications, imperfect observations, finite
-    transport resources, route-risk learning, and static or adaptive disruptions.
-    Supports reproducible allocation-rule comparisons, optional item-condition
-    and processing models, and paired disruptions-disabled experiments.
-    Includes synthetic teaching scenarios and nonparametric analysis helpers.
-    The model and its decision heuristics require application-specific validation.
+    email = "raban.heller@uni-ulm.de", role = c("aut", "cre"),
+    comment = c(ORCID = "0000-0001-8006-9742"))
+Description: Implements a research simulation of a fixed five-leg logistics
+    chain with time-varying item specifications, imperfect observations,
+    finite transport resources, route-risk learning, and static or adaptive
+    disruptions. The package supports reproducible allocation-rule
+    comparisons, optional item-condition and processing models, and paired
+    disruptions-disabled experiments. It includes synthetic teaching
+    scenarios, nonparametric analysis helpers and an optional 'shiny'
+    workbench for interactive exploration. The model and its decision
+    heuristics require application-specific validation.
 License: MIT + file LICENSE
 Encoding: UTF-8
+Language: en-US
 Depends: R (>= 4.1.0)
 Imports: grDevices, parallel, stats, utils
 Suggests: testthat (>= 3.0.0), knitr, rmarkdown, digest,
@@ -21,5 +25,5 @@ Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 URL: https://github.com/CTTIR/shieldR
 BugReports: https://github.com/CTTIR/shieldR/issues
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.1
 Config/Needs/website: CTTIR/themakR

@@ -125,7 +125,7 @@ compare_intervention(with_disruptions, without_disruptions)
 
 These teaching inputs have zero exposure, so toggling disruptions has no effect.
 For a user-specified nonzero disruption risk scenario, the same API estimates the total
-modelled intervention contrast. It checks matching settings and replication
+modeled intervention contrast. It checks matching settings and replication
 identities. Independent policy arms instead require distinct seeds.
 
 ## What the result contains
@@ -142,10 +142,10 @@ version and RNG kind as attributes.
 | `n_stage1`, `n_stage2`, `n_stage3` | Corresponding arrival counts |
 | `t_stage2_med`, `t_stage3_med` | Within-batch median arrival times among arrivals, in minutes; `NA` when none arrive |
 | `util_L1` ... `util_L5` | Busy vehicle minutes divided by available vehicle minutes over the administrative horizon |
-| `n_dispatch`, `n_disruption`, `n_disruption_loss` | Realised traversals, disruption events and loss-causing disruption events |
+| `n_dispatch`, `n_disruption`, `n_disruption_loss` | Realized traversals, disruption events and loss-causing disruption events |
 | `n_pending` | Items viable without a recorded Stage 3 arrival when the simulation ends |
-| `routeL1A` ... `routeL5C`, `entropy_L1` ... `entropy_L5` | Realised route counts and normalised route-use entropy |
-| `hold_mean`, `hold_rate` | Within-batch mean realised hold and proportion of realised holds that are positive |
+| `routeL1A` ... `routeL5C`, `entropy_L1` ... `entropy_L5` | Realized route counts and normalized route-use entropy |
+| `hold_mean`, `hold_rate` | Within-batch mean realized hold and proportion of realized holds that are positive |
 | `parameters`, `shieldR_version`, `rng_kind` attributes | Configuration and software provenance; retained by RDS serialization |
 
 `summarize_shield()` reports medians and quartiles across replications, with
@@ -211,15 +211,15 @@ calls restore the caller's RNG kind and state, including on errors.
 ```sh
 Rscript --vanilla -e 'devtools::test()'
 R CMD build .
-R CMD check --no-manual shieldR_0.6.0.tar.gz
+R CMD check --as-cran --no-manual shieldR_0.7.0.tar.gz
 ```
 
 Use the archive version produced by `R CMD build` if it differs.
 
-## Scope and licence
+## Scope and license
 
 This public edition uses synthetic teaching inputs and abstract network stages.
-It is licensed under MIT. Version 0.6.0 uses item-specification terminology in the public interface,
+It is licensed under MIT. Since version 0.6.0, the public interface uses item-specification terminology,
 including `with_item_model()`, `item_specs`, `obs_condition_index` and
 `viable_stage2`. Serialized configurations and analysis scripts from earlier
 versions require explicit migration; they are not interchangeable. Existing study installations and their
