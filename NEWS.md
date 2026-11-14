@@ -1,5 +1,9 @@
 # shieldR 0.7.0
 
+* Prevent integer overflow in large-sample Mann-Whitney variance and Cliff's
+  delta calculations. Comparisons with more than 2^31 - 1 cross-arm pairs
+  now retain their effect size and log-tail probability.
+
 * Prepare the package for CRAN: every exported function now has a runnable
   example, the `Description` mentions the optional 'shiny' workbench, the
   maintainer ORCID and `Language` are declared, and `cran-comments.md` is added.

@@ -88,3 +88,42 @@ test_that("paired interventions check identities and align shuffled rows", {
   different <- simulate_shield(s, "P2", "adaptive", n_rep = 5L, disruptions_enabled = FALSE)
   expect_error(compare_intervention(a, different, B = 2L), "identities")
 })
+
+
+test_that("large samples retain effects and log tails beyond integer pair counts", {
+  n <- 50000
+  for (tied in c(TRUE, FALSE)) {
+    x <- if (tied) rep(1, n) else seq_len(n) + n
+    y <- if (tied) rep(0, n) else seq_len(n)
+    # Complete separation gives U = n^2 and delta = 1. For two tie
+    # groups of size n, the corrected variance simplifies to n^4/(4*(2*n-1)).
+    sigma <- if (tied) n^2 / (2 * sqrt(2 * n - 1)) else
+      sqrt(n^2 * (2 * n + 1) / 12)
+    expected_z <- (n^2 / 2 - 0.5) / sigma
+    expected_log <- (log(2) + stats::pnorm(-expected_z, log.p = TRUE)) / log(10)
+    expect_warning(actual <- mann_whitney_u(x, y), NA)
+    expect_equal(actual$U, n^2)
+    expect_equal(actual$z, expected_z, tolerance = 1e-12)
+    expect_equal(actual$p_log10, expected_log, tolerance = 1e-12)
+    expect_identical(actual$p, .Machine$double.xmin)
+    expect_true(actual$underflow)
+    expect_equal(shieldR:::cliffs_delta(x, y), 1)
+    expect_equal(shieldR:::cliffs_delta(y, x), -1)
+  }
+  identical_arms <- rep(1, n)
+  expect_equal(shieldR:::cliffs_delta(identical_arms, identical_arms), 0)
+  null <- mann_whitney_u(identical_arms, identical_arms)
+  expect_equal(null$p, 1)
+  expect_equal(null$p_log10, 0)
+  expect_false(null$underflow)
+
+  # Each of the four support pairs has probability 1/4: one win, two
+  # losses and one tie. This oracle needs no 50,000-by-50,000 matrix.
+  x <- rep(c(0, 1), each = n / 2)
+  y <- rep(c(0, 2), each = n / 2)
+  expect_equal(shieldR:::cliffs_delta(x, y), -0.25)
+  mixed <- mann_whitney_u(x, y)
+  expect_equal(mixed$U, n^2 * 0.375)
+  expect_true(is.finite(mixed$p_log10))
+  expect_lt(mixed$p_log10, -300)
+})
