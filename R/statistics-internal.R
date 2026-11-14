@@ -5,7 +5,8 @@ mwu <- function(x, y) {
   wt <- suppressWarnings(
     stats::wilcox.test(x, y, alternative = "two.sided",
                        exact = FALSE, correct = TRUE))
-  n1 <- length(x); n2 <- length(y); N <- n1 + n2
+  # Pair counts exceed integer range for ordinary large simulation batches.
+  n1 <- as.double(length(x)); n2 <- as.double(length(y)); N <- n1 + n2
   U  <- unname(wt$statistic)
   mu <- n1 * n2 / 2
   tie <- table(rank(c(x, y)))
@@ -34,7 +35,7 @@ mwu <- function(x, y) {
 # @param x,y numeric vectors (two independent arms)
 # @return scalar in [-1, 1]
 cliffs_delta <- function(x, y) {
-  n1 <- length(x); n2 <- length(y)
+  n1 <- as.double(length(x)); n2 <- as.double(length(y))
   r <- rank(c(x, y))
   U <- sum(r[seq_len(n1)]) - n1 * (n1 + 1) / 2
   2 * U / (n1 * n2) - 1
