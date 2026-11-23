@@ -61,10 +61,14 @@ item_decide_v1 <- function(policy,state,theta,leg,origins,params,demand,
     viability <- item_observed_viability_v1(obs[item,],now,service,m)
     loss[ix[allowed]] <- 1-viability[allowed]*(1-params$q*projected[choices$route[ix[allowed]]])
   }
-  logw <- -params$beta*loss
+  # Excluded choices carry infinite loss. Give them zero weight explicitly:
+  # with beta = 0, -beta * Inf would be NaN rather than -Inf.
+  logw <- ifelse(is.finite(loss), -params$beta*loss, -Inf)
   prob <- exp(logw-max(logw)); prob <- prob/sum(prob)
   if(is.null(decision_u)) decision_u <- stats::runif(1)
   pick <- which(decision_u<=cumsum(prob))[1]
+  # Guard against a cumulative sum that rounds just below decision_u.
+  if (is.na(pick)) pick <- max(which(prob > 0))
   list(item=item,route=as.integer(choices$route[pick]),
     dest=as.integer(dests[choices$dest_i[pick]]),hold=as.integer(choices$hold[pick]))
 }

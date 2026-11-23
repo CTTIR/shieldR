@@ -118,3 +118,34 @@ test_that("delayed initial measurements reach frozen policies once delivered", {
   expect_identical(x$initial,x$latest)
   expect_true(all(x$current$obs_time==4))
 })
+
+test_that("a zero softmax parameter gives excluded item-model choices no weight", {
+  g <- toy_graph()
+  g$travel_min <- rep(c(1, 2, 3), 5)
+  g$exposure_weight <- rep(c(.3, .2, .1), 5)
+  p <- shield_parameters(g, N = 6L, horizon = 40L, q = .4, lambda = 2, beta = 0,
+    disruption_risk = c(low = .2, high = .3), disruptions_enabled = TRUE)
+  p <- with_item_model(p, item_fixture_v1()$item_model)
+  x <- simulate_shield(p, "P3", "adaptive", n_rep = 3L)
+  expect_true(all(is.finite(x$viable_stage2)))
+  expect_true(all(x$n_dispatch > 0))
+  # Excluded choices are never selected, whatever the uniform draw.
+  s <- trace_item_v1(p)$state
+  s$status[] <- 0L; s$node[] <- 1L; s$viable[] <- TRUE
+  theta <- init_theta_full(p)
+  theta$b[1, 1] <- theta$b[1, 1] + 10
+  for (u in c(1e-12, .5, 1 - 1e-12)) {
+    choice <- item_decide_v1("P3", s, theta, 1L, 1L, p, integer(8),
+      disruption_model = "static", decision_u = u)
+    expect_identical(choice$route, 1L)
+  }
+})
+
+test_that("decision draws at the upper end of the unit interval still select", {
+  s <- stochastic_scenario(N = 1L)
+  state <- init_items_full(s)
+  choice <- decide_transport_full("P3", state, init_theta_full(s), 1L, 1L, s,
+    demand = integer(8), decision_u = 1)
+  expect_true(choice$route %in% 1:3)
+  expect_true(choice$hold %in% s$departure_holds)
+})

@@ -81,6 +81,8 @@ decide_transport_full <- function(policy = c("P0", "P1", "P2", "P3"),
     probability <- probability / sum(probability)
     if (is.null(decision_u)) decision_u <- stats::runif(1)
     selected <- which(decision_u <= cumsum(probability))[1L]
+    # Guard against a cumulative sum that rounds just below decision_u.
+    if (is.na(selected)) selected <- max(which(probability > 0))
     return(list(item = item,
                 route = as.integer(choices$route[selected]),
                 dest = as.integer(dests[choices$dest_i[selected]]),
