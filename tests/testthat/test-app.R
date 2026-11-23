@@ -16,6 +16,11 @@ test_that("app constructs a runnable, accessible UI without launching", {
   html <- as.character(.shield_app_ui())
   expect_match(html, "aria-live=\"polite\"", fixed = TRUE)
   expect_match(html, "chain-description", fixed = TRUE)
+  # Node boxes are wide enough for the longest label, "Transfer A / B".
+  rects <- regmatches(html, gregexpr('<rect x="[0-9]+" y="20" width="[0-9]+"', html))[[1]]
+  widths <- as.numeric(sub('.*width="([0-9]+)"', "\\1", rects))
+  expect_length(widths, 6L)
+  expect_true(all(widths >= 130))
   expect_match(html, "Paired disruptions-disabled intervention", fixed = TRUE)
   expect_match(html, "Methods and help", fixed = TRUE)
   expect_match(html, "Departure-history window (departures)", fixed = TRUE)
@@ -261,4 +266,14 @@ test_that("PDF export recovers from an unusable Cairo runtime and cleans devices
     expect_identical(grDevices::dev.cur(), caller_device)
     expect_false(file.exists(attempted_path))
   }
+})
+
+test_that("workbench tables round only fractional numeric columns for display", {
+  data <- data.frame(arm = c("P0", "P3"), n_x = c(8L, 8L), seed = c(20260512, 20260513),
+    median_x = c(5 / 6, 0.75), p_raw = c(1e-300, NA), flag = c(TRUE, FALSE))
+  expect_identical(.shield_app_fractional_columns(data), c("median_x", "p_raw"))
+  expect_identical(.shield_app_fractional_columns(data.frame()), character())
+  .app_skip()
+  table <- DT::formatSignif(DT::datatable(data), .shield_app_fractional_columns(data), 4)
+  expect_s3_class(table, "datatables")
 })

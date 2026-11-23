@@ -95,8 +95,13 @@
 
   render_table <- function(get_data) DT::renderDT({
     shiny::req(state$bundle)
-    DT::datatable(get_data(), rownames = FALSE, options = list(
+    data <- get_data()
+    table <- DT::datatable(data, rownames = FALSE, options = list(
       pageLength = 10, scrollX = TRUE, lengthMenu = c(10, 25, 50)))
+    # Displayed values are rounded for reading; downloads keep full precision.
+    fractional <- .shield_app_fractional_columns(data)
+    if (length(fractional)) table <- DT::formatSignif(table, fractional, digits = 4)
+    table
   })
   output$primary <- render_table(function() {
     x <- state$bundle$summary
@@ -113,18 +118,18 @@
   output$viability_plot <- shiny::renderPlot({
     shiny::req(state$bundle)
     .shield_app_plot(state$bundle, "viability")
-  }, alt = "Viability-to-arrival proportions by arm and service level, with batch points, median and interquartile range.")
+  }, res = 96, alt = "Viability-to-arrival proportions by arm and stage, with batch points, median and interquartile range.")
   output$resource_plot <- shiny::renderPlot({
     shiny::req(state$bundle)
     .shield_app_plot(state$bundle, "resources")
-  }, alt = "Resource utilisation distributions for the five legs and selected arms.")
+  }, res = 96, alt = "Resource utilisation distributions for the five legs and selected arms.")
   output$time_plot <- shiny::renderPlot({
     shiny::req(state$bundle)
     p <- .shield_app_plot(state$bundle, "time")
     shiny::validate(shiny::need(nrow(p$data) > 0,
       "No defined Stage 2 or Stage 3 arrival-time medians in this experiment. Inspect viability and the horizon."))
     p
-  }, alt = "Distribution of defined batch median arrival times at Stages 2 and 3.")
+  }, res = 96, alt = "Distribution of defined batch median arrival times at Stages 2 and 3.")
   output$provenance <- shiny::renderPrint({
     shiny::req(state$bundle)
     p <- state$bundle$provenance
@@ -242,4 +247,13 @@
   }
   stop("Could not render a PDF download: ", paste(failures, collapse = "; "),
        call. = FALSE)
+}
+
+# Names of numeric columns holding non-integer values; these are shown with
+# four significant digits in the workbench tables.
+.shield_app_fractional_columns <- function(data) {
+  if (!is.data.frame(data) || !ncol(data)) return(character())
+  keep <- vapply(data, function(x) is.double(x) &&
+    any(is.finite(x) & x != round(x)), logical(1))
+  names(data)[keep]
 }
