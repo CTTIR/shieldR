@@ -132,7 +132,7 @@ An item has a true condition and an observed specification. These need not agree
 observations can be noisy, missing, delayed or retained from an earlier time.
 The basic model updates item classes and viability each minute. The optional
 `with_item_model()` extension adds a dimensionless condition index, a degradation
-indicator and finite-capacity processing at Stage 2. Processing can stabilize an
+indicator and finite-capacity processing at Stage 2. Processing can stabilise an
 item; residual degradation and other losses can continue afterwards.
 
 | Specification | Interpretation |
@@ -217,7 +217,7 @@ Here exposure is zero, so the contrast is zero. In a nonzero disruption risk exp
 the contrast includes downstream changes and horizon effects. It is not a
 count of direct disruption losses or proof of a better policy.
 
-P3 uses a known disruption-response model and an entropy-regularized decision heuristic.
+P3 uses a known disruption-response model and an entropy-regularised decision heuristic.
 Its comparisons with P1 and P2 do not isolate individual component effects.
 All assumptions require scientific review for a new application.
 

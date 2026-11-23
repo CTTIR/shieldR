@@ -38,7 +38,7 @@
 #' the package does not solve an equilibrium. Internal verification and replay
 #' do not establish application-specific validity. Keep study-specific inputs,
 #' scenario grids and reporting outputs in a separate analysis project.
-#' The public package is distributed under the MIT license.
+#' The public package is distributed under the MIT licence.
 #'
 #' @seealso [example_scenario()], [shield_parameters()], [simulate_shield()],
 #'   [compare_policies()], [compare_intervention()], [shield_app()]

@@ -184,7 +184,7 @@ shield_app <- function(launch = TRUE, ...) {
       disruption_model = a$disruption_model, n_rep = config$settings$n_rep, seed = a$seed,
       disruptions_enabled = a$disruptions_enabled)
   }
-  progress(length(runs) / (length(runs) + 1), "Summarizing and bootstrapping")
+  progress(length(runs) / (length(runs) + 1), "Summarising and bootstrapping")
   analysis <- .shield_app_analyze(runs, config, B = config$bootstrap_resamples)
   progress(1, "Complete")
   c(list(schema_version = 1L, config = config, runs = runs,
@@ -255,7 +255,7 @@ shield_app <- function(launch = TRUE, ...) {
     ggplot2::facet_wrap(~endpoint, nrow = 1, drop = FALSE,
       scales = if (kind == "time") "free_y" else "fixed") +
     ggplot2::labs(x = NULL, y = if (kind == "time") "Minutes" else
-      if (kind == "resources") "Resource utilization" else "Proportion",
+      if (kind == "resources") "Resource utilisation" else "Proportion",
       caption = "Points: independent batch replications within each arm. Boxes: median and IQR.") +
     ggplot2::theme_minimal(base_size = 12) +
     ggplot2::theme(panel.grid.minor = ggplot2::element_blank(),

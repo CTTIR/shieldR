@@ -101,7 +101,7 @@ item_hazard_v1 <- function(t, control, fragility, model) {
 #'   degradation_24. Other named entries are ignored.
 #' @param intake Nonnegative time from item onset to intake, in minutes.
 #' @param step Integration interval in minutes.
-#' @return List with fitted model, expected outcomes and optimizer convergence.
+#' @return List with fitted model, expected outcomes and optimiser convergence.
 #' @examples
 #' item_model <- list(
 #'   degradation_scale = 0.2, early_other = 0.02, late_other = 0.1,

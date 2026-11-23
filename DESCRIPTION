@@ -15,7 +15,7 @@ Description: Implements a research simulation of a fixed five-leg logistics
     heuristics require application-specific validation.
 License: MIT + file LICENSE
 Encoding: UTF-8
-Language: en-US
+Language: en-GB
 Depends: R (>= 4.1.0)
 Imports: grDevices, parallel, stats, utils
 Suggests: testthat (>= 3.0.0), knitr, rmarkdown,

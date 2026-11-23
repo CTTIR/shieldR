@@ -21,7 +21,7 @@ with_shield_rng <- function(seed, code) {
 #' P0 uses initial true class and a fixed route; P1 uses noisy reassessment;
 #' P2 updates route beliefs; P3 couples reassessment, route, destination and
 #' departure holds. P3 knows the specified disruption-response model and uses an
-#' entropy-regularized heuristic. It does not solve an equilibrium.
+#' entropy-regularised heuristic. It does not solve an equilibrium.
 #'
 #' The master seed creates a per-replication seed schedule. Item, policy
 #' and disruption streams are separated using L'Ecuyer-CMRG. Item draws are
@@ -39,7 +39,7 @@ with_shield_rng <- function(seed, code) {
 #' @param disruptions_enabled Optional logical override of the scenario setting.
 #' @return A `shield_run` data frame with replication identifiers and seeds,
 #'   viability-to-arrival proportions at Stages 1--3, conditional arrival-time
-#'   medians, disruptions, dispatches, holds, route counts and resource utilization.
+#'   medians, disruptions, dispatches, holds, route counts and resource utilisation.
 #'   Scenario parameters, software version and RNG kind are stored as attributes.
 #'   For the legacy mode the primary endpoint is `viable_stage2`. The opt-in
 #'   [with_item_model()] extension adds overall `viable_30d` from item onset,
@@ -73,7 +73,7 @@ simulate_shield <- function(parameters, policy = c("P0", "P1", "P2", "P3"),
   result
 }
 
-#' Summarize batch outcomes
+#' Summarise batch outcomes
 #'
 #' @param x A `shield_run` returned by [simulate_shield()].
 #' @return Data frame of endpoint names, valid and missing replication counts,

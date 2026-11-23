@@ -158,7 +158,7 @@ Read experiment RDS files in R and use the replay script for a new run.
 
 For independent arms, the **Comparisons** view reports Mann-Whitney U, Cliff's
 delta and the median difference with percentile bootstrap 95% intervals.
-Positive effects favor `arm_x` for the viability endpoint. All displayed
+Positive effects favour `arm_x` for the viability endpoint. All displayed
 pairwise Stage 2 comparisons constitute one explicit Benjamini-Hochberg FDR
 family. Three or more arms also produce a Kruskal-Wallis H statistic, degrees
 of freedom and p-value. This interactive family is separate from the
@@ -182,7 +182,7 @@ not compensate for an inadequate number of independent replications.
 | Graph | The current input graph; it can differ from the graph of the last completed run |
 | Outcomes | Batch points and boxplots for Stage 1, 2 and 3 arrival-viable proportions; valid counts, median and quartiles |
 | Comparisons | Independent or paired effect estimates and intervals; raw and adjusted log p-values; optional multi-arm omnibus |
-| Diagnostics | Fleet utilization by leg, conditional arrival times and the complete remaining endpoint summaries with missing counts |
+| Diagnostics | Fleet utilisation by leg, conditional arrival times and the complete remaining endpoint summaries with missing counts |
 | Data and export | Individual batch rows, seed schedule, software provenance and downloadable results |
 | Methods and help | Policy information assumptions, endpoint definitions, inferential limits and reproducibility instructions |
 

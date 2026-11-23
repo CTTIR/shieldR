@@ -78,7 +78,7 @@ An item has a true condition and an observed specification. These need not agree
 observations can be noisy, missing, delayed or retained from an earlier time.
 The basic model updates item classes and viability each minute. The optional
 `with_item_model()` extension adds a dimensionless condition index, a degradation
-indicator and finite-capacity processing at Stage 2. Processing can stabilize an
+indicator and finite-capacity processing at Stage 2. Processing can stabilise an
 item; residual degradation and other losses can continue afterwards.
 
 | Specification | Interpretation |
@@ -127,7 +127,7 @@ compare_intervention(with_disruptions, without_disruptions)
 
 These teaching inputs have zero exposure, so toggling disruptions has no effect.
 For a user-specified nonzero disruption risk scenario, the same API estimates the total
-modeled intervention contrast. It checks matching settings and replication
+modelled intervention contrast. It checks matching settings and replication
 identities. Independent policy arms instead require distinct seeds.
 
 ## What the result contains
@@ -144,11 +144,11 @@ version and RNG kind as attributes.
 | `n_stage1`, `n_stage2`, `n_stage3` | Corresponding arrival counts |
 | `t_stage2_med`, `t_stage3_med` | Within-batch median arrival times among arrivals, in minutes; `NA` when none arrive |
 | `util_L1` ... `util_L5` | Busy vehicle minutes divided by available vehicle minutes over the administrative horizon |
-| `n_dispatch`, `n_disruption`, `n_disruption_loss` | Realized traversals, disruption events and loss-causing disruption events |
+| `n_dispatch`, `n_disruption`, `n_disruption_loss` | Realised traversals, disruption events and loss-causing disruption events |
 | `n_pending` | Items viable without a recorded Stage 3 arrival when the simulation ends |
-| `routeL1A` ... `routeL5C`, `entropy_L1` ... `entropy_L5` | Realized route counts and normalized route-use entropy |
-| `hold_mean`, `hold_rate` | Within-batch mean realized hold and proportion of realized holds that are positive |
-| `parameters`, `shieldR_version`, `rng_kind` attributes | Configuration and software provenance; retained by RDS serialization |
+| `routeL1A` ... `routeL5C`, `entropy_L1` ... `entropy_L5` | Realised route counts and normalised route-use entropy |
+| `hold_mean`, `hold_rate` | Within-batch mean realised hold and proportion of realised holds that are positive |
+| `parameters`, `shieldR_version`, `rng_kind` attributes | Configuration and software provenance; retained by RDS serialisation |
 
 `summarize_shield()` reports medians and quartiles across replications, with
 separate valid and missing counts. Its summary of arrival-time medians is a
@@ -180,7 +180,7 @@ still uses median and IQR.
 | Task | Functions |
 |---|---|
 | Construct and validate a scenario | `example_scenario()`, `shield_parameters()` |
-| Run and summarize batches | `simulate_shield()`, `summarize_shield()` |
+| Run and summarise batches | `simulate_shield()`, `summarize_shield()` |
 | Schedule or replay individual batches | `replication_seeds()`, `simulate_replication()` |
 | Compare independent policy arms | `compare_policies()`, `compare_multiple()` |
 | Estimate a paired intervention | `compare_intervention()` |
@@ -218,12 +218,12 @@ R CMD check --as-cran --no-manual shieldR_0.7.0.tar.gz
 
 Use the archive version produced by `R CMD build` if it differs.
 
-## Scope and license
+## Scope and licence
 
 This public edition uses synthetic teaching inputs and abstract network stages.
 It is licensed under MIT. Since version 0.6.0, the public interface uses item-specification terminology,
 including `with_item_model()`, `item_specs`, `obs_condition_index` and
-`viable_stage2`. Serialized configurations and analysis scripts from earlier
+`viable_stage2`. Serialised configurations and analysis scripts from earlier
 versions require explicit migration; they are not interchangeable. Existing study installations and their
 validated numerical records are separate from this public edition.
 

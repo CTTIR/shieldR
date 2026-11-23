@@ -2,7 +2,7 @@
 % Please edit documentation in R/simulation.R
 \name{summarize_shield}
 \alias{summarize_shield}
-\title{Summarize batch outcomes}
+\title{Summarise batch outcomes}
 \usage{
 summarize_shield(x)
 }
@@ -15,7 +15,7 @@ median, first quartile and third quartile. Arrival-time summaries are
 across defined batch medians, not pooled item times.
 }
 \description{
-Summarize batch outcomes
+Summarise batch outcomes
 }
 \examples{
 run <- simulate_shield(example_scenario(N = 4L), "P0", n_rep = 3L)

@@ -21,7 +21,7 @@ degradation_24. Other named entries are ignored.}
 \item{step}{Integration interval in minutes.}
 }
 \value{
-List with fitted model, expected outcomes and optimizer convergence.
+List with fitted model, expected outcomes and optimiser convergence.
 }
 \description{
 Uses deterministic expected competing risks on a fixed supplied service

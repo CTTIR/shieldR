@@ -90,7 +90,7 @@
       "This is a single-policy experiment. Choose independent policy arms or a paired intervention to estimate a contrast."))
     if (design == "intervention") return(shiny::p(
       "Paired contrast: no disruptions minus disruptions, on the viability-proportion scale. The mean paired difference and 95% interval use 10,000 joint bootstrap resamples. This total intervention effect includes downstream and horizon effects."))
-    shiny::p("Independent arms use distinct seeds. Positive Cliff's delta and median difference favor arm_x. Mann-Whitney U compares distributions. All displayed Stage 2 pairwise contrasts form one Benjamini-Hochberg FDR family. Intervals use 10,000 bootstrap resamples; point intervals are flagged. An omnibus test is shown for three or more arms.")
+    shiny::p("Independent arms use distinct seeds. Positive Cliff's delta and median difference favour arm_x. Mann-Whitney U compares distributions. All displayed Stage 2 pairwise contrasts form one Benjamini-Hochberg FDR family. Intervals use 10,000 bootstrap resamples; point intervals are flagged. An omnibus test is shown for three or more arms.")
   })
 
   render_table <- function(get_data) DT::renderDT({
@@ -117,7 +117,7 @@
   output$resource_plot <- shiny::renderPlot({
     shiny::req(state$bundle)
     .shield_app_plot(state$bundle, "resources")
-  }, alt = "Resource utilization distributions for the five legs and selected arms.")
+  }, alt = "Resource utilisation distributions for the five legs and selected arms.")
   output$time_plot <- shiny::renderPlot({
     shiny::req(state$bundle)
     p <- .shield_app_plot(state$bundle, "time")

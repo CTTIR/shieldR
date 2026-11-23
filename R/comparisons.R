@@ -7,7 +7,7 @@ check_sample <- function(x, name) {
 #'
 #' Applies a two-sided, tie-corrected Mann-Whitney U approximation, Cliff's
 #' delta and percentile bootstrap intervals for delta and the median difference.
-#' Positive effects favor `x`. This test compares distributions; it is not
+#' Positive effects favour `x`. This test compares distributions; it is not
 #' specifically a test of medians. Observations must be independent batches.
 #' Normality testing is not a prerequisite. Intervals describe Monte Carlo
 #' sampling uncertainty conditional on the assumed model.
@@ -93,12 +93,12 @@ adjust_fdr <- function(log10_p) {
   bh_log10(log10_p)
 }
 
-#' Analyze a paired disruptions-disabled intervention
+#' Analyse a paired disruptions-disabled intervention
 #'
 #' Checks that the two runs have matching parameters, policy, disruption model,
 #' replication identifiers and seeds, with disruptions enabled only in the first.
 #' Rows are aligned by replication identifier. The contrast is no disruptions minus
-#' disruptions, a total modeled intervention effect that includes downstream and
+#' disruptions, a total modelled intervention effect that includes downstream and
 #' administrative-horizon effects. It is not direct disruption loss.
 #'
 #' @param disruptions,no_disruptions `shield_run` objects from [simulate_shield()] with

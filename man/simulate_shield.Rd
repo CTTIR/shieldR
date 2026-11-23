@@ -31,7 +31,7 @@ deliberately small; choose study size using a Monte Carlo precision assessment.}
 \value{
 A \code{shield_run} data frame with replication identifiers and seeds,
 viability-to-arrival proportions at Stages 1--3, conditional arrival-time
-medians, disruptions, dispatches, holds, route counts and resource utilization.
+medians, disruptions, dispatches, holds, route counts and resource utilisation.
 Scenario parameters, software version and RNG kind are stored as attributes.
 For the legacy mode the primary endpoint is \code{viable_stage2}. The opt-in
 \code{\link[=with_item_model]{with_item_model()}} extension adds overall \code{viable_30d} from item onset,
@@ -46,7 +46,7 @@ advances in one-minute intervals and preserves the original event ordering.
 P0 uses initial true class and a fixed route; P1 uses noisy reassessment;
 P2 updates route beliefs; P3 couples reassessment, route, destination and
 departure holds. P3 knows the specified disruption-response model and uses an
-entropy-regularized heuristic. It does not solve an equilibrium.
+entropy-regularised heuristic. It does not solve an equilibrium.
 }
 \details{
 The master seed creates a per-replication seed schedule. Item, policy

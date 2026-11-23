@@ -30,11 +30,11 @@ Item deterioration and observation draws continue in both conditions.
 \details{
 For P3, reactive planning uses current risk estimates without forecasting
 changes from committed departures. Candidate actions, loss weights, queue
-handling and randomization stay unchanged. known_model preserves the original
+handling and randomisation stay unchanged. known_model preserves the original
 specified-response forecast; it is not an equilibrium solution or a model of
 unspecified disruption mechanisms. Other policies do not use this forecast switch.
 
-Uncontrolled parameter objects preserve the legacy P0--P3 behavior exactly.
+Uncontrolled parameter objects preserve the legacy P0--P3 behaviour exactly.
 These controls do not add servicing effects, post-arrival loss or a
 real-time item system. Existing transport reservations remain committed.
 }

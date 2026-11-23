@@ -36,7 +36,7 @@ family of comparisons. The caller's RNG state is restored.
 \description{
 Applies a two-sided, tie-corrected Mann-Whitney U approximation, Cliff's
 delta and percentile bootstrap intervals for delta and the median difference.
-Positive effects favor \code{x}. This test compares distributions; it is not
+Positive effects favour \code{x}. This test compares distributions; it is not
 specifically a test of medians. Observations must be independent batches.
 Normality testing is not a prerequisite. Intervals describe Monte Carlo
 sampling uncertainty conditional on the assumed model.
