@@ -76,6 +76,9 @@ compare_multiple <- function(values, groups, family = "comparison") {
 #' adjust_fdr(log10(c(0.001, 0.02, 0.04, 0.3)))
 #' @export
 adjust_fdr <- function(log10_p) {
+  # An all-missing family can arrive as a logical vector.
+  if (is.logical(log10_p) && all(is.na(log10_p)))
+    log10_p <- as.numeric(log10_p)
   if (!is.numeric(log10_p) || any(log10_p > 0, na.rm = TRUE))
     stop("log10_p must be numeric and at most zero", call. = FALSE)
   bh_log10(log10_p)

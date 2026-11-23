@@ -28,13 +28,16 @@
 #' summarize_shield(run)
 #' @export
 with_item_model <- function(parameters, model, planner = model) {
-  if (!inherits(parameters, "shield_parameters")) stop("invalid parameters")
+  if (!inherits(parameters, "shield_parameters"))
+    stop("parameters must be created by shield_parameters()", call. = FALSE)
   required <- c("degradation_scale", "early_other", "late_other", "tau", "residual",
     "prep", "processing", "failure", "capacity", "fragility", "sensitivity",
     "specificity", "persistence", "missing", "refresh", "delivery",
     "useful_updates", "item_age")
   for (x in list(model, planner)) {
-    if (!is.list(x) || !all(required %in% names(x))) stop("incomplete item model")
+    if (!is.list(x) || !all(required %in% names(x)))
+      stop("incomplete item model; required fields: ",
+           paste(required, collapse = ", "), call. = FALSE)
     for (nm in c("degradation_scale", "early_other", "late_other", "item_age"))
       check_scalar(x[[nm]], nm, 0)
     for (nm in c("tau", "capacity", "refresh")) check_scalar(x[[nm]], nm, 1,
@@ -45,12 +48,12 @@ with_item_model <- function(parameters, model, planner = model) {
     for (nm in c("prep", "processing")) {
       z <- x[[nm]]
       if (!is.numeric(z) || length(z) != 3L || any(!is.finite(z)) ||
-          any(z < 0) || any(diff(z) < 0)) stop("invalid service triangle")
+          any(z < 0) || any(diff(z) < 0)) stop("invalid service triangle", call. = FALSE)
     }
     if (!is.numeric(x$fragility) || length(x$fragility) != 3L ||
-        any(!is.finite(x$fragility) | x$fragility <= 0)) stop("invalid fragility")
+        any(!is.finite(x$fragility) | x$fragility <= 0)) stop("invalid fragility", call. = FALSE)
     if (!is.logical(x$useful_updates) || length(x$useful_updates) != 1L ||
-        is.na(x$useful_updates)) stop("useful_updates must be logical")
+        is.na(x$useful_updates)) stop("useful_updates must be logical", call. = FALSE)
   }
   if (parameters$horizon + model$item_age > 1440)
     stop("transport horizon plus item age must not exceed 24 hours")
@@ -94,7 +97,8 @@ item_hazard_v1 <- function(t, control, fragility, model) {
 #' @param model Item model configuration; initial coefficient values positive.
 #' @param control Vector of onset-to-servicing times, Inf for failures.
 #' @param fragility Positive vector of corresponding fragility weights.
-#' @param targets Named vector: loss_24, loss_30, degradation_24.
+#' @param targets Named numeric vector with probabilities loss_24, loss_30 and
+#'   degradation_24. Other named entries are ignored.
 #' @param intake Nonnegative time from item onset to intake, in minutes.
 #' @param step Integration interval in minutes.
 #' @return List with fitted model, expected outcomes and optimizer convergence.
@@ -122,11 +126,17 @@ calibrate_item_model <- function(model, control, fragility, targets,
     intake = 0, step = 5) {
   check_scalar(intake, "intake", 0)
   check_scalar(step, "step", .01)
-  if (length(control) != length(fragility) || !length(control) ||
+  if (!is.numeric(control) || !is.numeric(fragility) ||
+      length(control) != length(fragility) || !length(control) ||
       anyNA(control) || any(control < intake) ||
-      any(!is.finite(fragility) | fragility <= 0)) stop("invalid calibration batch")
-  if (!all(c("loss_24", "loss_30", "degradation_24") %in% names(targets)))
-    stop("missing calibration targets")
+      any(!is.finite(fragility) | fragility <= 0))
+    stop("invalid calibration batch", call. = FALSE)
+  target_names <- c("loss_24", "loss_30", "degradation_24")
+  if (!is.numeric(targets) || !all(target_names %in% names(targets)))
+    stop("missing calibration targets: ", paste(target_names, collapse = ", "),
+         call. = FALSE)
+  # Additional named entries are ignored; only the three targets are fitted.
+  targets <- targets[target_names]
   check_probability(unname(targets), "targets", 3L)
   evaluate <- function(coef) {
     m <- model; m[c("degradation_scale", "early_other", "late_other")] <- as.list(exp(coef))

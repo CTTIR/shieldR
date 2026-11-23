@@ -149,3 +149,61 @@ test_that("decision draws at the upper end of the unit interval still select", {
   expect_true(choice$route %in% 1:3)
   expect_true(choice$hold %in% s$departure_holds)
 })
+
+test_that("item-model configuration errors name the problem", {
+  m <- item_fixture_v1()$item_model
+  expect_error(with_item_model(list(), m), "created by shield_parameters")
+  expect_error(with_item_model(example_scenario(), m[-1]), "required fields")
+  bad <- m; bad$prep <- c(3, 2, 1)
+  expect_error(with_item_model(example_scenario(), bad), "service triangle")
+  bad <- m; bad$fragility <- c(1, 0, 1)
+  expect_error(with_item_model(example_scenario(), bad), "fragility")
+  bad <- m; bad$useful_updates <- NA
+  expect_error(with_item_model(example_scenario(), bad), "logical")
+})
+
+test_that("aggregate calibration recovers attainable targets and validates inputs", {
+  m <- item_fixture_v1()$item_model
+  control <- c(30, 60, 90, 120, Inf)
+  fragility <- c(1.2, 1, 1, 0.8, 1)
+  reference <- calibrate_item_model(m, control, fragility,
+    c(loss_24 = 0.1, loss_30 = 0.15, degradation_24 = 0.05), step = 30)
+  expect_named(reference$expected, c("loss_24", "loss_30", "degradation_24"))
+  expect_true(all(reference$expected >= 0 & reference$expected <= 1))
+  expect_identical(reference$integration_step, 30)
+  expect_true(all(reference$stabilization_quantiles %in% control))
+  # Targets produced by the fitted model are recovered from other start values.
+  start <- m
+  start[c("degradation_scale", "early_other", "late_other")] <- list(1, 0.5, 0.5)
+  refit <- calibrate_item_model(start, control, fragility, reference$expected,
+    step = 30)
+  expect_equal(refit$convergence, 0L)
+  expect_equal(refit$expected, reference$expected, tolerance = 1e-4)
+  # Additional named entries are ignored.
+  extra <- c(reference$expected, note = 2)
+  expect_identical(calibrate_item_model(start, control, fragility, extra,
+    step = 30), refit)
+  expect_error(calibrate_item_model(m, as.character(control), fragility,
+    reference$expected), "calibration batch")
+  expect_error(calibrate_item_model(m, control[-1], fragility,
+    reference$expected), "calibration batch")
+  expect_error(calibrate_item_model(m, control, fragility,
+    c(loss_24 = 0.1)), "missing calibration targets")
+  expect_error(calibrate_item_model(m, control, fragility,
+    c(loss_24 = 2, loss_30 = 0.1, degradation_24 = 0)), "probabilities")
+})
+
+test_that("serviced reference replay is reproducible and preserves RNG state", {
+  m <- item_fixture_v1()$item_model
+  set.seed(20260512)
+  before <- .Random.seed
+  a <- simulate_item_reference(m, N = 40L, seed = 20260512L)
+  expect_identical(.Random.seed, before)
+  expect_named(a, c("loss_24", "loss_30", "degradation_24"))
+  expect_true(all(a >= 0 & a <= 1))
+  expect_gte(a[["loss_30"]], a[["loss_24"]])
+  expect_identical(a, simulate_item_reference(m, N = 40L, seed = 20260512L))
+  zero <- m
+  zero[c("degradation_scale", "early_other", "late_other")] <- list(0, 0, 0)
+  expect_equal(unname(simulate_item_reference(zero, N = 10L)), c(0, 0, 0))
+})

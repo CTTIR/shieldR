@@ -8,6 +8,11 @@
 * Label the workbench departure-history window in departures and document
   `atk_window` in `shield_parameters()` as a count of recent departures. The
   workbench previously described it in minutes.
+* Report clearer input errors in `with_item_model()` and
+  `calibrate_item_model()`. `calibrate_item_model()` now ignores additional
+  named entries in `targets` and rejects non-numeric calibration batches;
+  `adjust_fdr()` accepts an all-missing logical vector.
+* Add tests for `calibrate_item_model()` and `simulate_item_reference()`.
 * Prevent integer overflow in large-sample Mann-Whitney variance and Cliff's
   delta calculations. Comparisons with more than 2^31 - 1 cross-arm pairs
   now retain their effect size and log-tail probability.

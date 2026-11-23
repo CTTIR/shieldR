@@ -13,7 +13,8 @@ calibrate_item_model(model, control, fragility, targets, intake = 0, step = 5)
 
 \item{fragility}{Positive vector of corresponding fragility weights.}
 
-\item{targets}{Named vector: loss_24, loss_30, degradation_24.}
+\item{targets}{Named numeric vector with probabilities loss_24, loss_30 and
+degradation_24. Other named entries are ignored.}
 
 \item{intake}{Nonnegative time from item onset to intake, in minutes.}
 

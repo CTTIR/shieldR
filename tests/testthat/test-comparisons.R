@@ -59,6 +59,8 @@ test_that("log-scale FDR agrees with base R and preserves extreme tails", {
   expect_true(all(is.finite(adjust_fdr(c(-1000, -500)))))
   expect_equal(adjust_fdr(c(-Inf, 0)), c(-Inf, 0))
   expect_error(adjust_fdr(1), "at most zero")
+  expect_identical(adjust_fdr(c(NA, NA)), c(NA_real_, NA_real_))
+  expect_error(adjust_fdr(c(TRUE, NA)), "numeric")
 })
 
 test_that("input errors cannot silently alter sample sizes", {
