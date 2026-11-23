@@ -41,7 +41,9 @@ cliffs_delta <- function(x, y) {
   2 * U / (n1 * n2) - 1
 }
 
-# Interpretation thresholds for Cliff's delta (Romano et al. 2006)
+# Interpretation thresholds for Cliff's delta: Romano, Kromrey, Coraggio and
+# Skowronek (2006), Appropriate statistics for ordinal level data, annual
+# meeting of the Florida Association of Institutional Research (no DOI).
 # @param d numeric delta
 # @return character label
 cliff_magnitude <- function(d) {
@@ -139,10 +141,11 @@ compare_arms <- function(x, y, label_x, label_y, family,
     med_diff    = unname(md["est"]),
     med_diff_lwr = unname(md["lwr"]),
     med_diff_upr = unname(md["upr"]),
-    ## The endpoint lives on a 1/30 lattice, so a percentile CI for a
-    ## difference of medians can collapse to a single attainable value. Such a
-    ## CI is an artefact of the granularity, not a precise estimate, and is
-    ## flagged rather than presented as a narrow interval.
+    ## Proportion endpoints live on a 1/N lattice (N = batch size), so a
+    ## percentile CI for a difference of medians can collapse to a single
+    ## attainable value. Such a CI is an artefact of the granularity, not a
+    ## precise estimate, and is flagged rather than presented as a narrow
+    ## interval.
     med_diff_ci_degenerate = unname(md["lwr"]) == unname(md["upr"]),
     stringsAsFactors = FALSE
   )
@@ -160,16 +163,16 @@ kw_omnibus <- function(values, groups, family) {
     statistic <- 0
     df <- ng - 1L
     log10p <- 0
-    p_value <- 1
+    p.value <- 1
   } else {
     kt <- stats::kruskal.test(values ~ factor(groups))
     statistic <- unname(kt$statistic)
     df <- unname(kt$parameter)
     log10p <- stats::pchisq(statistic, df, lower.tail = FALSE,
                             log.p = TRUE) / log(10)
-    p_value <- kt$p.value
+    p.value <- kt$p.value
   }
-  p_safe <- max(.Machine$double.xmin, p_value)
+  p_safe <- max(.Machine$double.xmin, p.value)
   data.frame(
     family = family, test = "Kruskal-Wallis",
     arms   = paste(sort(unique(as.character(groups))), collapse = "|"),
@@ -177,7 +180,7 @@ kw_omnibus <- function(values, groups, family) {
     df     = df,
     p_raw  = p_safe,
     p_raw_log10 = log10p,
-    p_underflow = p_value == 0,
+    p_underflow = p.value == 0,
     stringsAsFactors = FALSE
   )
 }

@@ -23,6 +23,10 @@ check_sample <- function(x, name) {
 #'   `p_raw` is floored at the smallest normal positive double when necessary.
 #'   Point intervals are flagged. Apply [adjust_fdr()] to an explicitly defined
 #'   family of comparisons. The caller's RNG state is restored.
+#' @references
+#' Cliff N (1993). Dominance statistics: Ordinal analyses to answer ordinal
+#' questions. *Psychological Bulletin*, 114(3), 494--509.
+#' \doi{10.1037/0033-2909.114.3.494}
 #' @examples
 #' scenario <- example_scenario(N = 4L)
 #' fixed <- simulate_shield(scenario, "P0", n_rep = 4L, seed = 20260512L)
@@ -71,6 +75,11 @@ compare_multiple <- function(values, groups, family = "comparison") {
 #'   values are preserved and excluded from the family size. `-Inf` is allowed.
 #' @return Adjusted log10 p-values in input order. The caller supplies each
 #'   prespecified family separately; no predefined hypothesis grid is embedded.
+#' @references
+#' Benjamini Y, Hochberg Y (1995). Controlling the false discovery rate: A
+#' practical and powerful approach to multiple testing. *Journal of the Royal
+#' Statistical Society: Series B (Methodological)*, 57(1), 289--300.
+#' \doi{10.1111/j.2517-6161.1995.tb02031.x}
 #' @examples
 #' # Raw p-values of one prespecified comparison family, on the log10 scale
 #' adjust_fdr(log10(c(0.001, 0.02, 0.04, 0.3)))
@@ -86,7 +95,7 @@ adjust_fdr <- function(log10_p) {
 
 #' Analyze a paired disruptions-disabled intervention
 #'
-#' Checks that the two runs have matching parameters, policy, disruption_model,
+#' Checks that the two runs have matching parameters, policy, disruption model,
 #' replication identifiers and seeds, with disruptions enabled only in the first.
 #' Rows are aligned by replication identifier. The contrast is no disruptions minus
 #' disruptions, a total modeled intervention effect that includes downstream and

@@ -188,7 +188,7 @@ not compensate for an inadequate number of independent replications.
 
 The primary endpoint is arrival viable at Stage 2 by the horizon. Physical arrival
 precedes unloading and ends item-condition hazard. A nonarrival is not necessarily
-a loss. Conditional arrival-time medians exclude items who never arrived;
+a loss. Conditional arrival-time medians exclude items that never arrived;
 undefined batch medians remain missing. `n_pending` counts items still viable
 without Stage 3 arrival. `n_disruption_loss` counts destructive disruption events and is not the
 paired total intervention effect.

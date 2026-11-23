@@ -28,7 +28,7 @@ One row with paired mean difference and percentile 95 percent
 interval on the proportion scale. Replication indices are resampled jointly.
 }
 \description{
-Checks that the two runs have matching parameters, policy, disruption_model,
+Checks that the two runs have matching parameters, policy, disruption model,
 replication identifiers and seeds, with disruptions enabled only in the first.
 Rows are aligned by replication identifier. The contrast is no disruptions minus
 disruptions, a total modeled intervention effect that includes downstream and

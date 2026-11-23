@@ -48,3 +48,8 @@ coupled <- simulate_shield(scenario, "P3", n_rep = 4L, seed = 20260513L)
 compare_policies(coupled$viable_stage2, fixed$viable_stage2,
                  label_x = "P3", label_y = "P0", B = 200L)
 }
+\references{
+Cliff N (1993). Dominance statistics: Ordinal analyses to answer ordinal
+questions. \emph{Psychological Bulletin}, 114(3), 494--509.
+\doi{10.1037/0033-2909.114.3.494}
+}

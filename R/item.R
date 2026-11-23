@@ -11,7 +11,7 @@ init_items_full <- function(params) {
     cls0   = cls,
     obs    = cls,                      # first observation is exact at t = 0
     viable  = rep(TRUE, n),
-    node   = rep(1L, n),               # everybody starts at the Source
+    node   = rep(1L, n),               # every item starts at the Source
     status = rep(0L, n),               # 0 wait, 1 in transport, 2 done, 3 failed
     t_eta  = rep(NA_real_, n),
     t_arrival = rep(NA_real_, n),      # physical arrival, before unloading
@@ -40,7 +40,7 @@ urgency_index_full <- function(state, t, params, observed = TRUE) {
 
 # Advance every item by one minute
 #
-# Hazard and escalation apply to live items who are waiting or in
+# Hazard and escalation apply to live items that are waiting or in
 # transport and have not yet reached Stage 2. Loss is drawn first, then
 # escalation among that minute's viable_items.
 # @param state item state

@@ -45,14 +45,14 @@ Each row represents one batch. All items enter at time zero. The engine
 advances in one-minute intervals and preserves the original event ordering.
 P0 uses initial true class and a fixed route; P1 uses noisy reassessment;
 P2 updates route beliefs; P3 couples reassessment, route, destination and
-departure holds. P3 knows the specified disruption_model response model and uses an
+departure holds. P3 knows the specified disruption-response model and uses an
 entropy-regularized heuristic. It does not solve an equilibrium.
 }
 \details{
 The master seed creates a per-replication seed schedule. Item, policy
 and disruption streams are separated using L'Ecuyer-CMRG. Item draws are
 indexed by item and minute. The caller's RNG kind and seed are restored.
-Equal seeds and equal replication counts support an disruptions-disabled pair.
+Equal seeds and equal replication counts support a disruptions-disabled pair.
 Use distinct seeds for independent policy arms.
 }
 \examples{

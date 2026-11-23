@@ -8,7 +8,7 @@
 \description{
 An academic research framework for reproducible policy evaluation in a fixed
 five-leg logistics chain. Scenario inputs are explicit; the included
-examples have neutral item-condition and disruption_risk settings.
+examples have neutral item-condition and disruption-risk settings.
 }
 \section{Start here}{
 

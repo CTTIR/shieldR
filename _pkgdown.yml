@@ -61,7 +61,8 @@ reference:
 - title: Package
   contents:
   - shieldR-package
-- title: Additional analysis interfaces
+- title: Item-condition extension
+  desc: Optional condition, servicing and calibration model for items.
   contents:
   - calibrate_item_model
   - simulate_item_reference

@@ -31,7 +31,7 @@ remotes::install_github("CTTIR/shieldR", build_vignettes = TRUE)
 ```
 
 R 4.1.0 or later is required. The simulation core uses R's bundled `parallel`,
-`stats` and `utils` packages and contains no compiled code. 
+`stats` and `utils` packages and contains no compiled code.
 
 For a local checkout, run `R CMD INSTALL .` from its directory. To include the
 rendered tutorials, install `knitr` and `rmarkdown`, make Pandoc available, and

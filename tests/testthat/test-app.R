@@ -19,6 +19,9 @@ test_that("app constructs a runnable, accessible UI without launching", {
   expect_match(html, "Paired disruptions-disabled intervention", fixed = TRUE)
   expect_match(html, "Methods and help", fixed = TRUE)
   expect_match(html, "Departure-history window (departures)", fixed = TRUE)
+  help <- as.character(.shield_app_help())
+  expect_match(help, "an academic research package", fixed = TRUE)
+  expect_false(grepl("disruption_model", help, fixed = TRUE))
   expect_error(shield_app(launch = NA), "TRUE or FALSE")
 })
 
@@ -39,6 +42,8 @@ test_that("configuration validates design, workload and reconstructs parameters"
   snapshot$settings$n_rep <- 100L
   snapshot$settings$horizon <- 240L
   expect_error(.shield_app_configure(snapshot), "workload")
+  snapshot <- .app_snapshot(disruption_model = "unknown")
+  expect_error(.shield_app_configure(snapshot), "static or adaptive disruption response")
   snapshot <- .app_snapshot(slot = 2L, max_hold = 3L)
   expect_error(.shield_app_configure(snapshot), "multiple")
   snapshot <- .app_snapshot()

@@ -21,3 +21,9 @@ Adjust one explicitly defined family using Benjamini-Hochberg FDR
 # Raw p-values of one prespecified comparison family, on the log10 scale
 adjust_fdr(log10(c(0.001, 0.02, 0.04, 0.3)))
 }
+\references{
+Benjamini Y, Hochberg Y (1995). Controlling the false discovery rate: A
+practical and powerful approach to multiple testing. \emph{Journal of the Royal
+Statistical Society: Series B (Methodological)}, 57(1), 289--300.
+\doi{10.1111/j.2517-6161.1995.tb02031.x}
+}

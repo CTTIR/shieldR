@@ -313,7 +313,7 @@ item_endpoints_v1 <- function(state, params) {
 #' Independently replay a serviced intake calibration batch
 #'
 #' Uses the stochastic item event engine with unlimited procedural capacity
-#' and no transport or disruption_risk. All items are eligible at intake. Reports
+#' and no transport or disruption risk. All items are eligible at intake. Reports
 #' outcomes on the intake clock, which differs from the chain's onset clock.
 #' This is a numerical calibration check, not external validation.
 #' @param model Item configuration.

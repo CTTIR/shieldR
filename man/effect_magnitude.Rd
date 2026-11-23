@@ -16,6 +16,20 @@ application-specific importance margins and do not establish practical benefit.
 \description{
 Describe Cliff's delta using conventional magnitude thresholds
 }
+\details{
+Absolute values below 0.147 are labelled negligible, below 0.33
+small, below 0.474 medium, and large otherwise. These conventional
+thresholds follow Romano et al. (2006), a conference paper without a DOI.
+}
 \examples{
 effect_magnitude(c(-0.5, 0.1, 0.3))
+}
+\references{
+Cliff N (1993). Dominance statistics: Ordinal analyses to answer ordinal
+questions. \emph{Psychological Bulletin}, 114(3), 494--509.
+\doi{10.1037/0033-2909.114.3.494}
+
+Romano J, Kromrey JD, Coraggio J, Skowronek J (2006). Appropriate statistics
+for ordinal level data. Paper presented at the annual meeting of the Florida
+Association of Institutional Research.
 }

@@ -73,7 +73,7 @@ as such and replaced for a final analysis.
 The primary logistics endpoint is viable delivery, operationalized here by
 arrival viable at Stage 2 by the administrative horizon. This is a proportion of
 the original batch, not a Kaplan-Meier viability probability at an arbitrary
-time. A item still viable elsewhere at the horizon is an endpoint failure.
+time. An item still viable elsewhere at the horizon is an endpoint failure.
 Arrival is recorded before unloading and ends item-condition hazard; transport
 can continue to Stage 3. Downstream disruptions can still affect the Stage 3 endpoint.
 
@@ -258,7 +258,7 @@ stopifnot(all(vapply(names(first_batch), function(column) {
 
 Generate the declared full schedule before splitting into chunks. Restarting a
 master seed independently for each chunk repeats the beginning of the schedule
-and creates duplicate replications. For an disruptions-disabled pair, use the same
+and creates duplicate replications. For a disruptions-disabled pair, use the same
 schedule in both configurations. Preserve the total replication count and the
 mapping from each seed to its replication identifier in durable checkpoints.
 

@@ -13,6 +13,12 @@
   named entries in `targets` and rejects non-numeric calibration batches;
   `adjust_fdr()` accepts an all-missing logical vector.
 * Add tests for `calibrate_item_model()` and `simulate_item_reference()`.
+* Cite Cliff (1993), Benjamini and Hochberg (1995) and the Romano et al.
+  (2006) magnitude thresholds in the help pages of `compare_policies()`,
+  `adjust_fdr()` and `effect_magnitude()`.
+* Correct wording in help pages, tutorials and the workbench, give the
+  item-condition functions their own reference section, and drop the unused
+  `digest` suggestion.
 * Prevent integer overflow in large-sample Mann-Whitney variance and Cliff's
   delta calculations. Comparisons with more than 2^31 - 1 cross-arm pairs
   now retain their effect size and log-tail probability.

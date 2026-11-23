@@ -20,7 +20,7 @@ Named vector of intake-clock loss and degradation loss risks.
 }
 \description{
 Uses the stochastic item event engine with unlimited procedural capacity
-and no transport or disruption_risk. All items are eligible at intake. Reports
+and no transport or disruption risk. All items are eligible at intake. Reports
 outcomes on the intake clock, which differs from the chain's onset clock.
 This is a numerical calibration check, not external validation.
 }

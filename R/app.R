@@ -100,7 +100,7 @@ shield_app <- function(launch = TRUE, ...) {
   if (s$design != "policies" && length(policies) != 1L)
     stop("This design requires exactly one policy.", call. = FALSE)
   if (!identical(s$disruption_model, "static") && !identical(s$disruption_model, "adaptive"))
-    stop("Choose static or adaptive disruption_model response.", call. = FALSE)
+    stop("Choose a static or adaptive disruption response.", call. = FALSE)
   n_arms <- if (s$design == "intervention") 2L else length(policies)
   effort <- s$N * s$horizon * s$n_rep * n_arms
   if (effort > 250000)
