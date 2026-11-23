@@ -32,5 +32,8 @@ test_that("named bootstrap statistics preserve the original algorithms", {
     unname(stats::wilcox.test(x, y, exact = FALSE)$statistic))
   expect_identical(effect_magnitude(c(0, .2, .4, .8)),
     c("negligible", "small", "medium", "large"))
+  # Documented thresholds of Romano et al. (2006): each one opens a class.
+  expect_identical(effect_magnitude(c(-0.1469, 0.147, -0.3299, 0.33, 0.4739, -0.474)),
+    c("negligible", "small", "small", "medium", "medium", "large"))
   expect_error(effect_magnitude(2), "[-1, 1]", fixed = TRUE)
 })

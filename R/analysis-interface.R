@@ -97,16 +97,21 @@ mann_whitney_u <- function(x, y) {
 #' @return Character magnitude labels. These descriptive thresholds are not
 #'   application-specific importance margins and do not establish practical benefit.
 #' @details Absolute values below 0.147 are labelled negligible, below 0.33
-#'   small, below 0.474 medium, and large otherwise. These conventional
-#'   thresholds follow Romano et al. (2006), a conference paper without a DOI.
+#'   small, below 0.474 medium, and large otherwise. Romano et al. (2006,
+#'   section on Cliff's delta, pp. 14--15) derive these thresholds as the
+#'   deltas that correspond to Cohen's d of 0.2, 0.5 and 0.8 for two normal
+#'   distributions; Cliff (1993) defines the statistic but proposes no
+#'   magnitude labels. The conference paper has no DOI.
 #' @references
 #' Cliff N (1993). Dominance statistics: Ordinal analyses to answer ordinal
 #' questions. *Psychological Bulletin*, 114(3), 494--509.
 #' \doi{10.1037/0033-2909.114.3.494}
 #'
-#' Romano J, Kromrey JD, Coraggio J, Skowronek J (2006). Appropriate statistics
-#' for ordinal level data. Paper presented at the annual meeting of the Florida
-#' Association of Institutional Research.
+#' Romano J, Kromrey JD, Coraggio J, Skowronek J (2006). Appropriate
+#' statistics for ordinal level data: Should we really be using t-test and
+#' Cohen's d for evaluating group differences on the NSSE and other surveys?
+#' Paper presented at the annual meeting of the Florida Association of
+#' Institutional Research, 1--3 February 2006, Cocoa Beach, Florida.
 #' @examples
 #' effect_magnitude(c(-0.5, 0.1, 0.3))
 #' @export

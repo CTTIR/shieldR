@@ -42,8 +42,11 @@ cliffs_delta <- function(x, y) {
 }
 
 # Interpretation thresholds for Cliff's delta: Romano, Kromrey, Coraggio and
-# Skowronek (2006), Appropriate statistics for ordinal level data, annual
-# meeting of the Florida Association of Institutional Research (no DOI).
+# Skowronek (2006), Appropriate statistics for ordinal level data: Should we
+# really be using t-test and Cohen's d for evaluating group differences on the
+# NSSE and other surveys? Annual meeting of the Florida Association of
+# Institutional Research (no DOI), section on Cliff's delta, pp. 14-15: the
+# deltas 0.147, 0.33 and 0.474 correspond to Cohen's d of 0.2, 0.5 and 0.8.
 # @param d numeric delta
 # @return character label
 cliff_magnitude <- function(d) {
