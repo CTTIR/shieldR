@@ -131,7 +131,9 @@ test_that("a zero softmax parameter gives excluded item-model choices no weight"
   expect_true(all(x$n_dispatch > 0))
   # Excluded choices are never selected, whatever the uniform draw.
   s <- trace_item_v1(p)$state
-  s$status[] <- 0L; s$node[] <- 1L; s$viable[] <- TRUE
+  s$status[] <- 0L
+  s$node[] <- 1L
+  s$viable[] <- TRUE
   theta <- init_theta_full(p)
   theta$b[1, 1] <- theta$b[1, 1] + 10
   for (u in c(1e-12, .5, 1 - 1e-12)) {

@@ -100,7 +100,8 @@
       pageLength = 10, scrollX = TRUE, lengthMenu = c(10, 25, 50)))
     # Displayed values are rounded for reading; downloads keep full precision.
     fractional <- .shield_app_fractional_columns(data)
-    if (length(fractional)) table <- DT::formatSignif(table, fractional, digits = 4)
+    if (length(fractional))
+      table <- DT::formatSignif(table, fractional, digits = 4)
     table
   })
   output$primary <- render_table(function() {

@@ -163,16 +163,16 @@ kw_omnibus <- function(values, groups, family) {
     statistic <- 0
     df <- ng - 1L
     log10p <- 0
-    p.value <- 1
+    p_kruskal <- 1
   } else {
     kt <- stats::kruskal.test(values ~ factor(groups))
     statistic <- unname(kt$statistic)
     df <- unname(kt$parameter)
     log10p <- stats::pchisq(statistic, df, lower.tail = FALSE,
                             log.p = TRUE) / log(10)
-    p.value <- kt$p.value
+    p_kruskal <- kt$p.value
   }
-  p_safe <- max(.Machine$double.xmin, p.value)
+  p_safe <- max(.Machine$double.xmin, p_kruskal)
   data.frame(
     family = family, test = "Kruskal-Wallis",
     arms   = paste(sort(unique(as.character(groups))), collapse = "|"),
@@ -180,7 +180,7 @@ kw_omnibus <- function(values, groups, family) {
     df     = df,
     p_raw  = p_safe,
     p_raw_log10 = log10p,
-    p_underflow = p.value == 0,
+    p_underflow = p_kruskal == 0,
     stringsAsFactors = FALSE
   )
 }

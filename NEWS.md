@@ -20,8 +20,9 @@
   item-condition functions their own reference section, and drop the unused
   `digest` suggestion.
 * Widen the node boxes of the workbench chain diagram so that every label
-  fits, and show fractional values in workbench tables with four significant
-  digits. Downloads keep full precision.
+  fits, draw workbench plots at 96 dpi so their text is legible, and show
+  fractional values in workbench tables with four significant digits.
+  Downloads keep full precision.
 * Prevent integer overflow in large-sample Mann-Whitney variance and Cliff's
   delta calculations. Comparisons with more than 2^31 - 1 cross-arm pairs
   now retain their effect size and log-tail probability.
