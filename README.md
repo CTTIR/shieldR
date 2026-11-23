@@ -3,7 +3,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24426388.svg)](https://doi.org/10.5281/zenodo.24426388)
 
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE.md)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://github.com/CTTIR/shieldR/blob/main/LICENSE.md)
 
 [![R package checks](https://github.com/CTTIR/shieldR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/CTTIR/shieldR/actions/workflows/R-CMD-check.yaml)
 
