@@ -44,7 +44,8 @@ with_shield_rng <- function(seed, code) {
 #'   For the legacy mode the primary endpoint is `viable_stage2`. The opt-in
 #'   [with_item_model()] extension adds overall viability at the end of the
 #'   short and extended follow-up periods (`viable_24h`, `viable_30d`), timed
-#'   from item onset, and cause-specific loss and servicing-access endpoints. Its risk
+#'   from item onset, and cause-specific loss and servicing-access endpoints.
+#'   Its risk
 #'   continues after arrival; it does not establish application-specific validity.
 #'   Viable nonarrivals at the transport horizon are
 #'   endpoint failures; missing arrival times remain `NA`.

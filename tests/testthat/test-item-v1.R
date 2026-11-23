@@ -180,9 +180,10 @@ test_that("item-model configuration errors name the problem", {
   expect_error(with_item_model(example_scenario(), bad), "fragility")
   bad <- m; bad$useful_updates <- NA
   expect_error(with_item_model(example_scenario(), bad), "logical")
-  bad <- m; bad$item_age <- 1440
+  bad <- m
+  bad$item_age <- 1440
   expect_error(with_item_model(example_scenario(), bad),
-    "transport horizon plus item_age must not exceed 1440 minutes", fixed = TRUE)
+               "horizon plus item_age must not exceed 1440 minutes", fixed = TRUE)
 })
 
 test_that("aggregate calibration recovers attainable targets and validates inputs", {
@@ -231,7 +232,7 @@ test_that("serviced reference replay is reproducible and preserves RNG state", {
   expect_equal(unname(simulate_item_reference(zero, N = 10L)), c(0, 0, 0))
 })
 
-test_that("condition-index defaults follow the documented illustrative values", {
+test_that("condition-index defaults follow the documented values", {
   p <- item_fixture_v1(6L)
   s <- trace_item_v1(p)$state
   s$item_pending <- list()

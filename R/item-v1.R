@@ -23,7 +23,8 @@
 #'   have no physical interpretation; they cannot be changed through `model`.
 #'   An item's true index is `115 - 20 * fragility`, reduced by
 #'   `0.035 * fragility` per minute since onset while servicing is not yet
-#'   effective (the reduction no longer applies once it is) and floored at 40. Each item carries a persistent measurement
+#'   effective (the reduction no longer applies once it is) and floored at 40.
+#'   Each item carries a persistent measurement
 #'   error drawn uniformly from -8 to 8, and each observation adds noise drawn
 #'   uniformly from -4 to 4. An observed index below 80 gives class 1, below
 #'   100 class 2 and otherwise class 3; a missing index gives class 2 and a
@@ -77,7 +78,8 @@ with_item_model <- function(parameters, model, planner = model) {
         is.na(x$useful_updates)) stop("useful_updates must be logical", call. = FALSE)
   }
   if (parameters$horizon + model$item_age > 1440)
-    stop("transport horizon plus item_age must not exceed 1440 minutes", call. = FALSE)
+    stop("transport horizon plus item_age must not exceed 1440 minutes",
+         call. = FALSE)
   parameters$item_model <- model
   parameters$item_planner <- planner
   if (is.null(parameters$decision_controls))
@@ -244,7 +246,8 @@ item_deliver_v1 <- function(state, time, params) {
     state$item_specs$obs_time[good] <- x$measured
   }
   if (length(ready)) state$item_pending <- pending[-ready]
-  # Missing information uses an explicit uncertain middle prior, never a nominal value.
+  # Missing information uses an explicit uncertain middle prior, never a
+  # nominal value.
   c <- state$item_specs
   # Illustrative class thresholds of the abstract model: below 80 is class 1,
   # below 100 class 2, otherwise class 3; a positive flag caps the class at 2.

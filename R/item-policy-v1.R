@@ -1,7 +1,8 @@
 item_observed_viability_v1 <- function(obs, time, control_time, model) {
   # Synthetic fixed forecast. Only observed fields enter, never latent fragility.
-  # The inverse baseline (115 - index) / 20 and the recognition weights 1, 0.25
-  # and 0.5 are illustrative defaults of the abstract model (see ?with_item_model).
+  # The inverse baseline (115 - index) / 20 and the recognition weights 1,
+  # 0.25 and 0.5 are illustrative defaults of the abstract model
+  # (see ?with_item_model).
   fragility <- if (is.na(obs$obs_condition_index)) mean(model$fragility) else
     pmin(max(model$fragility)*2,pmax(min(model$fragility)/2,(115-obs$obs_condition_index)/20))
   recognized <- if (is.na(obs$obs_degradation)) .5 else if (obs$obs_degradation) 1 else .25
@@ -13,7 +14,8 @@ item_observed_viability_v1 <- function(obs, time, control_time, model) {
 item_decide_v1 <- function(policy,state,theta,leg,origins,params,demand,
     time=0L,disruption_model="static",history=NULL,scheduled=NULL,decision_u=NULL) {
   waiting <- which(state$viable & state$status==0L & state$node %in% origins)
-  # Processing at Stage 2 is completed before an item is committed to the last leg.
+  # Processing at Stage 2 is completed before an item is committed to the
+  # last leg.
   if (leg==5L) waiting <- waiting[state$item_specs$completion[waiting] <=
     time+params$item_model$item_age]
   if (!length(waiting)) return(NULL)

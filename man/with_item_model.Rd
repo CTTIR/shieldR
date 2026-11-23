@@ -38,7 +38,8 @@ dimensionless and uncalibrated, are not taken from the literature and
 have no physical interpretation; they cannot be changed through \code{model}.
 An item's true index is \code{115 - 20 * fragility}, reduced by
 \code{0.035 * fragility} per minute since onset while servicing is not yet
-effective (the reduction no longer applies once it is) and floored at 40. Each item carries a persistent measurement
+effective (the reduction no longer applies once it is) and floored at 40.
+Each item carries a persistent measurement
 error drawn uniformly from -8 to 8, and each observation adds noise drawn
 uniformly from -4 to 4. An observed index below 80 gives class 1, below
 100 class 2 and otherwise class 3; a missing index gives class 2 and a

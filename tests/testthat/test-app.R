@@ -37,8 +37,10 @@ test_that("workbench tables keep their natural height inside the cards", {
   html <- as.character(.shield_app_ui())
   # A fill item is capped at the card's default widget height, so longer
   # tables overlap the content below and hide their page controls.
-  for (id in c("graph", "primary", "comparisons", "omnibus", "diagnostics", "raw")) {
-    tag <- regmatches(html, regexpr(sprintf('<div[^>]*id="%s"[^>]*>', id), html))
+  ids <- c("graph", "primary", "comparisons", "omnibus", "diagnostics", "raw")
+  for (id in ids) {
+    pattern <- sprintf('<div[^>]*id="%s"[^>]*>', id)
+    tag <- regmatches(html, regexpr(pattern, html))
     expect_match(tag, "datatables", fixed = TRUE)
     expect_false(grepl("html-fill-item", tag, fixed = TRUE))
   }
