@@ -25,7 +25,7 @@ simulate_replication <- function(parameters, policy = c("P0", "P1", "P2", "P3"),
 
 #' Construct the reproducible seed schedule for a complete cell
 #' @param n_rep Positive integer total number of batch replications.
-#' @param seed Master/cell seed, default 20260512.
+#' @param seed Master/cell seed, default 20260512, an arbitrary fixed value.
 #' @return Integer vector of length n_rep. Generate the complete schedule once;
 #'   chunking must not change its declared length or resample the schedule.
 #' @examples
@@ -49,7 +49,7 @@ replication_seeds <- function(n_rep, seed = 20260512L) {
 #' @param paired Logical. If TRUE, resample matching indices jointly.
 #' @param B Positive integer resample count, default 10,000.
 #' @param conf Confidence level strictly between zero and one.
-#' @param seed Bootstrap seed, default 20260512.
+#' @param seed Bootstrap seed, default 20260512, an arbitrary fixed value.
 #' @return Named vector with est, lwr and upr; orientation is x minus y.
 #'   Caller RNG state is restored. Intervals quantify Monte Carlo uncertainty
 #'   conditional on the model and do not propagate parameter uncertainty.

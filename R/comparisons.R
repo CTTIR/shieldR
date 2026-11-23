@@ -16,7 +16,7 @@ check_sample <- function(x, name) {
 #' @param label_x,label_y Arm labels.
 #' @param family Explicit comparison-family label; no automatic FDR grouping.
 #' @param B Positive integer bootstrap resamples; default 10,000.
-#' @param seed Bootstrap seed; default 20260512.
+#' @param seed Bootstrap seed; default 20260512, an arbitrary fixed value.
 #' @return One-row data frame containing U, raw and log10 p-values, sample sizes,
 #'   medians and quartiles, Cliff's delta and median difference with percentile
 #'   95 percent intervals. `p_raw_log10` is authoritative for very small tails;
@@ -106,7 +106,7 @@ adjust_fdr <- function(log10_p) {
 #' @param endpoint Arrival viability at Stages 1--3, or item `viable_24h` /
 #'   `viable_30d` when both runs use the item extension.
 #' @param B Positive integer paired bootstrap resamples; default 10,000.
-#' @param seed Bootstrap seed; default 20260512.
+#' @param seed Bootstrap seed; default 20260512, an arbitrary fixed value.
 #' @return One row with paired mean difference and percentile 95 percent
 #'   interval on the proportion scale. Replication indices are resampled jointly.
 #' @examples

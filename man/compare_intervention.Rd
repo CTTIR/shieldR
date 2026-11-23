@@ -21,7 +21,7 @@ identical seeds, replication counts and settings except disruption enablement.}
 
 \item{B}{Positive integer paired bootstrap resamples; default 10,000.}
 
-\item{seed}{Bootstrap seed; default 20260512.}
+\item{seed}{Bootstrap seed; default 20260512, an arbitrary fixed value.}
 }
 \value{
 One row with paired mean difference and percentile 95 percent

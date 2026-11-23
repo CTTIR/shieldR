@@ -23,7 +23,7 @@ compare_policies(
 
 \item{B}{Positive integer bootstrap resamples; default 10,000.}
 
-\item{seed}{Bootstrap seed; default 20260512.}
+\item{seed}{Bootstrap seed; default 20260512, an arbitrary fixed value.}
 }
 \value{
 One-row data frame containing U, raw and log10 p-values, sample sizes,

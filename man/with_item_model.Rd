@@ -27,6 +27,29 @@ other loss processes, finite processing capacity, and noisy item specifications.
 The condition index is dimensionless and synthetic. Coefficients and thresholds
 require validation for each application; this is not a calibrated materials model.
 }
+\details{
+\code{item_age} is the time since item onset, in minutes, at which the
+batch enters the chain; the transport horizon plus \code{item_age} must not
+exceed the 1440-minute short follow-up period.
+
+The condition index and its use by the decision rules rely on fixed
+illustrative defaults of the abstract model. They are synthetic,
+dimensionless and uncalibrated, are not taken from the literature and
+have no physical interpretation; they cannot be changed through \code{model}.
+An item's true index is \code{115 - 20 * fragility}, reduced by
+\code{0.035 * fragility} per minute since onset while servicing is not yet
+effective (the reduction no longer applies once it is) and floored at 40. Each item carries a persistent measurement
+error drawn uniformly from -8 to 8, and each observation adds noise drawn
+uniformly from -4 to 4. An observed index below 80 gives class 1, below
+100 class 2 and otherwise class 3; a missing index gives class 2 and a
+positive degradation flag caps the class at 2. For planning, P1 and P3
+infer fragility as \code{(115 - index) / 20}, limited to between half the
+smallest and twice the largest configured weight (the mean weight when
+the index is missing), weight the remaining degradation hazard by 1 for a
+positive, 0.25 for a negative and 0.5 for a missing degradation flag, and
+rank waiting items by the expected gain from servicing them now rather
+than 30 minutes later.
+}
 \examples{
 item_model <- list(
   degradation_scale = 0.2, early_other = 0.02, late_other = 0.1,

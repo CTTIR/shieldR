@@ -24,7 +24,7 @@ configured with \code{\link[=with_decision_controls]{with_decision_controls()}} 
 \item{n_rep}{Positive integer replication count. The package default is
 deliberately small; choose study size using a Monte Carlo precision assessment.}
 
-\item{seed}{Integer seed; default 20260512.}
+\item{seed}{Integer seed; default 20260512, an arbitrary fixed value.}
 
 \item{disruptions_enabled}{Optional logical override of the scenario setting.}
 }

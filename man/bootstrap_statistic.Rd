@@ -25,7 +25,7 @@ bootstrap_statistic(
 
 \item{conf}{Confidence level strictly between zero and one.}
 
-\item{seed}{Bootstrap seed, default 20260512.}
+\item{seed}{Bootstrap seed, default 20260512, an arbitrary fixed value.}
 }
 \value{
 Named vector with est, lwr and upr; orientation is x minus y.

@@ -35,7 +35,7 @@ with_shield_rng <- function(seed, code) {
 #' @param disruption_model Either `static` or `adaptive`.
 #' @param n_rep Positive integer replication count. The package default is
 #'   deliberately small; choose study size using a Monte Carlo precision assessment.
-#' @param seed Integer seed; default 20260512.
+#' @param seed Integer seed; default 20260512, an arbitrary fixed value.
 #' @param disruptions_enabled Optional logical override of the scenario setting.
 #' @return A `shield_run` data frame with replication identifiers and seeds,
 #'   viability-to-arrival proportions at Stages 1--3, conditional arrival-time

@@ -230,3 +230,32 @@ test_that("serviced reference replay is reproducible and preserves RNG state", {
   zero[c("degradation_scale", "early_other", "late_other")] <- list(0, 0, 0)
   expect_equal(unname(simulate_item_reference(zero, N = 10L)), c(0, 0, 0))
 })
+
+test_that("condition-index defaults follow the documented illustrative values", {
+  p <- item_fixture_v1(6L)
+  s <- trace_item_v1(p)$state
+  s$item_pending <- list()
+  s$item_initial <- NULL
+  s$item_specs$obs_condition_index <- c(79.9, 80, 99.9, 100, NA, 120)
+  s$item_specs$obs_degradation <- c(FALSE, FALSE, FALSE, FALSE, NA, TRUE)
+  # Below 80, below 100, otherwise class 3; missing is class 2; a positive
+  # degradation flag caps the class at 2.
+  expect_identical(item_deliver_v1(s, 0, p)$obs, c(1L, 2L, 2L, 3L, 2L, 2L))
+  # Planning inverts the baseline: an index of 95 implies fragility 1.
+  m <- p$item_model
+  obs <- data.frame(obs_condition_index = 95, obs_degradation = TRUE)
+  a <- item_hazard_v1(43200, 100, 1, m)
+  b <- item_hazard_v1(10, Inf, 1, m)
+  expect_equal(item_observed_viability_v1(obs, 10, 100, m),
+    exp(-pmax(0, a[, 1] - b[, 1] + a[, 2] - b[, 2])))
+  # A negative flag weights the remaining degradation hazard by 0.25.
+  obs$obs_degradation <- FALSE
+  expect_equal(item_observed_viability_v1(obs, 10, 100, m),
+    exp(-pmax(0, 0.25 * (a[, 1] - b[, 1]) + a[, 2] - b[, 2])))
+  # Inferred fragility is limited to twice the largest configured weight.
+  obs$obs_condition_index <- 0
+  a <- item_hazard_v1(43200, 100, 2 * max(m$fragility), m)
+  b <- item_hazard_v1(10, Inf, 2 * max(m$fragility), m)
+  expect_equal(item_observed_viability_v1(obs, 10, 100, m),
+    exp(-pmax(0, 0.25 * (a[, 1] - b[, 1]) + a[, 2] - b[, 2])))
+})

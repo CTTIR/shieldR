@@ -13,7 +13,7 @@ simulate_item_reference(model, N = 100L, intake = 0, seed = 20260512L)
 
 \item{intake}{Time from item onset to intake, in minutes.}
 
-\item{seed}{Integer seed, default 20260512.}
+\item{seed}{Integer seed, default 20260512, an arbitrary fixed value.}
 }
 \value{
 Named vector of intake-clock loss and degradation loss risks.

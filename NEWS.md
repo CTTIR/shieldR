@@ -19,6 +19,9 @@
 * Cite Cliff (1993), Benjamini and Hochberg (1995) and, for the effect
   magnitude thresholds, Romano et al. (2006) in the help pages of
   `compare_policies()`, `adjust_fdr()` and `effect_magnitude()`.
+* Document the fixed condition-index constants of `with_item_model()` as
+  illustrative defaults of the abstract model, and the default seed as an
+  arbitrary fixed value.
 * Describe the model in abstract terms throughout help pages, tutorials,
   code comments and the workbench. The `with_item_model()` horizon error now
   names `item_age` and states the limit in minutes. Function, argument and
