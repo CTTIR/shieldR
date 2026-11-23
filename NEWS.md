@@ -23,6 +23,10 @@
   fits, draw workbench plots at 96 dpi so their text is legible, and show
   fractional values in workbench tables with four significant digits.
   Downloads keep full precision.
+* Let workbench tables take their natural height. They were capped at the
+  card's default widget height, so longer tables overlapped the content
+  below them, hid their last rows and page controls, and covered the graph
+  download button.
 * Prevent integer overflow in large-sample Mann-Whitney variance and Cliff's
   delta calculations. Comparisons with more than 2^31 - 1 cross-arm pairs
   now retain their effect size and log-tail probability.

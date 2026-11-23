@@ -30,6 +30,18 @@ test_that("app constructs a runnable, accessible UI without launching", {
   expect_error(shield_app(launch = NA), "TRUE or FALSE")
 })
 
+test_that("workbench tables keep their natural height inside the cards", {
+  .app_skip()
+  html <- as.character(.shield_app_ui())
+  # A fill item is capped at the card's default widget height, so longer
+  # tables overlap the content below and hide their page controls.
+  for (id in c("graph", "primary", "comparisons", "omnibus", "diagnostics", "raw")) {
+    tag <- regmatches(html, regexpr(sprintf('<div[^>]*id="%s"[^>]*>', id), html))
+    expect_match(tag, "datatables", fixed = TRUE)
+    expect_false(grepl("html-fill-item", tag, fixed = TRUE))
+  }
+})
+
 test_that("configuration validates design, workload and reconstructs parameters", {
   snapshot <- .app_snapshot(design = "policies", policies = c("P0", "P3"))
   config <- .shield_app_configure(snapshot)
