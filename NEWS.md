@@ -30,6 +30,7 @@
   tutorials, NEWS and workbench text, and fix the parameter label
   "destructiveness" (previously misspelled) for `q` in `shield_parameters()`
   and the workbench. Function, argument and column names are unchanged.
+* Name the author as "R. Heller" in `CITATION.cff`, matching `citation("shieldR")`.
 * Run the GitHub Actions R CMD check with `--as-cran`.
 
 # shieldR 0.6.0
