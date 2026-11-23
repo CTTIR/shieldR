@@ -180,6 +180,9 @@ test_that("item-model configuration errors name the problem", {
   expect_error(with_item_model(example_scenario(), bad), "fragility")
   bad <- m; bad$useful_updates <- NA
   expect_error(with_item_model(example_scenario(), bad), "logical")
+  bad <- m; bad$item_age <- 1440
+  expect_error(with_item_model(example_scenario(), bad),
+    "transport horizon plus item_age must not exceed 1440 minutes", fixed = TRUE)
 })
 
 test_that("aggregate calibration recovers attainable targets and validates inputs", {

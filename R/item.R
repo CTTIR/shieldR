@@ -86,8 +86,8 @@ update_item_state_full <- function(state, dt = 1, params,
 # Controller reassessment with misclassification
 #
 # Observation model: with probability `params$misclass` the observed class
-# is a neighbouring class. Classes 1 and 3 can only be misread inwards (towards
-# class 2); class 2 splits evenly between classes 1 and 3.
+# is a neighbouring class. Classes 1 and 3 can only be misread inwards
+# (towards class 2); class 2 splits evenly between classes 1 and 3.
 # @param state item state
 # @param params parameter list
 # @return updated state

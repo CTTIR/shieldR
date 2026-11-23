@@ -132,8 +132,9 @@ An item has a true condition and an observed specification. These need not agree
 observations can be noisy, missing, delayed or retained from an earlier time.
 The basic model updates item classes and viability each minute. The optional
 `with_item_model()` extension adds a dimensionless condition index, a degradation
-indicator and finite-capacity processing at Stage 2. Processing can stabilise an
-item; residual degradation and other losses can continue afterwards.
+indicator and finite-capacity processing at Stage 2. Completed processing
+reduces an item's degradation hazard to a residual level; residual degradation
+and other losses can continue afterwards.
 
 | Specification | Interpretation |
 |---|---|

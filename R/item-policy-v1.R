@@ -11,7 +11,7 @@ item_observed_viability_v1 <- function(obs, time, control_time, model) {
 item_decide_v1 <- function(policy,state,theta,leg,origins,params,demand,
     time=0L,disruption_model="static",history=NULL,scheduled=NULL,decision_u=NULL) {
   waiting <- which(state$viable & state$status==0L & state$node %in% origins)
-  # Definitive service is completed before an item is committed to the last leg.
+  # Processing at Stage 2 is completed before an item is committed to the last leg.
   if (leg==5L) waiting <- waiting[state$item_specs$completion[waiting] <=
     time+params$item_model$item_age]
   if (!length(waiting)) return(NULL)

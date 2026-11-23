@@ -56,7 +56,7 @@ with_item_model <- function(parameters, model, planner = model) {
         is.na(x$useful_updates)) stop("useful_updates must be logical", call. = FALSE)
   }
   if (parameters$horizon + model$item_age > 1440)
-    stop("transport horizon plus item age must not exceed 24 hours")
+    stop("transport horizon plus item_age must not exceed 1440 minutes", call. = FALSE)
   parameters$item_model <- model
   parameters$item_planner <- planner
   if (is.null(parameters$decision_controls))
@@ -95,7 +95,8 @@ item_hazard_v1 <- function(t, control, fragility, model) {
 #' interval integration is explicit. Aggregate fitting is not item
 #' validation and does not identify unserviced pre-service trajectories.
 #' @param model Item model configuration; initial coefficient values positive.
-#' @param control Vector of onset-to-servicing times, Inf for failures.
+#' @param control Vector of times from item onset to effective servicing, in
+#'   minutes; `Inf` where servicing is never effective.
 #' @param fragility Positive vector of corresponding fragility weights.
 #' @param targets Named numeric vector with probabilities loss_24, loss_30 and
 #'   degradation_24. Other named entries are ignored.
@@ -218,7 +219,7 @@ item_deliver_v1 <- function(state, time, params) {
     state$item_specs$obs_time[good] <- x$measured
   }
   if (length(ready)) state$item_pending <- pending[-ready]
-  # Missing information uses an explicit uncertain middle prior, never a typical value.
+  # Missing information uses an explicit uncertain middle prior, never a nominal value.
   c <- state$item_specs
   score <- ifelse(is.na(c$obs_condition_index),2L,ifelse(c$obs_condition_index<80,1L,ifelse(c$obs_condition_index<100,2L,3L)))
   score[!is.na(c$obs_degradation) & c$obs_degradation] <- pmin(score[!is.na(c$obs_degradation) & c$obs_degradation],2L)
@@ -314,7 +315,8 @@ item_endpoints_v1 <- function(state, params) {
 #'
 #' Uses the stochastic item event engine with unlimited procedural capacity
 #' and no transport or disruption risk. All items are eligible at intake. Reports
-#' outcomes on the intake clock, which differs from the chain's onset clock.
+#' outcomes on the intake clock, which differs from the chain's clock measured
+#' from item onset.
 #' This is a numerical calibration check, not external validation.
 #' @param model Item configuration.
 #' @param N Positive batch size.

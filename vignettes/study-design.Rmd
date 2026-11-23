@@ -181,8 +181,9 @@ compare_multiple(values, groups, family = "teaching-omnibus-at-Stage2")
 The omnibus helper reports the test statistic and p-value. Pairwise effect
 sizes and their intervals come from explicitly chosen contrasts; the function
 does not select post-hoc comparisons or manufacture a multi-arm effect size.
-For association questions, the study's primary nonparametric choice is Spearman;
-specify the variables, independent unit and any bootstrap interval separately.
+For association questions, a rank correlation such as Spearman's is the
+nonparametric counterpart; specify the variables, independent unit and any
+bootstrap interval separately.
 
 ## Paired disruptions-disabled intervention
 

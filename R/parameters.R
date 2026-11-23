@@ -25,7 +25,8 @@
 #' @param disruption_risk Named vector of probabilities with names `low` and `high`.
 #' @param disruption_risk_level Selected named disruption_risk level.
 #' @param p_cap Maximum disruption probability, in (0, 1].
-#' @param q Conditional disruption destructiveness probability and security-loss weight.
+#' @param q Conditional disruption destructiveness probability; also weights
+#'   projected disruption risk in the P3 decision loss.
 #' @param att_delay Nonnegative integer nondestructive disruption delay in minutes.
 #' @param lambda Nonnegative finite response parameter.
 #' @param atk_window Positive integer length of the departure history used by
@@ -183,7 +184,7 @@ check_probability <- function(x, name, n) {
 #' Neutral teaching scenarios
 #'
 #' Both examples use equal abstract travel durations and zero exposure and
-#' item-condition hazards. They do not contain the controlled study inputs.
+#' item-condition hazards. They are synthetic and contain no empirical inputs.
 #' `constrained` reduces vehicle availability and shortens the horizon to
 #' illustrate congestion and administrative censoring.
 #' @param kind Either `balanced` or `constrained`.

@@ -66,7 +66,8 @@ rounded 1:2:2 mix with the residual allocated to class 3.}
 
 \item{p_cap}{Maximum disruption probability, in (0, 1].}
 
-\item{q}{Conditional disruption destructiveness probability and security-loss weight.}
+\item{q}{Conditional disruption destructiveness probability; also weights
+projected disruption risk in the P3 decision loss.}
 
 \item{att_delay}{Nonnegative integer nondestructive disruption delay in minutes.}
 

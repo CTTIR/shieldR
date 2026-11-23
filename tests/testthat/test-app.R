@@ -26,6 +26,8 @@ test_that("app constructs a runnable, accessible UI without launching", {
   expect_match(html, "Departure-history window (departures)", fixed = TRUE)
   help <- as.character(.shield_app_help())
   expect_match(help, "an academic research package", fixed = TRUE)
+  expect_match(help, "MIT licence", fixed = TRUE)
+  expect_false(grepl("institutional release", help, fixed = TRUE))
   expect_false(grepl("disruption_model", help, fixed = TRUE))
   expect_error(shield_app(launch = NA), "TRUE or FALSE")
 })

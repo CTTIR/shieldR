@@ -141,6 +141,6 @@
     shiny::h4("Reproduce and extend"),
     shiny::p("Download the complete experiment and replay script. Use shield_parameters(), simulate_shield(), summarize_shield() and the comparison helpers in scripted analyses for larger experiments. App workload limits are not restrictions on the package API. Parameters not exposed in the form retain the documented neutral package defaults and are recorded in the complete bundle."),
     shiny::h4("Local processing and package status"),
-    shiny::p("Graph uploads are processed in this R session and are not sent to an external service. Session state is not shared between users. Deployment on a remote Shiny server changes where processing occurs. shieldR is an academic research package; licensing and institutional release remain pending. Use citation('shieldR') for the installed package citation.")
+    shiny::p("Graph uploads are processed in this R session and are not sent to an external service. Session state is not shared between users. Deployment on a remote Shiny server changes where processing occurs. shieldR is an academic research package distributed under the MIT licence. Use citation('shieldR') for the installed package citation.")
   )
 }

@@ -16,7 +16,7 @@ A \code{\link[=shield_parameters]{shield_parameters()}} object.
 }
 \description{
 Both examples use equal abstract travel durations and zero exposure and
-item-condition hazards. They do not contain the controlled study inputs.
+item-condition hazards. They are synthetic and contain no empirical inputs.
 \code{constrained} reduces vehicle availability and shortens the horizon to
 illustrate congestion and administrative censoring.
 }

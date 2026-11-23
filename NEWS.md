@@ -19,6 +19,10 @@
 * Cite Cliff (1993), Benjamini and Hochberg (1995) and, for the effect
   magnitude thresholds, Romano et al. (2006) in the help pages of
   `compare_policies()`, `adjust_fdr()` and `effect_magnitude()`.
+* Describe the model in abstract terms throughout help pages, tutorials,
+  code comments and the workbench. The `with_item_model()` horizon error now
+  names `item_age` and states the limit in minutes. Function, argument and
+  output column names are unchanged.
 * Correct wording in help pages, tutorials and the workbench, give the
   item-condition functions their own reference section, and drop the unused
   `digest` suggestion.
@@ -63,9 +67,10 @@
 
 # shieldR 0.4.0
 
-* Add an opt-in degradation item model with actual servicing events,
-  finite procedural capacity and overall viability at 30 days from item onset.
-* Add aggregate calibration and independent stochastic admission-batch replay.
+* Add an opt-in item-condition model with explicit servicing events, finite
+  processing capacity and overall viability at the end of the extended
+  follow-up period (`viable_30d`), timed from item onset.
+* Add aggregate calibration and independent stochastic reference-batch replay.
 * Preserve legacy execution by default and support separately pinned item
   comparisons with frozen planning assumptions and observed information.
 
@@ -86,16 +91,15 @@
 - PDF exports recover when Cairo is advertised but its runtime cannot load;
   the portable fallback preserves existing graphics devices.
 - Expanded the README, reference help and three executable tutorials.
-- Added a reciprocal analysis/package synchronisation contract and local gate.
-- Expanded package checks to Linux, macOS, Windows and three R release tracks;
-  documentation and coverage artefacts remain within private CI.
+- Added a local release gate.
+- Expanded package checks to Linux, macOS, Windows and three R release tracks.
 
 # shieldR 0.1.0
 
-- Initial package extraction of the five-leg simulation.
+- Initial version of the five-leg logistics-chain simulation.
 - Explicit validated scenario inputs and two neutral teaching examples.
 - Reproducible batch simulation with preserved caller RNG state.
 - Independent-arm, multi-arm and paired-intervention comparison functions.
 - Documented endpoint and information-timing assumptions.
 - Stable log-ratio forecasts for extreme response parameters outside the
-  original study range, with unchanged arithmetic within that range.
+  reference parameter range, with unchanged arithmetic within that range.

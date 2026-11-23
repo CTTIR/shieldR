@@ -9,7 +9,8 @@ calibrate_item_model(model, control, fragility, targets, intake = 0, step = 5)
 \arguments{
 \item{model}{Item model configuration; initial coefficient values positive.}
 
-\item{control}{Vector of onset-to-servicing times, Inf for failures.}
+\item{control}{Vector of times from item onset to effective servicing, in
+minutes; \code{Inf} where servicing is never effective.}
 
 \item{fragility}{Positive vector of corresponding fragility weights.}
 

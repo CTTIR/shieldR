@@ -78,8 +78,9 @@ An item has a true condition and an observed specification. These need not agree
 observations can be noisy, missing, delayed or retained from an earlier time.
 The basic model updates item classes and viability each minute. The optional
 `with_item_model()` extension adds a dimensionless condition index, a degradation
-indicator and finite-capacity processing at Stage 2. Processing can stabilise an
-item; residual degradation and other losses can continue afterwards.
+indicator and finite-capacity processing at Stage 2. Completed processing
+reduces an item's degradation hazard to a residual level; residual degradation
+and other losses can continue afterwards.
 
 | Specification | Interpretation |
 |---|---|
@@ -224,8 +225,7 @@ This public edition uses synthetic teaching inputs and abstract network stages.
 It is licensed under MIT. Since version 0.6.0, the public interface uses item-specification terminology,
 including `with_item_model()`, `item_specs`, `obs_condition_index` and
 `viable_stage2`. Serialised configurations and analysis scripts from earlier
-versions require explicit migration; they are not interchangeable. Existing study installations and their
-validated numerical records are separate from this public edition.
+versions require explicit migration; they are not interchangeable.
 
 No application-specific validation, allocation-rule superiority, or scientific certification is claimed.
 
