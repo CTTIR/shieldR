@@ -2,9 +2,12 @@
 
 * Fix the coupled P3 policy of the item-condition extension for a zero
   softmax parameter (`beta = 0`). Excluded route choices produced `NaN`
-  weights and stopped the simulation; they now receive zero weight, so the
-  policy draws uniformly among the admissible choices. Results for positive
-  `beta` are unchanged.
+  weights. The simulation then either stopped with an error or, without a
+  warning, left the selected item and its vehicle unassigned for the rest of
+  the replication. Excluded choices now receive zero weight, so the policy
+  draws uniformly among the admissible choices. Earlier P3 results with
+  `beta = 0` and `with_item_model()` are invalid and change; results for
+  positive `beta` are unchanged.
 * Label the workbench departure-history window in departures and document
   `atk_window` in `shield_parameters()` as a count of recent departures. The
   workbench previously described it in minutes.

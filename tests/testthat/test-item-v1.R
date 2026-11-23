@@ -143,8 +143,26 @@ test_that("a zero softmax parameter gives excluded item-model choices no weight"
   }
 })
 
+test_that("a zero softmax parameter neither strands items nor vehicles", {
+  g <- toy_graph()
+  g$travel_min <- rep(c(1, 2, 3), 5)
+  g$exposure_weight <- rep(c(.3, .2, .1), 5)
+  # Nondestructive disruptions and no item loss: every item must be delivered.
+  p <- shield_parameters(g, N = 6L, horizon = 120L, q = 0, att_delay = 2L,
+    lambda = 2, beta = 0, disruption_risk = c(low = .2, high = .3),
+    disruptions_enabled = TRUE)
+  m <- item_fixture_v1()$item_model
+  m[c("degradation_scale", "early_other", "late_other")] <- list(0, 0, 0)
+  x <- simulate_shield(with_item_model(p, m), "P3", "static", n_rep = 3L)
+  expect_equal(x$viable_stage3, rep(1, 3))
+  expect_equal(x$n_pending, rep(0L, 3))
+  expect_equal(x$n_dispatch, rep(30L, 3))
+})
+
 test_that("decision draws at the upper end of the unit interval still select", {
-  s <- stochastic_scenario(N = 1L)
+  # With two items the normalised choice probabilities sum to just below one,
+  # so a draw of exactly one exceeds the cumulative sum.
+  s <- stochastic_scenario(N = 2L)
   state <- init_items_full(s)
   choice <- decide_transport_full("P3", state, init_theta_full(s), 1L, 1L, s,
     demand = integer(8), decision_u = 1)
