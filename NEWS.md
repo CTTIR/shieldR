@@ -5,6 +5,9 @@
   weights and stopped the simulation; they now receive zero weight, so the
   policy draws uniformly among the admissible choices. Results for positive
   `beta` are unchanged.
+* Label the workbench departure-history window in departures and document
+  `atk_window` in `shield_parameters()` as a count of recent departures. The
+  workbench previously described it in minutes.
 * Prevent integer overflow in large-sample Mann-Whitney variance and Cliff's
   delta calculations. Comparisons with more than 2^31 - 1 cross-arm pairs
   now retain their effect size and log-tail probability.

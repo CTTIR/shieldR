@@ -72,7 +72,11 @@ rounded 1:2:2 mix with the residual allocated to class 3.}
 
 \item{lambda}{Nonnegative finite response parameter.}
 
-\item{atk_window}{Positive integer nominal departure-history window.}
+\item{atk_window}{Positive integer length of the departure history used by
+the adaptive disruption response: the number of most recent departures on
+a leg, extended to include every departure tied at the boundary minute. It
+counts departures, not minutes. With fewer recorded departures the
+response is uniform across routes.}
 
 \item{beta}{Nonnegative finite policy softmax parameter.}
 

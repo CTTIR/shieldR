@@ -71,7 +71,7 @@
           numeric("q", "Conditional disruption destructiveness probability", 0, 0, 1, .01),
           numeric("att_delay", "Nondestructive disruption delay (minutes)", 0, 0, 120),
           numeric("lambda", "Adaptive response parameter", 0, 0, NULL, .1),
-          numeric("atk_window", "Departure-history window (minutes)", 1, 1, 120))
+          numeric("atk_window", "Departure-history window (departures)", 1, 1, 120))
       ),
       shiny::actionButton("run", "Run experiment", class = "btn-primary w-100 mt-3"),
       shiny::helpText("Interactive cap: 250,000 item-minute steps across all arms. Comparisons use 10,000 bootstrap resamples.")),

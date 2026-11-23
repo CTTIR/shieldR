@@ -18,6 +18,7 @@ test_that("app constructs a runnable, accessible UI without launching", {
   expect_match(html, "chain-description", fixed = TRUE)
   expect_match(html, "Paired disruptions-disabled intervention", fixed = TRUE)
   expect_match(html, "Methods and help", fixed = TRUE)
+  expect_match(html, "Departure-history window (departures)", fixed = TRUE)
   expect_error(shield_app(launch = NA), "TRUE or FALSE")
 })
 

@@ -28,7 +28,11 @@
 #' @param q Conditional disruption destructiveness probability and security-loss weight.
 #' @param att_delay Nonnegative integer nondestructive disruption delay in minutes.
 #' @param lambda Nonnegative finite response parameter.
-#' @param atk_window Positive integer nominal departure-history window.
+#' @param atk_window Positive integer length of the departure history used by
+#'   the adaptive disruption response: the number of most recent departures on
+#'   a leg, extended to include every departure tied at the boundary minute. It
+#'   counts departures, not minutes. With fewer recorded departures the
+#'   response is uniform across routes.
 #' @param beta Nonnegative finite policy softmax parameter.
 #' @param beta_prior Two strictly positive Beta prior shapes.
 #' @param eps_time Positive route-time tie-break weight for P2.

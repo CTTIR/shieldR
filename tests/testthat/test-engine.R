@@ -97,3 +97,14 @@ test_that("all policy and disruption_model combinations preserve endpoint invari
                     unlist(x[paste0("util_L", 1:5)]) <= 1))
   }
 })
+
+test_that("the adaptive response window counts departures rather than minutes", {
+  s <- stochastic_scenario()
+  s$lambda <- 5
+  spread <- data.frame(time = c(1, 50, 100), route = rep(1L, 3))
+  s$atk_window <- 3L
+  focused <- disruption_model_response_full(spread, s, "adaptive")
+  expect_gt(focused[1], focused[2])
+  s$atk_window <- 4L
+  expect_equal(disruption_model_response_full(spread, s, "adaptive"), rep(1 / 3, 3))
+})
