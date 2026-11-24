@@ -1,6 +1,8 @@
 # shieldR <picture class="cttir-readme-logo"><source class="cttir-logo-dark-source" media="(prefers-color-scheme: dark)" srcset="man/figures/logo-with-name-dark.png" /><img src="man/figures/logo-with-name.png" align="right" alt="shieldR logo" width="120" height="139" /></picture>
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24426388.svg)](https://doi.org/10.5281/zenodo.24426388)
+
+Zenodo DOI reserved for the release: `10.5281/zenodo.24426388` (not yet published).
+
 
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://github.com/CTTIR/shieldR/blob/main/LICENSE.md)
