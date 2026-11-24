@@ -35,7 +35,7 @@ jobs:
           covr::report(coverage, file = "output/quality/coverage.html", browse = FALSE)
           writeLines(c(sprintf("Line coverage: %.2f%%", covr::percent_coverage(coverage)),
                        capture.output(sessionInfo())), "output/quality/sessionInfo.txt")
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7.0.2
         if: always()
         with:
           name: private-documentation-and-coverage
